@@ -461,6 +461,10 @@ void init_reion_grids()
 #if USE_MINI_HALOS
       grids->sfrIII_filtered[ii] = 0 + 0I;
       grids->sfrIII_unfiltered[ii] = 0 + 0I;
+      grids->sfrMCIII_filtered[ii] = 0 + 0I;
+      grids->sfrMCIII_unfiltered[ii] = 0 + 0I;
+      grids->sfrMC_filtered[ii] = 0 + 0I;
+      grids->sfrMC_unfiltered[ii] = 0 + 0I;
 #endif
     }
     if (run_globals.params.Flag_IncludeRecombinations) {
@@ -487,6 +491,8 @@ void init_reion_grids()
       grids->x_e_box[ii] = 0;
 #if USE_MINI_HALOS
       grids->sfrIII[ii] = 0;
+      grids->sfrMCIII[ii] = 0;
+      grids->sfr[ii] = 0;
 #endif
     }
     if (run_globals.params.Flag_IncludeRecombinations) {
@@ -587,6 +593,12 @@ void malloc_reionization_grids()
   grids->weighted_sfrIII = NULL;
   grids->weighted_sfrIII_unfiltered = NULL;
   grids->weighted_sfrIII_filtered = NULL;
+  grids->sfrMCIII = NULL;
+  grids->sfrMCIII_unfiltered = NULL;
+  grids->sfrMCIII_filtered = NULL;
+  grids->sfrMC = NULL;
+  grids->sfrMC_unfiltered = NULL;
+  grids->sfrMC_filtered = NULL;
 #endif
 
   // Grids required for the spin temperature calculation
@@ -834,6 +846,43 @@ void malloc_reionization_grids()
                                                                       run_globals.mpi_comm,
                                                                       plan_flags);
 
+      grids->sfrMCIII = fftwf_alloc_real((size_t)slab_n_complex * 2);
+      grids->sfrMCIII_unfiltered = fftwf_alloc_complex((size_t)slab_n_complex);
+      grids->sfrMCIII_filtered = fftwf_alloc_complex((size_t)slab_n_complex);
+
+      grids->sfrMCIII_forward_plan = fftwf_mpi_plan_dft_r2c_3d(ReionGridDim,
+                                                               ReionGridDim,
+                                                               ReionGridDim,
+                                                               grids->sfrMCIII,
+                                                               grids->sfrMCIII_unfiltered,
+                                                               run_globals.mpi_comm,
+                                                               plan_flags);
+      grids->sfrMCIII_filtered_reverse_plan = fftwf_mpi_plan_dft_c2r_3d(ReionGridDim,
+                                                                        ReionGridDim,
+                                                                        ReionGridDim,
+                                                                        grids->sfrMCIII_filtered,
+                                                                        (float*)grids->sfrMCIII_filtered,
+                                                                        run_globals.mpi_comm,
+                                                                        plan_flags);
+                                                        
+      grids->sfrMC = fftwf_alloc_real((size_t)slab_n_complex * 2);
+      grids->sfrMC_unfiltered = fftwf_alloc_complex((size_t)slab_n_complex);
+      grids->sfrMC_filtered = fftwf_alloc_complex((size_t)slab_n_complex);
+
+      grids->sfrMC_forward_plan = fftwf_mpi_plan_dft_r2c_3d(ReionGridDim,
+                                                            ReionGridDim,
+                                                            ReionGridDim,
+                                                            grids->sfrMC,
+                                                            grids->sfrMC_unfiltered,
+                                                            run_globals.mpi_comm,
+                                                            plan_flags);
+      grids->sfrMC_filtered_reverse_plan = fftwf_mpi_plan_dft_c2r_3d(ReionGridDim,
+                                                                     ReionGridDim,
+                                                                     ReionGridDim,
+                                                                     grids->sfrMC_filtered,
+                                                                     (float*)grids->sfrMC_filtered,
+                                                                     run_globals.mpi_comm,
+                                                                     plan_flags);
 #endif
       grids->Tk_box = fftwf_alloc_real((size_t)slab_n_real);
       grids->TS_box = fftwf_alloc_real((size_t)slab_n_real);
@@ -1044,6 +1093,18 @@ void free_reionization_grids()
     fftwf_free(grids->sfrIII_filtered);
     fftwf_free(grids->sfrIII_unfiltered);
     fftwf_free(grids->sfrIII);
+    
+    fftwf_destroy_plan(grids->sfrMCIII_filtered_reverse_plan);
+    fftwf_destroy_plan(grids->sfrMCIII_forward_plan);
+    fftwf_free(grids->sfrMCIII_filtered);
+    fftwf_free(grids->sfrMCIII_unfiltered);
+    fftwf_free(grids->sfrMCIII);
+    
+    fftwf_destroy_plan(grids->sfrMC_filtered_reverse_plan);
+    fftwf_destroy_plan(grids->sfrMC_forward_plan);
+    fftwf_free(grids->sfrMC_filtered);
+    fftwf_free(grids->sfrMC_unfiltered);
+    fftwf_free(grids->sfrMC);
 #endif
   }
 
@@ -1351,6 +1412,11 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   float* stellarIII_grid = run_globals.reion_grids.starsIII;
   float* sfrIII_grid = run_globals.reion_grids.sfrIII;
   float* weighted_sfrIII_grid = run_globals.reion_grids.weighted_sfrIII;
+  float* sfrMCIII_grid = run_globals.reion_grids.sfrMCIII;
+  float* sfrMC_grid = run_globals.reion_grids.sfrMC;
+  
+  double zplus1 = run_globals.ZZ[snapshot] + 1;
+  double MatoLim = 5.4 * 1e-3 * 0.6751 * pow(zplus1 / 11.0, -1.5);
 #endif
 
   gal_to_slab_t* galaxy_to_slab_map = run_globals.reion_grids.galaxy_to_slab_map;
@@ -1374,6 +1440,8 @@ void construct_baryon_grids(int snapshot, int local_ngals)
       sfr_grid[ii] = 0.0;
 #if USE_MINI_HALOS
       sfrIII_grid[ii] = 0.0;
+      sfrMCIII_grid[ii] = 0.0;
+      sfrMC_grid[ii] = 0.0;
 #endif
     }
   }
@@ -1394,6 +1462,8 @@ void construct_baryon_grids(int snapshot, int local_ngals)
     prop_stellarIII,
     prop_weighted_sfrIII,
     prop_sfrIII,
+    prop_sfrMCIII,
+    prop_sfrMC,
 #endif
     prop_sfr
   };
@@ -1480,6 +1550,20 @@ void construct_baryon_grids(int snapshot, int local_ngals)
               buffer[ind] += gal->GrossStellarMassIII;
               // this sfr grid is used for X-ray and Lyman, PopIII.
               break;
+              
+            case prop_sfrMCIII:
+            
+              if (gal->Mvir < MatoLim)
+                buffer[ind] += gal->GrossStellarMassIII;
+              
+              break;
+              
+            case prop_sfrMC:
+
+              if (gal->Mvir < MatoLim)
+                buffer[ind] += gal->GrossStellarMass;
+              
+              break;
 #endif
             case prop_weighted_sfr:
               buffer[ind] += (gal->FescWeightedGSM);
@@ -1544,6 +1628,26 @@ void construct_baryon_grids(int snapshot, int local_ngals)
                   double val = (double)buffer[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)];
                   val = (val > 0) ? val / sfr_timescale : 0;
                   sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
+                }
+            break;
+            
+          case prop_sfrMCIII:
+            for (int ix = 0; ix < slab_nix[i_r]; ix++)
+              for (int iy = 0; iy < ReionGridDim; iy++)
+                for (int iz = 0; iz < ReionGridDim; iz++) {
+                  double val = (double)buffer[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)];
+                  val = (val > 0) ? val / sfr_timescale : 0;
+                  sfrMCIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
+                }
+            break;
+            
+          case prop_sfrMC:
+            for (int ix = 0; ix < slab_nix[i_r]; ix++)
+              for (int iy = 0; iy < ReionGridDim; iy++)
+                for (int iz = 0; iz < ReionGridDim; iz++) {
+                  double val = (double)buffer[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)];
+                  val = (val > 0) ? val / sfr_timescale : 0;
+                  sfrMC_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
                 }
             break;
 
@@ -1712,6 +1816,26 @@ void save_reion_input_grids(int snapshot)
             (float)((grids->sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
                     UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
     write_grid_float("sfrIII", grid, file_id, fspace_id, memspace_id, dcpl_id);
+  }
+  
+  if (run_globals.params.Flag_IncludeSpinTemp) {
+    for (int ii = 0; ii < local_nix; ii++)
+      for (int jj = 0; jj < ReionGridDim; jj++)
+        for (int kk = 0; kk < ReionGridDim; kk++)
+          grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
+            (float)((grids->sfrMCIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
+                    UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
+    write_grid_float("sfrMCIII", grid, file_id, fspace_id, memspace_id, dcpl_id);
+  }
+  
+  if (run_globals.params.Flag_IncludeSpinTemp) {
+    for (int ii = 0; ii < local_nix; ii++)
+      for (int jj = 0; jj < ReionGridDim; jj++)
+        for (int kk = 0; kk < ReionGridDim; kk++)
+          grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
+            (float)((grids->sfrMC)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
+                    UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
+    write_grid_float("sfrMC", grid, file_id, fspace_id, memspace_id, dcpl_id);
   }
 
   for (int ii = 0; ii < local_nix; ii++)

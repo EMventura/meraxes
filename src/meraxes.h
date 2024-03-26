@@ -411,6 +411,18 @@ typedef struct reion_grids_t
   fftwf_plan weighted_sfrIII_forward_plan;
   fftwf_plan sfrIII_filtered_reverse_plan;
   fftwf_plan weighted_sfrIII_filtered_reverse_plan;
+  
+  float* sfrMCIII;
+  fftwf_complex* sfrMCIII_unfiltered;
+  fftwf_complex* sfrMCIII_filtered;
+  fftwf_plan sfrMCIII_forward_plan;
+  fftwf_plan sfrMCIII_filtered_reverse_plan;
+  
+  float* sfrMC;
+  fftwf_complex* sfrMC_unfiltered;
+  fftwf_complex* sfrMC_filtered;
+  fftwf_plan sfrMC_forward_plan;
+  fftwf_plan sfrMC_filtered_reverse_plan;
 #endif
 
   float* xH;
