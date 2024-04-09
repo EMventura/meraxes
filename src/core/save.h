@@ -34,7 +34,7 @@ typedef struct galaxy_output_t
   float FOFMvir;
 
   // baryonic reservoirs
-  float HotGas;
+  /*float HotGas;
   float MetalsHotGas;
   float ColdGas;
   float MetalsColdGas;
@@ -56,11 +56,11 @@ typedef struct galaxy_output_t
   float BHemissivity;
   float EffectiveBHM;
   float BlackHoleAccretedHotMass;
-  float BlackHoleAccretedColdMass;
+  float BlackHoleAccretedColdMass;*/
 
-  int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
+  //int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
                          // = 2)
-#if USE_MINI_HALOS
+/*#if USE_MINI_HALOS
   float GrossStellarMassIII;
   float FescIII;
   float FescIIIWeightedGSM;
@@ -92,7 +92,7 @@ typedef struct galaxy_output_t
 #if USE_MINI_HALOS
   float NewStars_II[N_HISTORY_SNAPS];
   float NewStars_III[N_HISTORY_SNAPS];
-#endif
+#endif*/
 } galaxy_output_t;
 
 #ifdef __cplusplus

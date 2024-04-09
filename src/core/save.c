@@ -11,7 +11,7 @@
 #include "metal_evo.h"
 #endif
 
-static float current_mwmsa(galaxy_t* gal, int i_snap)
+/*static float current_mwmsa(galaxy_t* gal, int i_snap)
 {
   double* LTTime = run_globals.LTTime;
   double mwmsa_num = gal->mwmsa_num;
@@ -24,7 +24,7 @@ static float current_mwmsa(galaxy_t* gal, int i_snap)
   }
 
   return (float)((mwmsa_num / mwmsa_denom) - LTTime[snapshot]);
-}
+}*/
 
 void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap)
 {
@@ -48,14 +48,14 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
     galout->Vel[ii] = gal.Vel[ii];
   }
 
-  galout->Len = gal.Len;
-  galout->MaxLen = gal.MaxLen;
+  //galout->Len = gal.Len;
+  //galout->MaxLen = gal.MaxLen;
   galout->Mvir = (float)(gal.Mvir);
-  galout->Rvir = (float)(gal.Rvir);
-  galout->Vvir = (float)(gal.Vvir);
-  galout->Vmax = (float)(gal.Vmax);
-  galout->Spin = (float)(gal.Spin);
-  galout->HotGas = (float)(gal.HotGas);
+  //galout->Rvir = (float)(gal.Rvir);
+  //galout->Vvir = (float)(gal.Vvir);
+  //galout->Vmax = (float)(gal.Vmax);
+  //galout->Spin = (float)(gal.Spin);
+  /*galout->HotGas = (float)(gal.HotGas);
   galout->MetalsHotGas = (float)(gal.MetalsHotGas);
   galout->ColdGas = (float)(gal.ColdGas);
   galout->MetalsColdGas = (float)(gal.MetalsColdGas);
@@ -119,7 +119,7 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
 #if USE_MINI_HALOS
   get_output_magnitudesIII(galout->MagsIII, &gal, run_globals.ListOutputSnaps[i_snap]);
 #endif
-#endif
+#endif*/
 }
 
 void calc_hdf5_props()
@@ -172,7 +172,7 @@ void calc_hdf5_props()
 
     i = 0;
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, HaloID);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, HaloID);
     h5props->dst_field_sizes[i] = sizeof(galout.HaloID);
     h5props->field_names[i] = "HaloID";
     h5props->field_units[i] = "None";
@@ -184,7 +184,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "ID";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_LLONG;
+    h5props->field_types[i++] = H5T_NATIVE_LLONG;*/
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Type);
     h5props->dst_field_sizes[i] = sizeof(galout.Type);
@@ -193,7 +193,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_INT;
 
-#if USE_MINI_HALOS
+/*#if USE_MINI_HALOS
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Galaxy_Population);
     h5props->dst_field_sizes[i] = sizeof(galout.Galaxy_Population);
     h5props->field_names[i] = "Galaxy_Population";
@@ -228,14 +228,14 @@ void calc_hdf5_props()
     h5props->field_names[i] = "Len";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_INT;
+    h5props->field_types[i++] = H5T_NATIVE_INT;*/
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MaxLen);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MaxLen);
     h5props->dst_field_sizes[i] = sizeof(galout.MaxLen);
     h5props->field_names[i] = "MaxLen";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_INT;
+    h5props->field_types[i++] = H5T_NATIVE_INT;*/
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Pos);
     h5props->dst_field_sizes[i] = sizeof(galout.Pos);
@@ -244,7 +244,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = h5props->array3f_tid;
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Vel);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Vel);
     h5props->dst_field_sizes[i] = sizeof(galout.Vel);
     h5props->field_names[i] = "Vel";
     h5props->field_units[i] = "km/s";
@@ -256,7 +256,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "Spin";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Mvir);
     h5props->dst_field_sizes[i] = sizeof(galout.Mvir);
@@ -265,7 +265,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Rvir);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Rvir);
     h5props->dst_field_sizes[i] = sizeof(galout.Rvir);
     h5props->field_names[i] = "Rvir";
     h5props->field_units[i] = "Mpc"; // physical
@@ -647,7 +647,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "dt";
     h5props->field_units[i] = "Myr";
     h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
 
     // DEBUG
     if (i != h5props->n_props) {
