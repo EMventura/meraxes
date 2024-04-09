@@ -134,7 +134,7 @@ void calc_hdf5_props()
     galaxy_output_t galout;
     int i; // dummy
 
-    h5props->n_props = 49;
+    h5props->n_props = 3;
 #if USE_MINI_HALOS
     h5props->n_props += 14; // Double check later
 #endif
