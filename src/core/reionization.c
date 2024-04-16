@@ -1416,7 +1416,8 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   float* sfrMC_grid = run_globals.reion_grids.sfrMC;
   
   double zplus1 = run_globals.ZZ[snapshot] + 1;
-  double MatoLim = 5.4 * 1e-3 * 0.6751 * pow(zplus1 / 11.0, -1.5);
+  //double MatoLim = 5.4 * 1e-3 * 0.6751 * pow(zplus1 / 11.0, -1.5); // Probably it doesn't take little_h!!
+  double MatoLim = 3.1623 * 1e-3; // Test for low mass AC halos above z = 20. It should have little_h but don't put it now for consistency!
 #endif
 
   gal_to_slab_t* galaxy_to_slab_map = run_globals.reion_grids.galaxy_to_slab_map;
