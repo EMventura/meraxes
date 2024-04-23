@@ -1416,7 +1416,10 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   float* sfrMC_grid = run_globals.reion_grids.sfrMC;
   
   double redshift = run_globals.ZZ[snapshot];
-  double MatoLim = Tvir_to_Mvir(1e4, redshift);
+  //double MatoLim = Tvir_to_Mvir(1e4, redshift);
+  
+  //TEST for L210 Resolution
+  double MatoLim = Tvir_to_Mvir(1e4, 20.0);
 #endif
 
   gal_to_slab_t* galaxy_to_slab_map = run_globals.reion_grids.galaxy_to_slab_map;
