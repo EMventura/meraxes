@@ -1376,7 +1376,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   float* weighted_sfr_grid = run_globals.reion_grids.weighted_sfr;
   int ReionGridDim = run_globals.params.ReionGridDim;
   double sfr_timescale = run_globals.params.ReionSfrTimescale * hubble_time(snapshot);
-#if USE_MINI_HALOS 
+#if USE_MINI_HALOS || USE_SCALING_REL
   float* stellarIII_grid = run_globals.reion_grids.starsIII;
   float* sfrIII_grid = run_globals.reion_grids.sfrIII;
   float* weighted_sfrIII_grid = run_globals.reion_grids.weighted_sfrIII;
@@ -1392,7 +1392,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   for (int ii = 0; ii < local_n_complex * 2; ii++) {
     stellar_grid[ii] = 0.0;
     weighted_sfr_grid[ii] = 0.0;
-#if USE_MINI_HALOS 
+#if USE_MINI_HALOS || USE_SCALING_REL
     stellarIII_grid[ii] = 0.0;
     weighted_sfrIII_grid[ii] = 0.0;
 #endif
@@ -1401,7 +1401,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   if (run_globals.params.Flag_IncludeSpinTemp) { // For this duplicate the background
     for (int ii = 0; ii < local_n_complex * 2; ii++) {
       sfr_grid[ii] = 0.0;
-#if USE_MINI_HALOS 
+#if USE_MINI_HALOS || USE_SCALING_REL
       sfrIII_grid[ii] = 0.0;
 #endif
     }
@@ -2192,14 +2192,21 @@ void construct_scaling_sfr(int snapshot)
   
   int local_n_complex = (int)(run_globals.reion_grids.slab_n_complex[run_globals.mpi_rank]);
   
-  double zplus1 = run_globals.ZZ[snapshot] + 1;
-  float MatoLim = 5.4 * 1e-3 * 0.6751 * pow(zplus1 / 11.0, -1.5);
+  double redshift = run_globals.ZZ[snapshot];
+  // This previous definition probably it's correct when removing little_h
+  // But to be sure we are in internal units, let's use the definition in Meraxes!
+  
+  //float MatoLim = 5.4 * 1e-3 * 0.6751 * pow(zplus1 / 11.0, -1.5);
+  float MatoLim = Tvir_to_Mvir(1e4, redshift);
   
   // Compute Norm Table at that snapshot
-  ComputeNormTables(snapshot);
+  //ComputeNormTables(snapshot);
   
   double NormIII;
   double NormII;
+  
+  double valIII;
+  double valII;
   
   double MuMCIII = run_globals.mu_MCIII;
   double MuMCII = run_globals.mu_MCII;
@@ -2207,7 +2214,9 @@ void construct_scaling_sfr(int snapshot)
   double SigmaMCII = run_globals.sigma_MCII;
   
   mlog("Adding sfr grids with Scaling rel...", MLOG_OPEN | MLOG_TIMERSTART);
-
+  
+  // INITIALIZE POP.III VARIABLES IN CONSTRUCT_BARYON_GRIDS
+  /*
   // init the grid, only for Pop.III (the one from Pop.II have already been
   // initialized in construct_baryon_grids
   for (int ii = 0; ii < local_n_complex * 2; ii++) {
@@ -2219,7 +2228,7 @@ void construct_scaling_sfr(int snapshot)
     for (int ii = 0; ii < local_n_complex * 2; ii++) {
       sfrIII_grid[ii] = 0.0;
     }
-  }
+  }*/
   
   physics_params_t* params = &(run_globals.params.physics);
   
@@ -2253,7 +2262,7 @@ void construct_scaling_sfr(int snapshot)
       for (int iy = 0; iy < ReionGridDim; iy++)
         for (int iz = 0; iz < ReionGridDim; iz++) {
             // If the LW is already too strong there is no SF coming from MC halos
-            if (McritMC_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)] < MatoLim) { //INDEX_REAL OR PADDED???
+            if (McritMC_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)] < MatoLim) {
               double RandomUni = gsl_rng_uniform(run_globals.random_generator);
               double DeltaVal = Delta_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)];
               int DeltaIndex = Find_DeltaIndex(DeltaVal);
@@ -2263,19 +2272,24 @@ void construct_scaling_sfr(int snapshot)
               //mlog("NormIII is = %f", MLOG_MESG, NormIII);
               NormII = get_NormValue(DeltaIndex, snapshot, 2);
               if (RandomUni <= NormIII) {
-                double valIII = pow(10, NormalRandNum(MuMCIII, SigmaMCIII)) / ConvUnit;
+                if (DeltaIndex == 8) {
+                  valIII = pow(10, NormalRandNum(-4.6, SigmaMCIII)) / ConvUnit;
+                }
+                else {
+                  valIII = pow(10, NormalRandNum(MuMCIII, SigmaMCIII)) / ConvUnit;
+                }
                 //mlog("valIII is = %f", MLOG_MESG, valIII * ConvUnit);
                 if (run_globals.params.Flag_IncludeSpinTemp) {
-                  sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII; // += doesn't work but it should!
+                  sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII; 
                 }
-                stellarIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII * sfr_timescale * run_globals.params.Hubble_h * fescIII; // Probably there is no hubble_h!
+                stellarIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII * sfr_timescale * fescIII; 
                 weighted_sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII * fescIII;
                 if (RandomUni <= NormII) {
-                  double valII = pow(10,NormalRandNum(MuMCII, SigmaMCII)) / ConvUnit;
+                  valII = pow(10,NormalRandNum(MuMCII, SigmaMCII)) / ConvUnit;
                   if (run_globals.params.Flag_IncludeSpinTemp) {
                     sfr_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII;
                   }
-                  stellar_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII * sfr_timescale * run_globals.params.Hubble_h * fesc;
+                  stellar_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII * sfr_timescale * fesc;
                   weighted_sfr_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII * fesc;
                 }
               }
