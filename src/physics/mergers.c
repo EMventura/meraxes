@@ -136,9 +136,16 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
 #if USE_MINI_HALOS
       if (parent->Galaxy_Population == 2)
 #endif
+#if USE_SCALING_REL
+      if ((parent->MvirCrit_MC <= parent->Mvir) || ((parent->GrossStellarMass + parent->GrossStellarMassIII) >= 1e-10))
+#endif
         update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, 0, m_recycled, m_remnant, new_metals);
 #if USE_MINI_HALOS
       else if (parent->Galaxy_Population == 3)
+        update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled, 0, m_remnant, new_metals);
+#endif
+#if USE_SCALING_REL
+      else if ((parent->MvirCrit_MC > parent->Mvir) && ((parent->GrossStellarMass + parent->GrossStellarMassIII) < 1e-10))
         update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled, 0, m_remnant, new_metals);
 #endif
     }
@@ -165,7 +172,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   // use the **baryonic** mass to calculate the merger ratio
   parent_baryons = parent->StellarMass + parent->ColdGas;
   gal_baryons = gal->StellarMass + gal->ColdGas;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
   parent_baryons += parent->Remnant_Mass;
   gal_baryons += gal->Remnant_Mass;
 #endif
@@ -178,7 +185,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
 
   // Add galaxies together
   parent->StellarMass += gal->StellarMass;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
   parent->StellarMass_II += gal->StellarMass_II;
   parent->StellarMass_III += gal->StellarMass_III;
   parent->Remnant_Mass += gal->Remnant_Mass;
@@ -219,7 +226,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
 
   for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
     parent->NewStars[ii] += gal->NewStars[ii];
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     parent->NewStars_II[ii] += gal->NewStars_II[ii];
     parent->NewStars_III[ii] += gal->NewStars_III[ii];
 #endif
