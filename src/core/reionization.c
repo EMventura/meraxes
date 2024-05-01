@@ -2279,7 +2279,7 @@ void construct_scaling_sfr(int snapshot)
               NormII = get_NormValue(DeltaIndex, snapshot, 2);
               if (RandomUni <= NormIII) {
                 if (DeltaIndex == 8) {
-                  valIII = pow(10, NormalRandNum(-4.7, SigmaMCIII)) / ConvUnit;
+                  valIII = pow(10, NormalRandNum(-4.6, SigmaMCIII)) / ConvUnit;
                 }
                 else {
                   valIII = pow(10, NormalRandNum(MuMCIII, SigmaMCIII)) / ConvUnit;
