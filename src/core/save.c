@@ -114,14 +114,14 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
     galout->NewStars_III[ii] = (float)(gal.NewStars_III[ii]);
     galout->NewStars_II[ii] = (float)(gal.NewStars_II[ii]);
 #endif
-  }
+  //}
 
 #ifdef CALC_MAGS
   get_output_magnitudes(galout->Mags, galout->DustyMags, &gal, run_globals.ListOutputSnaps[i_snap]);
 #if USE_MINI_HALOS
   get_output_magnitudesIII(galout->MagsIII, &gal, run_globals.ListOutputSnaps[i_snap]);
 #endif
-#endif*/
+#endif
 }
 
 void calc_hdf5_props()
@@ -189,7 +189,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "ID";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_LLONG;*/
+    h5props->field_types[i++] = H5T_NATIVE_LLONG;
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Type);
     h5props->dst_field_sizes[i] = sizeof(galout.Type);
