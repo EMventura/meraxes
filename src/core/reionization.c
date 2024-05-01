@@ -1732,15 +1732,15 @@ void save_reion_input_grids(int snapshot)
                   UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
   write_grid_float("weighted_sfr", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
-#if USE_MINI_HALOS || USE_SCALING_REL
-  /*for (int ii = 0; ii < local_nix; ii++)
+/*#if USE_MINI_HALOS || USE_SCALING_REL
+  for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
           (grids->starsIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
   write_grid_float("starsIII", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
-  if (run_globals.params.Flag_IncludeSpinTemp) {
+  /*if (run_globals.params.Flag_IncludeSpinTemp) {
     for (int ii = 0; ii < local_nix; ii++)
       for (int jj = 0; jj < ReionGridDim; jj++)
         for (int kk = 0; kk < ReionGridDim; kk++)
@@ -1748,7 +1748,7 @@ void save_reion_input_grids(int snapshot)
             (float)((grids->sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
                     UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
     write_grid_float("sfrIII", grid, file_id, fspace_id, memspace_id, dcpl_id);
-  }
+  }*/
 
   /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
