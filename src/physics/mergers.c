@@ -137,7 +137,7 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
       if (parent->Galaxy_Population == 2)
 #endif
 #if USE_SCALING_REL
-      if ((gal->MvirCrit_MC <= gal->Mvir) || ((gal->GrossStellarMass + gal->GrossStellarMassIII) >= 1e-10))
+      if ((parent->MvirCrit_MC <= parent->Mvir) || ((parent->GrossStellarMass + parent->GrossStellarMassIII) >= 1e-10))
 #endif
         update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, 0, m_recycled, m_remnant, new_metals);
 #if USE_MINI_HALOS
@@ -145,7 +145,7 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
         update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled, 0, m_remnant, new_metals);
 #endif
 #if USE_SCALING_REL
-      else if ((gal->MvirCrit_MC > gal->Mvir) && ((gal->GrossStellarMass + gal->GrossStellarMassIII) < 1e-10))
+      else if ((parent->MvirCrit_MC > parent->Mvir) && ((parent->GrossStellarMass + parent->GrossStellarMassIII) < 1e-10))
         update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled, 0, m_remnant, new_metals);
 #endif
     }
