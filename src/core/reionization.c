@@ -1426,7 +1426,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   {
     prop_stellar,
     prop_weighted_sfr,
-#if USE_MINI_HALOS 
+#if USE_MINI_HALOS || USE_SCALING_REL
     prop_stellarIII,
     prop_weighted_sfrIII,
     prop_sfrIII,
@@ -1498,7 +1498,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
               }
               break;
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
             case prop_stellarIII:
 
               buffer[ind] += gal->FescIIIWeightedGSM;
@@ -1562,7 +1562,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
                   weighted_sfr_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
                 }
             break;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
           case prop_weighted_sfrIII:
             for (int ix = 0; ix < slab_nix[i_r]; ix++)
               for (int iy = 0; iy < ReionGridDim; iy++)
