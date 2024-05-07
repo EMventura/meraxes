@@ -302,8 +302,8 @@ void read_trees__velociraptor(int snapshot,
         halo->TreeFlags = TREE_CASE_NO_PROGENITORS;
 
         // Here we have a cyclic pointer, indicating that this halo's life ends here
-        //if ((unsigned long)tree_entry.Head == tree_entry.ID)
-        if (tree_entry.Head == halo->ID)
+        if ((unsigned long)tree_entry.Head == tree_entry.ID)
+        //if (tree_entry.Head == halo->ID)
           halo->DescIndex = -1;
 
         if (index_lookup)
