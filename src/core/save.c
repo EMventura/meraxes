@@ -56,7 +56,7 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   //galout->Vmax = (float)(gal.Vmax);
   //galout->Spin = (float)(gal.Spin);
   /*galout->HotGas = (float)(gal.HotGas);
-  galout->MetalsHotGas = (float)(gal.MetalsHotGas);
+  galout->MetalsHotGas = (float)(gal.MetalsHotGas);*/
   galout->ColdGas = (float)(gal.ColdGas);
   //galout->MetalsColdGas = (float)(gal.MetalsColdGas);
   //galout->H2Frac = (float)(gal.H2Frac);
@@ -136,7 +136,7 @@ void calc_hdf5_props()
     galaxy_output_t galout;
     int i; // dummy
 
-    h5props->n_props = 5;
+    h5props->n_props = 7;
 #if USE_SCALING_REL
     h5props->n_props += 2;
 #endif 

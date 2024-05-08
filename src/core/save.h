@@ -35,17 +35,17 @@ typedef struct galaxy_output_t
 
   // baryonic reservoirs
   /*float HotGas;
-  float MetalsHotGas;
+  float MetalsHotGas;*/
   float ColdGas;
-  float MetalsColdGas;
+  /*float MetalsColdGas;
   float H2Frac;
   float H2Mass;
   float HIMass;
   float Mcool;
   float DiskScaleLength;
-  float StellarMass;
+  float StellarMass;*/
   float GrossStellarMass;
-  float Fesc;
+  /*float Fesc;
   float FescWeightedGSM;
   float MetalsStellarMass;
   float Sfr;
@@ -63,12 +63,12 @@ typedef struct galaxy_output_t
                          
 #if USE_MINI_HALOS || USE_SCALING_REL
   float GrossStellarMassIII;
-  float FescIII;
-  float FescIIIWeightedGSM;
-  float StellarMass_II;
-  float StellarMass_III;
+  //float FescIII;
+  //float FescIIIWeightedGSM;
+  //float StellarMass_II;
+  //float StellarMass_III;
   float MvirCrit_MC;
-  float Remnant_Mass;
+  //float Remnant_Mass;
 #endif
 
 #if USE_MINI_HALOS
