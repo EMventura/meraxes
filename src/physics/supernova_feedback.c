@@ -428,8 +428,9 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
       *m_recycled = *m_stars * run_globals.params.physics.SfRecycleFraction_III;
       *new_metals = *m_stars * run_globals.params.physics.Yield_III;
     }
+#endif
   }
-
+#if USE_MINI_HALOS || USE_SCALING_REL
   if (gal->Galaxy_Population == 2) {
 #endif
     // calculate the SNII energy and total reheated mass
