@@ -16,7 +16,7 @@
 #include <math.h>
 
 //! Evolve existing galaxies forward in time
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
 int evolve_galaxies(fof_group_t* fof_group,
                     int snapshot,
                     int NGal,
@@ -116,6 +116,13 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 #endif
 
             insitu_star_formation(gal, snapshot);
+
+#if USE_SCALING_REL //Add this as test
+            if (gal->NewStars_III[0] > 1e-10)
+              *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
+            if (gal->NewStars_II[0] > 1e-10)
+              *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
+#endif
 
 #if USE_MINI_HALOS
             if ((Flag_Metals == true) && (gal->Type < 3)) { // For gal->Type > 0 you are just letting the bubble grow

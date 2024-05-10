@@ -87,7 +87,7 @@ void dracarys()
     int merger_counter = 0;
     int new_gal_counter = 0;
     int ghost_counter = 0;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     int gal_counter_Pop3 = 0;     // Newly formed Pop3 Gal
     int gal_counter_Pop2 = 0;     // Newly formed Pop2 Gal
     int gal_counter_enriched = 0; // Enriched but they could be still Pop3
@@ -334,7 +334,7 @@ void dracarys()
 
     // Do the physics
     if (NGal > 0)
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
       nout_gals = evolve_galaxies(fof_group,
                                   snapshot,
                                   NGal,
