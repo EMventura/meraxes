@@ -87,6 +87,14 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
           }
 #endif
 
+#if USE_SCALING_REL //New test 
+          if ((gal->MvirCrit_MC > gal->Mvir) && ((gal->GrossStellarMass + gal->GrossStellarMassIII) < 1e-10))
+            gal->Galaxy_Population = 3; 
+          
+          else
+            gal->Galaxy_Population = 2;
+#endif
+
           if (gal->Type == 0) {
             cooling_mass = gas_cooling(gal);
 
