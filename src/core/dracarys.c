@@ -419,7 +419,7 @@ void dracarys()
     mlog("Newly created galaxies            :: %d", MLOG_MESG, new_gal_counter);
     mlog("Galaxies in ghost halos           :: %d", MLOG_MESG, ghost_counter);
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_Pop3, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_enriched, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_Pop2, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
