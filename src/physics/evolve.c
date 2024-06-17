@@ -109,10 +109,21 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 #if USE_MINI_HALOS
             DiskMetallicity = calc_metallicity(
               gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal enrichment!
-            if ((DiskMetallicity / 0.01) > run_globals.params.physics.ZCrit)
+            if ((DiskMetallicity / 0.01) > run_globals.params.physics.ZCrit) {
               gal->Galaxy_Population = 2;
-            else
+              if (Flag_Metals == false)
+                *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
+            }
+                
+            else {
               gal->Galaxy_Population = 3;
+              if (Flag_Metals == false) {
+                if ((DiskMetallicity / 0.01) < run_globals.params.physics.ZCrit / 1e6)
+                  *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
+                else
+                  *gal_counter_enriched = *gal_counter_enriched + 1; 
+              }
+            }
 #endif
 
             insitu_star_formation(gal, snapshot);
