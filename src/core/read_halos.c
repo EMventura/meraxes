@@ -135,9 +135,6 @@ static void select_forests()
       case VELOCIRAPTOR_TREES:
         sprintf(fname, "%s/trees/meraxes_augmented_stats.h5", run_globals.params.SimulationDir);
         break;
-      case GBPTREES_TREES:
-        sprintf(fname, "%s/trees/forests_info.hdf5", run_globals.params.SimulationDir);
-        break;
       default:
         mlog_error("Unrecognised input trees identifier (TreesID).");
         break;
@@ -151,9 +148,6 @@ static void select_forests()
 
     // find out how many forests there are
     switch (run_globals.params.TreesID) {
-      case GBPTREES_TREES:
-        H5LTget_attribute_int(fd, "info", "n_forests", &n_forests);
-        break;
       case VELOCIRAPTOR_TREES:
         H5LTget_attribute_int(fd, "forests", "n_forests", &n_forests);
         break;
@@ -180,18 +174,6 @@ static void select_forests()
       char dset_name[128] = { '\0' };
 
       switch (run_globals.params.TreesID) {
-        case GBPTREES_TREES:
-          temp_ids = (int*)malloc(sizeof(int) * n_forests);
-          H5LTread_dataset_int(fd, "info/forest_id", temp_ids);
-          for (int ii = 0; ii < n_forests; ++ii) {
-            forest_ids[ii] = (long)temp_ids[ii];
-          }
-          free(temp_ids);
-          H5LTread_dataset_int(fd, "info/max_contemporaneous_halos", max_contemp_halo);
-          H5LTread_dataset_int(fd, "info/max_contemporaneous_fof_groups", max_contemp_fof);
-          sprintf(dset_name, "snapshots/snap_%03d", last_snap);
-          H5LTread_dataset_int(fd, dset_name, final_counts);
-          break;
         case VELOCIRAPTOR_TREES:
           H5LTread_dataset_long(fd, "forests/forest_ids", forest_ids);
           H5LTread_dataset_int(fd, "forests/max_contemporaneous_halos", max_contemp_halo);
@@ -283,9 +265,6 @@ static void select_forests()
     for (int snap = 0; snap < last_snap + 1; ++snap) {
       char dset_name[128] = { '\0' };
       switch (run_globals.params.TreesID) {
-        case GBPTREES_TREES:
-          sprintf(dset_name, "snapshots/snap_%03d", snap);
-          break;
         case VELOCIRAPTOR_TREES:
           sprintf(dset_name, "snapshots/Snap%03d", snap);
           break;
@@ -430,9 +409,6 @@ trees_info_t read_halos(const int snapshot,
     case VELOCIRAPTOR_TREES:
       trees_info = read_trees_info__velociraptor(snapshot);
       break;
-    case GBPTREES_TREES:
-      trees_info = read_trees_info__gbptrees(snapshot);
-      break;
     default:
       mlog_error("Unrecognised input trees identifier (TreesID).");
       break;
@@ -483,24 +459,7 @@ trees_info_t read_halos(const int snapshot,
     case VELOCIRAPTOR_TREES:
       read_trees__velociraptor(snapshot, *halos, &n_halos, *fof_groups, &n_fof_groups, *index_lookup);
       break;
-
-    case GBPTREES_TREES: {
-      int n_halos_kept = 0;
-      int n_fof_groups_kept = 0;
-
-      read_trees__gbptrees(snapshot,
-                           *halos,
-                           n_halos,
-                           *fof_groups,
-                           run_globals.NRequestedForests,
-                           &n_halos_kept,
-                           &n_fof_groups_kept,
-                           *index_lookup);
-
-      n_halos = n_halos_kept;
-      n_fof_groups = n_fof_groups_kept;
-    }
-
+      
     break;
 
     default:
