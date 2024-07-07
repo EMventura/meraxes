@@ -275,10 +275,7 @@ void read_trees__velociraptor(int snapshot,
         halo->ID = tree_entry.ID;
         halo->DescIndex = id_to_ind(tree_entry.Head);
 
-        if (run_globals.params.FlagIgnoreProgIndex)
-          halo->ProgIndex = -1;
-        else
-          halo->ProgIndex = id_to_ind(tree_entry.Tail);
+        halo->ProgIndex = -1; // Set this to -1 by default (FlagIgnoreProgIndex)
 
         halo->NextHaloInFOFGroup = NULL;
         halo->Type = tree_entry.hostHaloID == -1 ? 0 : 1;
@@ -287,11 +284,8 @@ void read_trees__velociraptor(int snapshot,
         // Any other tree flags need to be set using both the current and
         // progenitor halo information (stored in the galaxy), therefore we
         // need to leave setting those until later...
-        if (run_globals.params.FlagIgnoreProgIndex)
-          halo->TreeFlags = TREE_CASE_NO_PROGENITORS;
-        else
-          halo->TreeFlags = (unsigned long)tree_entry.Tail != tree_entry.ID ? 0 : TREE_CASE_NO_PROGENITORS;
-
+        halo->TreeFlags = TREE_CASE_NO_PROGENITORS; // Set this by default (FlagIgnoreProgIndex)
+       
         // Here we have a cyclic pointer, indicating that this halo's life ends here
         if ((unsigned long)tree_entry.Head == tree_entry.ID)
           halo->DescIndex = -1;

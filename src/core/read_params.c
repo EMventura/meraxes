@@ -315,12 +315,6 @@ void read_parameter_file(char* fname, int mode)
       required_tag[n_param] = 1;
       params_type[n_param++] = PARAM_TYPE_INT;
 
-      strncpy(params_tag[n_param], "FlagIgnoreProgIndex", tag_length);
-      params_addr[n_param] = &(run_params->FlagIgnoreProgIndex);
-      required_tag[n_param] = 0;
-      params_type[n_param++] = PARAM_TYPE_INT;
-      run_params->FlagIgnoreProgIndex = 0;
-
       // Physics params
 
       strncpy(params_tag[n_param], "EscapeFracDependency", tag_length);
