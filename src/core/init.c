@@ -11,26 +11,6 @@
 #include "physics/stellar_feedback.h"
 #include "physics/virial_properties.h"
 
-static void init_gpu()
-{
-// If we are compiling with CUDA, allocate a structure
-//   that will carry information about the device
-#ifdef USE_CUDA
-  // Alocate the structure that will carry all the information
-  //   about the GPU assigned to this thread
-  run_globals.gpu = (gpu_info*)malloc(sizeof(gpu_info));
-
-  // This function has all the CUDA device polling calls
-  init_CUDA();
-#else
-  // If we are not compiling with CUDA, set this
-  //   pointer to NULL.  This is a good way
-  //   to test in the code if a GPU is being used.
-  mlog("CPU-only version of Meraxes running.", MLOG_MESG);
-  run_globals.gpu = NULL;
-#endif
-}
-
 static void read_requested_forest_ids()
 {
   if (strlen(run_globals.params.ForestIDFile) == 0) {
@@ -207,9 +187,6 @@ void init_meraxes()
   int i;
   int snaplist_len;
 
-  // initialize GPU
-  init_gpu();
-
   // initialise the random number generator
   run_globals.random_generator = gsl_rng_alloc(gsl_rng_ranlxd1);
   gsl_rng_set(run_globals.random_generator, (unsigned long)run_globals.params.RandomSeed);
@@ -256,5 +233,4 @@ void init_meraxes()
 
   // This will be set by Mhysa
   run_globals.mhysa_self = NULL;
-}it.h"
-#include "mer
+}
