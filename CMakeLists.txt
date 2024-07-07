@@ -154,12 +154,12 @@ find_package(MPI REQUIRED)
 target_link_libraries(meraxes_lib PUBLIC MPI::MPI_C)
 
 # MLOG
-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/mlog/mlog.c")
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/mlog/mlog.c")
     message(STATUS "Checking out mlog submodule")
     execute_process(COMMAND git submodule update --init
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
-set(MLOG_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/mlog")
+set(MLOG_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src/mlog")
 add_library(mlog STATIC "${MLOG_ROOT}/mlog.c" "${MLOG_ROOT}/mlog.h")
 target_link_libraries(mlog PRIVATE MPI::MPI_C)
 target_include_directories(mlog PRIVATE ${MPI_INCLUDE_PATH})
@@ -195,7 +195,7 @@ target_include_directories(meraxes_lib PUBLIC ${FFTW_INCLUDE_DIRS})
 target_link_libraries(meraxes_lib PUBLIC ${FFTW_LIBRARIES})
 
 # Exports for other codes to build against this version of Meraxes
-  export(TARGETS meraxes_lib mlog FILE MeraxesConfig.cmake)
+export(TARGETS meraxes_lib mlog FILE MeraxesConfig.cmake)
 install(EXPORT MeraxesConfig DESTINATION share/meraxes/cmake)
 
 
