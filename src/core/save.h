@@ -54,7 +54,6 @@ typedef struct galaxy_output_t
   float MergerStartRadius;
   float BaryonFracModifier;
   float FOFMvirModifier;
-  float MvirCrit;
   float dt;
   float MergerBurstMass;
 
