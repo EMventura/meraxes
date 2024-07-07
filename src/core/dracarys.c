@@ -1,5 +1,5 @@
 #include "debug.h"
-#include "galaxies.h"
+#include "physics/galaxies.h"
 #include "meraxes.h"
 #include "physics/misc_tools.h"
 #include "physics/evolve.h"
