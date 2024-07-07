@@ -22,7 +22,6 @@ extern "C"
   int compare_floats(const void* a, const void* b);
   int compare_ptrdiff(const void* a, const void* b);
   int compare_int_long(const void* a, const void* b);
-  int compare_slab_assign(const void* a, const void* b);
   float apply_pbc_pos(float x);
   int searchsorted(void* val,
                    void* arr,

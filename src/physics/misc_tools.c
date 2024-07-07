@@ -4,7 +4,6 @@
 #include "core/debug.h"
 #include "meraxes.h"
 #include "misc_tools.h"
-#include "reionization.h"
 
 void myexit(int signum)
 {
@@ -92,12 +91,6 @@ int compare_int_long(const void* a, const void* b)
     return 0;
 }
 
-int compare_slab_assign(const void* a, const void* b)
-{
-  int value = ((gal_to_slab_t*)a)->slab_ind - ((gal_to_slab_t*)b)->slab_ind;
-
-  return value != 0 ? value : ((gal_to_slab_t*)a)->index - ((gal_to_slab_t*)b)->index;
-}
 
 static inline float apply_pbc_disp(float delta)
 {
