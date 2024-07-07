@@ -142,17 +142,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/meraxes_conf.h.in ${CMAKE_BINARY_
 target_include_directories(meraxes_lib BEFORE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(meraxes BEFORE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
 
-
-#########
-# TESTS #
-#########
-
-if(BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(src/tests)
-endif()
-
-
 ################
 # DEPENDENCIES # 
 ################
@@ -165,12 +154,12 @@ find_package(MPI REQUIRED)
 target_link_libraries(meraxes_lib PUBLIC MPI::MPI_C)
 
 # MLOG
-if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/mlog/mlog.c")
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/mlog/mlog.c")
     message(STATUS "Checking out mlog submodule")
     execute_process(COMMAND git submodule update --init
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
-set(MLOG_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src/mlog")
+set(MLOG_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/mlog")
 add_library(mlog STATIC "${MLOG_ROOT}/mlog.c" "${MLOG_ROOT}/mlog.h")
 target_link_libraries(mlog PRIVATE MPI::MPI_C)
 target_include_directories(mlog PRIVATE ${MPI_INCLUDE_PATH})

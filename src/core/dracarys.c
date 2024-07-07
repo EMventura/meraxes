@@ -64,10 +64,6 @@ void dracarys()
     prep_hdf5_file();
   }
 
-  // Initialize timer
-  timer_info timer;
-  timer_start(&timer);
-
   // Loop through each snapshot
   for (int snapshot = 0; snapshot <= last_snap; snapshot++) {
     int* index_lookup = NULL;
