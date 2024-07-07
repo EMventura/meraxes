@@ -1,7 +1,7 @@
 #include <math.h>
 
 #include "blackhole_feedback.h"
-#include "core/misc_tools.h"
+#include "misc_tools.h"
 #include "meraxes.h"
 
 double calculate_BHemissivity(double BlackHoleMass, double accreted_mass)
