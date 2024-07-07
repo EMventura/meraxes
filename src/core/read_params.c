@@ -317,11 +317,6 @@ void read_parameter_file(char* fname, int mode)
 
       // Physics params
 
-      strncpy(params_tag[n_param], "EscapeFracDependency", tag_length);
-      params_addr[n_param] = &(run_params->physics).EscapeFracDependency;
-      required_tag[n_param] = 1;
-      params_type[n_param++] = PARAM_TYPE_INT;
-
       strncpy(params_tag[n_param], "SfDiskVelOpt", tag_length);
       params_addr[n_param] = &(run_params->physics).SfDiskVelOpt;
       required_tag[n_param] = 1;

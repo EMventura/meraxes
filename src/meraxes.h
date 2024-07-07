@@ -85,6 +85,7 @@ typedef struct physics_params_t
   double RadioModeEff;
   double QuasarModeEff;
   double BlackHoleGrowthRate;
+  double BlackHoleSeed;
   double EddingtonRatio;
   double quasar_mode_scaling;
   double quasar_open_angle;
@@ -96,6 +97,17 @@ typedef struct physics_params_t
   double MergerBurstScaling;
   double MergerBurstFactor;
   double MergerTimeFactor;
+  
+  // Options
+  int SfDiskVelOpt;
+  int SfPrescription;
+
+  // Flags
+  int Flag_BHFeedback;
+  int Flag_IRA;
+  int Flag_FixDiskRadiusOnInfall;
+  int Flag_FixVmaxOnInfall;
+  int Flag_ReheatToFOFGroupTemp;
 
 } physics_params_t;
 
@@ -246,8 +258,6 @@ typedef struct galaxy_t
   double MergerStartRadius;
   double BaryonFracModifier;
   double FOFMvirModifier;
-  double MvirCrit;
-  double MvirCrit_MC;
   double MergerBurstMass;
 
   int Type;
