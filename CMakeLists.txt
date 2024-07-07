@@ -53,16 +53,9 @@ endif()
 
 set(N_HISTORY_SNAPS 5 CACHE STRING "Number of snapshots for delayed SN feedback")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared library version (required for Mhysa)")
-option(CALC_MAGS "Calculate magnitude" OFF)
-option(USE_MINI_HALOS "Consider minihalos" OFF)
-set(MAGS_N_SNAPS 3 CACHE STRING "Number of snapshots to compute magnitudes")
-set(MAGS_N_BANDS 6 CACHE STRING "Number of bands to compute")
-set(SECTOR_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src/sector" CACHE PATH "Base directory of sector library")
 option(BUILD_TESTS "Build criterion tests" OFF)
 option(GDB "Drop into GDB with mpi_debug_here() calls" OFF)
 option(ENABLE_PROFILING "Enable profiling of executable with gperftools." OFF)
-option(USE_CUDA "Build with CUDA support for reionization calculations" OFF)
-
 
 # Build type
 set(default_build_type "RelWithDebInfo")
@@ -150,35 +143,6 @@ target_include_directories(meraxes_lib BEFORE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR
 target_include_directories(meraxes BEFORE PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR})
 
 
-##########
-#  CUDA  #
-##########
-
-if(USE_CUDA)
-    enable_language(CUDA)
-    set_target_properties(meraxes_lib meraxes PROPERTIES
-        CUDA_ARCHITECTURES 60
-        CUDA_STANDARD 11
-        CXX_STANDARD 11
-        )
-
-    find_package(CUDAToolkit REQUIRED)
-
-    # Add CUDA source code and link libraries
-    # TODO: This is bad practice, we should really list the sources explicitly
-    file(GLOB SOURCES_CU core/*.cu *.hh meraxes_gpu.h)
-    target_sources(meraxes_lib PRIVATE ${SOURCES_CU})
-
-    # link libraries
-    target_link_libraries(meraxes_lib PUBLIC CUDA::cudart_static)
-    target_compile_definitions(meraxes_lib PUBLIC USE_CUDA)
-
-    # This hack is needed to work around a bug in the fftw3.h header file
-    # see the following for a discussion: https://github.com/FFTW/fftw3/issues/18
-    target_compile_definitions(meraxes_lib PUBLIC $<$<COMPILE_LANGUAGE:CUDA>:__INTEL_COMPILER>)
-endif()
-
-
 #########
 # TESTS #
 #########
@@ -199,36 +163,6 @@ target_link_libraries(meraxes_lib PUBLIC m)
 # MPI
 find_package(MPI REQUIRED)
 target_link_libraries(meraxes_lib PUBLIC MPI::MPI_C)
-
-# MINI_HALOS
-if(USE_MINI_HALOS)
-	add_definitions(-DUSE_MINI_HALOS)
-endif()
-
-# MAGNITUDES
-if(CALC_MAGS)
-    add_definitions(-DCALC_MAGS)
-    file(GLOB SECTOR_SOURCES ${SECTOR_ROOT}/*.c ${SECTOR}/sector.h)
-    add_library(sector STATIC ${SECTOR_SOURCES})
-    target_link_libraries(sector PRIVATE MPI::MPI_C)
-    target_link_libraries(meraxes_lib PUBLIC sector)
-    set_target_properties(sector PROPERTIES
-        POSITION_INDEPENDENT_CODE ON
-        PUBLIC_HEADER "${SECTOR_ROOT}/sector.h")
-    target_include_directories(meraxes_lib PUBLIC
-        $<BUILD_INTERFACE:${SECTOR_ROOT}>
-        $<INSTALL_INTERFACE:include>)
-    add_custom_command(
-        TARGET sector
-        POST_BUILD
-        COMMAND objcopy
-        ARGS --redefine-sym interp=sector_interp --redefine-sym trapz_table=sector_trapz_table $<TARGET_FILE:sector>
-        )
-    install(TARGETS sector EXPORT MeraxesConfig
-        DESTINATION lib
-        PUBLIC_HEADER DESTINATION include
-        COMPONENT lib)
-endif()
 
 # MLOG
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/mlog/mlog.c")
@@ -272,11 +206,7 @@ target_include_directories(meraxes_lib PUBLIC ${FFTW_INCLUDE_DIRS})
 target_link_libraries(meraxes_lib PUBLIC ${FFTW_LIBRARIES})
 
 # Exports for other codes to build against this version of Meraxes
-if(CALC_MAGS)
-    export(TARGETS meraxes_lib mlog sector FILE MeraxesConfig.cmake)
-else()
-    export(TARGETS meraxes_lib mlog FILE MeraxesConfig.cmake)
-endif()
+  export(TARGETS meraxes_lib mlog FILE MeraxesConfig.cmake)
 install(EXPORT MeraxesConfig DESTINATION share/meraxes/cmake)
 
 

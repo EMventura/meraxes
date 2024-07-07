@@ -2,25 +2,14 @@
 #include <string.h>
 #include <time.h>
 
-#include "ComputePowerSpectrum.h"
-#include "ConstructLightcone.h"
-#include "cooling.h"
-#include "init.h"
-#include "magnitudes.h"
+#include "physics/cooling.h"
 #include "meraxes.h"
-#include "misc_tools.h"
+#include "physics/misc_tools.h"
 #include "parse_paramfile.h"
 #include "read_halos.h"
-#include "recombinations.h"
-#include "reionization.h"
-#include "reionization_modifiers.h"
 #include "save.h"
-#include "stellar_feedback.h"
-#include "virial_properties.h"
-#if USE_MINI_HALOS
-#include "PopIII.h"
-#include "metal_evo.h"
-#endif
+#include "physics/stellar_feedback.h"
+#include "physics/virial_properties.h"
 
 static void init_gpu()
 {
@@ -209,13 +198,6 @@ void init_storage()
   // Initialize the halo storage arrays
   initialize_halo_storage();
 
-  malloc_reionization_grids();
-
-#if USE_MINI_HALOS
-  if (run_globals.params.Flag_IncludeMetalEvo)
-    malloc_metal_grids();
-#endif
-
   // calculate the output hdf5 file properties for later use
   calc_hdf5_props();
 }
@@ -251,15 +233,6 @@ void init_meraxes()
     run_globals.rhocrit[i] = 3 * pow(hubble_at_snapshot(i), 2) / (8 * M_PI * run_globals.G);
   }
 
-  // validation checks
-  if (run_globals.params.Flag_IncludeSpinTemp) {
-    if (run_globals.params.physics.ReionMaxHeatingRedshift > run_globals.ZZ[0]) {
-      mlog_error("ReionMaxHeatingRedshift > redshift of first snapshot (%.2f) which is not allowed.",
-                 run_globals.ZZ[0]);
-      ABORT(EXIT_FAILURE);
-    }
-  }
-
   // read in the requested forest IDs (if any)
   read_requested_forest_ids();
 
@@ -269,43 +242,10 @@ void init_meraxes()
   // read in the stellar feedback tables
   read_stellar_feedback_tables();
 
-#ifdef USE_MINI_HALOS
-  // initialize Pop III tables
-  initialize_PopIII();
-#endif
-
-#ifdef CALC_MAGS
-  init_magnitudes();
-#endif
-
   // set RequestedMassRatioModifier and RequestedBaryonFracModifieruto be 1 first
   // it will be set to -1 later if MassRatioModifier or BaryonFracModifier is not specified
   run_globals.RequestedMassRatioModifier = 1;
   run_globals.RequestedBaryonFracModifier = 1;
-
-  // read in the mean Mvir_crit table (if needed, 1 for Reio 2 for LW)
-  read_Mcrit_table(1);
-#ifdef USE_MINI_HALOS
-  read_Mcrit_table(2);
-#endif
-
-  set_ReionEfficiency();
-  set_quasar_fobs();
-
-  // Determine the size of the light-cone for initialising the light-cone grid
-  if (run_globals.params.Flag_PatchyReion && run_globals.params.Flag_ConstructLightcone) {
-    Initialise_ConstructLightcone();
-  }
-
-  if (run_globals.params.Flag_ComputePS) {
-    Initialise_PowerSpectrum();
-  }
-
-  // Initialise interpolation tables for inhomogeneous recombinations
-  // TODO: Should this also depend on Flag_PatchyReion? (apply decision to cleanup.c too)
-  if (run_globals.params.Flag_IncludeRecombinations) {
-    init_MHR();
-  }
 
   // Initialise galaxy pointers
   run_globals.FirstGal = NULL;
@@ -316,4 +256,5 @@ void init_meraxes()
 
   // This will be set by Mhysa
   run_globals.mhysa_self = NULL;
-}
+}it.h"
+#include "mer

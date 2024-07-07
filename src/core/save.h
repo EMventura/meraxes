@@ -10,14 +10,6 @@ typedef struct galaxy_output_t
   // Unique ID for the galaxy
   unsigned long ID;
 
-#ifdef CALC_MAGS
-  float Mags[MAGS_N_BANDS];
-  float DustyMags[MAGS_N_BANDS];
-#if USE_MINI_HALOS
-  float MagsIII[MAGS_N_BANDS];
-#endif
-#endif
-
   int Type;
   int CentralGal;
   int GhostFlag;
@@ -45,35 +37,15 @@ typedef struct galaxy_output_t
   float DiskScaleLength;
   float StellarMass;
   float GrossStellarMass;
-  float Fesc;
-  float FescWeightedGSM;
   float MetalsStellarMass;
   float Sfr;
   float EjectedGas;
   float MetalsEjectedGas;
   float BlackHoleMass;
-  float FescBH;
   float BHemissivity;
   float EffectiveBHM;
   float BlackHoleAccretedHotMass;
   float BlackHoleAccretedColdMass;
-
-  int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
-                         // = 2)
-#if USE_MINI_HALOS
-  float GrossStellarMassIII;
-  float FescIII;
-  float FescIIIWeightedGSM;
-
-  float RmetalBubble;
-  int Flag_ExtMetEnr;
-  float Metal_Probability;
-  float GalMetal_Probability;
-  float StellarMass_II;
-  float StellarMass_III;
-  float Remnant_Mass;
-  float MvirCrit_MC;
-#endif
 
   // misc
   float Rcool;
@@ -89,10 +61,6 @@ typedef struct galaxy_output_t
   // baryonic histories
   float MWMSA; // Mass weighted mean stellar age
   float NewStars[N_HISTORY_SNAPS];
-#if USE_MINI_HALOS
-  float NewStars_II[N_HISTORY_SNAPS];
-  float NewStars_III[N_HISTORY_SNAPS];
-#endif
 } galaxy_output_t;
 
 #ifdef __cplusplus

@@ -1,8 +1,7 @@
 #include <math.h>
 
 #include "blackhole_feedback.h"
-#include "core/magnitudes.h"
-#include "core/misc_tools.h"
+#include "misc_tools.h"
 #include "meraxes.h"
 #include "mergers.h"
 #include "star_formation.h"
@@ -133,14 +132,7 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
       // update the baryonic reservoirs (note that the order we do this in will change the result!)
       update_reservoirs_from_sf(parent, burst_mass, snapshot, MERGER);
       parent->MergerBurstMass += burst_mass;
-#if USE_MINI_HALOS
-      if (parent->Galaxy_Population == 2)
-#endif
-        update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, 0, m_recycled, m_remnant, new_metals);
-#if USE_MINI_HALOS
-      else if (parent->Galaxy_Population == 3)
-        update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled, 0, m_remnant, new_metals);
-#endif
+      update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, 0, m_recycled, m_remnant, new_metals);
     }
   }
 }
@@ -165,10 +157,6 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   // use the **baryonic** mass to calculate the merger ratio
   parent_baryons = parent->StellarMass + parent->ColdGas;
   gal_baryons = gal->StellarMass + gal->ColdGas;
-#if USE_MINI_HALOS
-  parent_baryons += parent->Remnant_Mass;
-  gal_baryons += gal->Remnant_Mass;
-#endif
   if (parent_baryons > gal_baryons)
     merger_ratio = gal_baryons / parent_baryons;
   else
@@ -178,15 +166,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
 
   // Add galaxies together
   parent->StellarMass += gal->StellarMass;
-#if USE_MINI_HALOS
-  parent->StellarMass_II += gal->StellarMass_II;
-  parent->StellarMass_III += gal->StellarMass_III;
-  parent->Remnant_Mass += gal->Remnant_Mass;
-  parent->GrossStellarMassIII += gal->GrossStellarMassIII;
-  parent->FescIIIWeightedGSM += gal->FescIIIWeightedGSM;
-#endif
   parent->GrossStellarMass += gal->GrossStellarMass;
-  parent->FescWeightedGSM += gal->FescWeightedGSM;
   parent->MetalsStellarMass += gal->MetalsStellarMass;
   parent->Sfr += gal->Sfr;
   parent->HotGas += gal->HotGas;
@@ -205,32 +185,12 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   parent->mwmsa_denom += gal->mwmsa_denom;
   parent->MergerBurstMass += gal->MergerBurstMass;
 
-#if USE_MINI_HALOS
-  // If I have a Merger between Pop III and Pop II the result is a Pop. II. Actually I should compute metallicity
-  // TODO: this could be improved in the future!
-
-  if (gal->RmetalBubble > parent->RmetalBubble) {
-
-    parent->RmetalBubble = gal->RmetalBubble; // This is to account the evolution of metal bubbles after a merger event
-    parent->PrefactorBubble = gal->PrefactorBubble;
-    parent->TimeBubble = gal->TimeBubble;
-  }
-#endif
-
   for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
     parent->NewStars[ii] += gal->NewStars[ii];
-#if USE_MINI_HALOS
-    parent->NewStars_II[ii] += gal->NewStars_II[ii];
-    parent->NewStars_III[ii] += gal->NewStars_III[ii];
-#endif
   }
 
   for (int ii = 0; ii < N_HISTORY_SNAPS; ii++)
     parent->NewMetals[ii] += gal->NewMetals[ii];
-
-#ifdef CALC_MAGS
-  merge_luminosities(parent, gal);
-#endif
 
   // merger driven starburst prescription
   if (min_stellar_mass >= run_globals.params.physics.MinMergerStellarMass)

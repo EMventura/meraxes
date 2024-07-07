@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 
 #include "init.h"
-#include "interactive.h"
 #include "meraxes.h"
 #include "utils.h"
 
@@ -44,14 +43,8 @@ int main(int argc, char** argv)
   init_storage();
 
   // Run the model!
-  if ((!run_globals.params.FlagInteractive) & (!run_globals.params.FlagMCMC))
-    dracarys();
-  else
-    while (run_globals.params.FlagInteractive) {
-      dracarys();
-      continue_prompt(argv[1]);
-    }
-
+  dracarys();
+  
   // cleanup
   cleanup();
 

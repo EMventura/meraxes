@@ -3,7 +3,7 @@
 
 #include "debug.h"
 #include "meraxes.h"
-#include "misc_tools.h"
+#include "physics/misc_tools.h"
 
 void check_mhysa_pointer()
 {

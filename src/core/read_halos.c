@@ -3,8 +3,8 @@
 #include <hdf5_hl.h>
 
 #include "meraxes.h"
-#include "misc_tools.h"
-#include "modifiers.h"
+#include "physics/misc_tools.h"
+#include "physics/modifiers.h"
 #include "read_halos.h"
 
 inline static void update_pointers_from_offsets(int n_fof_groups_kept,

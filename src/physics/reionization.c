@@ -1,101 +1,16 @@
 #include <math.h>
 
 #include "blackhole_feedback.h"
-#include "core/cooling.h"
-#include "core/misc_tools.h"
-#include "core/virial_properties.h"
+#include "cooling.h"
+#include "misc_tools.h"
+#include "virial_properties.h"
 #include "meraxes.h"
 #include "reionization.h"
 
-void calculate_Mvir_crit(double redshift)
-{
-  // Calculate the critical Mvir value in each grid cell (ala Sobacchi & Mesinger 2013b)
-  float* Mvir_crit = run_globals.reion_grids.Mvir_crit;
+// Commenting this part as we are currently turninf off reio feedback from 21cmFast
+// In the future we will need to understand how to implement UVfeedback from PyC2ray
 
-  int ReionGridDim = run_globals.params.ReionGridDim;
-  double cell_Mvir_crit;
-  int local_n_x = (int)(run_globals.reion_grids.slab_nix[run_globals.mpi_rank]);
-  int local_n_cell = local_n_x * ReionGridDim * ReionGridDim;
-
-  double ReionSMParam_m0 = run_globals.params.physics.ReionSMParam_m0;
-  double ReionSMParam_a = run_globals.params.physics.ReionSMParam_a;
-  double ReionSMParam_b = run_globals.params.physics.ReionSMParam_b;
-  double ReionSMParam_c = run_globals.params.physics.ReionSMParam_c;
-  double ReionSMParam_d = run_globals.params.physics.ReionSMParam_d;
-  double Hubble_h = run_globals.params.Hubble_h;
-
-  float* J_21_at_ion = run_globals.reion_grids.J_21_at_ionization;
-  float* z_at_ion = run_globals.reion_grids.z_at_ionization;
-
-  // init
-  for (int ii = 0; ii < local_n_cell; ii++)
-    Mvir_crit[ii] = 0.0;
-
-  // Loop through each cell and calculate the value of Mvir_crit
-  for (int ii = 0; ii < local_n_x; ii++) {
-    for (int jj = 0; jj < ReionGridDim; jj++)
-      for (int kk = 0; kk < ReionGridDim; kk++) {
-        // Initialise critical mass
-        cell_Mvir_crit = 0.0;
-
-        // If this cell was ionized in the past then calculate the critical
-        // mass using the UVB feedback prescription of Sobacchi & Mesinger
-        // 2013b
-        if (z_at_ion[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] > redshift) // Remove UVB feedback
-          cell_Mvir_crit =
-            ReionSMParam_m0 *
-            pow((double)(J_21_at_ion[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)]) * Hubble_h * Hubble_h,
-                ReionSMParam_a) *
-            pow((1.0 + redshift) / 10.0, ReionSMParam_b) *
-            pow((1.0 -
-                 pow((1.0 + redshift) / (1.0 + (double)(z_at_ion[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)])),
-                     ReionSMParam_c)),
-                ReionSMParam_d);
-
-        // Save the critical mass to the grid
-        Mvir_crit[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] = (float)cell_Mvir_crit;
-      }
-  }
-}
-
-#if USE_MINI_HALOS
-void calculate_Mvir_crit_MC(double redshift)
-{
-  // Calculate the critical Mvir value in each grid cell (ala Visbal 2014)
-  float* Mvir_crit_MC = run_globals.reion_grids.Mvir_crit_MC;
-
-  int ReionGridDim = run_globals.params.ReionGridDim;
-  double cell_Mvir_crit_MC;
-  int local_n_x = (int)(run_globals.reion_grids.slab_nix[run_globals.mpi_rank]);
-  int local_n_cell = local_n_x * ReionGridDim * ReionGridDim;
-
-  double Hubble_h = run_globals.params.Hubble_h;
-  if (run_globals.params.Flag_IncludeStreamVel)
-    cell_Mvir_crit_MC =
-      Mcool_SV(redshift, 1); // Assume 1 rms for now. In the future you might want to investigate this parameter
-  else
-    cell_Mvir_crit_MC = Mcool_SV(redshift, 0);
-
-  float* JLW_box = run_globals.reion_grids.JLW_box;
-
-  // init
-  for (int ii = 0; ii < local_n_cell; ii++)
-    Mvir_crit_MC[ii] = 0.0;
-
-  for (int ii = 0; ii < local_n_x; ii++) {
-    for (int jj = 0; jj < ReionGridDim; jj++) {
-      for (int kk = 0; kk < ReionGridDim; kk++) {
-        Mvir_crit_MC[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
-          (float)(cell_Mvir_crit_MC *
-                  (1.0 + 6.96 * (pow(4 * M_PI * JLW_box[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)],
-                                     0.47)))); // Fitting function Visbal+14, converting in internal units (1e10Msol/h)
-      }
-    }
-  }
-}
-#endif
-
-double tocf_modifier(galaxy_t* gal, double Mvir)
+/*double tocf_modifier(galaxy_t* gal, double Mvir)
 {
   return pow(2.0, -1.0 * gal->MvirCrit / Mvir);
 }
@@ -210,7 +125,7 @@ double gnedin2000_modifer(double Mvir, double redshift)
   modifier = 1.0 / pow(1.0 + 0.26 * (mass_to_use / Mvir), 3.0);
 
   return modifier;
-}
+}*/
 
 double reionization_modifier(galaxy_t* gal, double Mvir, int snapshot)
 {
@@ -218,8 +133,8 @@ double reionization_modifier(galaxy_t* gal, double Mvir, int snapshot)
   double modifier;
 
   redshift = run_globals.ZZ[snapshot];
-
-  if ((run_globals.params.ReionUVBFlag) && (run_globals.params.Flag_PatchyReion)) {
+  
+  /*if ((run_globals.params.ReionUVBFlag) && (run_globals.params.Flag_PatchyReion)) {
     modifier = tocf_modifier(gal, Mvir);
     return modifier;
   }
@@ -243,7 +158,7 @@ double reionization_modifier(galaxy_t* gal, double Mvir, int snapshot)
     default:
       modifier = 1.0;
       break;
-  }
+  }*/
 
   return modifier;
 }

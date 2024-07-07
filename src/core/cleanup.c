@@ -1,16 +1,7 @@
 #include <fftw3-mpi.h>
 
-#include "magnitudes.h"
 #include "meraxes.h"
 #include "parse_paramfile.h"
-#include "read_grids.h"
-#include "read_halos.h"
-#include "recombinations.h"
-#include "reionization.h"
-
-#if USE_MINI_HALOS
-#include "metal_evo.h"
-#endif
 
 void cleanup()
 {
@@ -25,26 +16,8 @@ void cleanup()
 
   free_halo_storage();
 
-#ifdef CALC_MAGS
-  cleanup_mags();
-#endif
-
   if (run_globals.RequestedForestId)
     free(run_globals.RequestedForestId);
-
-  if (run_globals.params.Flag_PatchyReion) {
-    free_reionization_grids();
-    fftwf_mpi_cleanup();
-  }
-
-  if (run_globals.params.Flag_IncludeRecombinations) {
-    free_MHR();
-  }
-
-#if USE_MINI_HALOS
-  if (run_globals.params.Flag_IncludeMetalEvo)
-    free_metal_grids();
-#endif
 
   if (!run_globals.params.FlagMCMC) {
     mlog("Freeing hdf5 related stuff...", MLOG_OPEN);

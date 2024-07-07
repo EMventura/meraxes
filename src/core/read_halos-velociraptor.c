@@ -4,11 +4,11 @@
 
 #include "debug.h"
 #include "meraxes.h"
-#include "misc_tools.h"
-#include "modifiers.h"
+#include "physics/misc_tools.h"
+#include "physics/modifiers.h"
 #include "read_halos.h"
 #include "tree_flags.h"
-#include "virial_properties.h"
+#include "physics/virial_properties.h"
 
 trees_info_t read_trees_info__velociraptor(const int snapshot)
 {

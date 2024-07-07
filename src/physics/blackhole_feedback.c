@@ -191,8 +191,8 @@ void previous_merger_driven_BH_growth(galaxy_t* gal)
   BHemissivity = calculate_BHemissivity(gal->BlackHoleMass, accreted_mass);
   gal->BHemissivity += BHemissivity;
   gal->BlackHoleMass += (1. - ETA) * accreted_mass;
-  gal->EffectiveBHM +=
-    BHemissivity * EMISSIVITY_CONVERTOR * gal->FescBH / run_globals.params.physics.ReionNionPhotPerBary;
+  //gal->EffectiveBHM +=
+    //BHemissivity * EMISSIVITY_CONVERTOR * gal->FescBH / run_globals.params.physics.ReionNionPhotPerBary;
 
   // quasar mode feedback
   m_reheat = run_globals.params.physics.QuasarModeEff * 2. * ETA * run_globals.Csquare * accreted_mass / Vvir / Vvir;

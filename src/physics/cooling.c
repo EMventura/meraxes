@@ -3,11 +3,111 @@
 
 #include "blackhole_feedback.h"
 #include "cooling.h"
-#include "core/cooling.h"
-#include "core/misc_tools.h"
-#include "core/virial_properties.h"
+#include "misc_tools.h"
+#include "virial_properties.h"
 #include "meraxes.h"
 #include "reionization.h"
+
+// *** This code is taken from the model of Croton+ 2006 with minimal modifications. ***
+//
+// Future todo list:
+//  - Read in the below hard coded values from the HDF5 file itself and malloc appropriately
+//  - Set up more flexible interpolation (e.g. without assumption of fixed temp step)
+//  - Use GSL routines for interpolation
+
+// metallicies with repect to solar.
+// These will be converted to absolute metallicities by adding log10(Z_sun), Zsun=0.02
+static double metallicities[N_METALLICITIES] = {
+  -5.0, // This is actually primordial in the tables but that is log10(0) = -infinity
+  -3.0, -2.0, -1.5, -1.0, -0.5, +0.0, +0.5
+};
+
+static char group_name[N_METALLICITIES][6] = { "mzero", "m-30", "m-20", "m-15", "m-10", "m-05", "m-00", "m+05" };
+
+static double cooling_rate[N_METALLICITIES][N_TEMPS];
+
+void read_cooling_functions()
+{
+  if (run_globals.mpi_rank == 0) {
+    hid_t fd;
+    char dset_name[30];
+    char fname[STRLEN + 11];
+
+    sprintf(fname, "%s/SD93.hdf5", run_globals.params.CoolingFuncsDir);
+    fd = H5Fopen(fname, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+    for (int i_m = 0; i_m < N_METALLICITIES; i_m++) {
+      sprintf(dset_name, "%s/log(lambda_norm)", group_name[i_m]);
+      H5LTread_dataset_double(fd, dset_name, cooling_rate[i_m]);
+    }
+
+    H5Fclose(fd);
+  }
+
+  // broadcast the values to all cores
+  MPI_Bcast(&cooling_rate, sizeof(cooling_rate), MPI_BYTE, 0, run_globals.mpi_comm);
+
+  // add solar metallicity to all metallicity values
+  for (int i_m = 0; i_m < N_METALLICITIES; i_m++)
+    metallicities[i_m] += log10(0.02);
+}
+
+static double interpolate_temp_dependant_cooling_rate(int i_m, double logTemp)
+{
+  int i_t;
+  double temp_step;
+  double rate, rate_below, rate_above;
+  double logT_below;
+
+  // First deal with boundary conditions
+  if (logTemp < MIN_TEMP)
+    return -27.0;
+
+  // Now find the index of the tabulated temp immediately below our value
+  temp_step = (MAX_TEMP - MIN_TEMP) / (double)(N_TEMPS - 1);
+  i_t = (int)((logTemp - MIN_TEMP) / temp_step);
+  if (i_t >= (N_TEMPS - 1))
+    i_t = N_TEMPS - 2;
+
+  // Now grab the cooling rates for the temp immediately above and below
+  rate_below = cooling_rate[i_m][i_t];
+  rate_above = cooling_rate[i_m][i_t + 1];
+
+  // Calculate the tabulated temperature immediately below our value
+  logT_below = MIN_TEMP + temp_step * i_t;
+
+  // Now linearly interpolate the cooling rate
+  rate = rate_below + (rate_above - rate_below) / temp_step * (logTemp - logT_below);
+
+  return rate;
+}
+
+double interpolate_cooling_rate(double logTemp, double logZ)
+{
+  int i_m;
+  double rate_below, rate_above, rate;
+
+  // First deal with boundary conditions
+  if (logZ < metallicities[0])
+    logZ = metallicities[0];
+  if (logZ > metallicities[N_METALLICITIES - 1])
+    logZ = metallicities[N_METALLICITIES - 1];
+
+  // Now find the indices of the metallicity values which bound our input
+  i_m = 0;
+  while (logZ > metallicities[i_m + 1])
+    i_m++;
+
+  // Get the cooling rates for this temperature value
+  rate_below = interpolate_temp_dependant_cooling_rate(i_m, logTemp);
+  rate_above = interpolate_temp_dependant_cooling_rate(i_m + 1, logTemp);
+
+  // Finally, linearly interpolate the cooling rates
+  rate = rate_below +
+         (rate_above - rate_below) / (metallicities[i_m + 1] - metallicities[i_m]) * (logZ - metallicities[i_m]);
+
+  return pow(10, rate);
+}
 
 double gas_cooling(galaxy_t* gal)
 {
@@ -16,8 +116,7 @@ double gas_cooling(galaxy_t* gal)
   // we only need to do cooling if there is anything to cool!
   if (gal->HotGas > 1e-10) {
     fof_group_t* fof_group = gal->Halo->FOFGroup;
-    int halo_type = 1; // (1 = AC, 2 = MC, 0 = None)
-
+    
     // calculate the halo virial temperature and log10 metallicity value
     double Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
     double log10Tvir = log10(Tvir);
@@ -38,52 +137,10 @@ double gas_cooling(galaxy_t* gal)
 
       // interpolate the temperature and metallicity dependant cooling rate (lambda)
       lambda = interpolate_cooling_rate(log10Tvir, logZ);
-    }
-
-    // Implement Molecular cooling using fitting of cooling curves of Galli and Palla 1998, Include LW feedback
-    // according to Visbal 2014
-
-#if USE_MINI_HALOS
-    else {
-      halo_type = 2;
-      Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
-      log10Tvir = log10(Tvir);
-      if (Tvir >= 1e3 && gal->Mvir >= gal->MvirCrit_MC) {
-        double loglambdalim, LTEcool;
-        double nH = 1e2; // Use value of low density regime
-
-        // Identical procedure, only thing that changes is lambda!
-        t_cool = fof_group->Rvir / fof_group->Vvir; // internal units
-
-        // interpolate the temperature and metallicity dependant cooling rate (lambda)
-        LTEcool = LTE_Mcool(Tvir, nH);
-        loglambdalim = -103.0 + 97.59 * log10Tvir - 48.05 * pow(log10Tvir, 2) + 10.8 * pow(log10Tvir, 3) -
-                       0.9032 * pow(log10Tvir, 4);
-        lambda = LTEcool / (1 + (LTEcool / pow(10, loglambdalim)));
-      } else {
-        halo_type = 0;
-        cooling_mass = 0.0;
-      }
-    }
-#else
-    else {
-      halo_type = 0;
-      cooling_mass = 0.0;
-    }
-#endif
-
-    if (halo_type != 0) {
 
       x = PROTONMASS * BOLTZMANN * Tvir / lambda;              // now this has units sec g/cm^3
       x /= (units->UnitDensity_in_cgs * units->UnitTime_in_s); // now in internal units
-
-      if (halo_type == 1)
-        rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
-
-#if USE_MINI_HALOS
-      else if (halo_type == 2)
-        rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
-#endif
+      rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
 
       assert(rho_r_cool > 0);
       isothermal_norm = gal->HotGas / (4. * M_PI * fof_group->Rvir);
