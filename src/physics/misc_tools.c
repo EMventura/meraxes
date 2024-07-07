@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "debug.h"
+#include "core/debug.h"
 #include "meraxes.h"
 #include "misc_tools.h"
 #include "reionization.h"
