@@ -191,7 +191,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "Type";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_INT;*/
+    h5props->field_types[i++] = H5T_NATIVE_INT;
 
 #if USE_MINI_HALOS
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Galaxy_Population);
