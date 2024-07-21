@@ -1693,14 +1693,14 @@ void save_reion_input_grids(int snapshot)
   // fftw padded grids
   float* grid = (float*)calloc((size_t)local_nix * (size_t)ReionGridDim * (size_t)ReionGridDim, sizeof(float));
 
-  /*for (int ii = 0; ii < local_nix; ii++)
+  for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
           (grids->deltax)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
   write_grid_float("deltax", grid, file_id, fspace_id, memspace_id, dcpl_id);
 
-  for (int ii = 0; ii < local_nix; ii++)
+  /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =

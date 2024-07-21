@@ -34,18 +34,18 @@ typedef struct galaxy_output_t
   float FOFMvir;
 
   // baryonic reservoirs
-  /*float HotGas;
+  float HotGas;
   float MetalsHotGas;
   float ColdGas;
   float MetalsColdGas;
-  float H2Frac;
+  /*float H2Frac;
   float H2Mass;
   float HIMass;
   float Mcool;
-  float DiskScaleLength;
+  float DiskScaleLength;*/
   float StellarMass;
   float GrossStellarMass;
-  float Fesc;
+  /*float Fesc;
   float FescWeightedGSM;
   float MetalsStellarMass;
   float Sfr;
