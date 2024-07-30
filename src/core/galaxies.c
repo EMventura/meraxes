@@ -102,9 +102,11 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
 
   for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
     gal->NewStars[ii] = 0.0;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     gal->NewStars_II[ii] = 0.0;
     gal->NewStars_III[ii] = 0.0;
+#endif
+#if USE_MINI_HALOS
     if (run_globals.params.Flag_IncludeMetalEvo) {
       gal->Prefactor[ii] = 0.0;
       gal->Times[ii] = 0.0;
