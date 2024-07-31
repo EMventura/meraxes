@@ -46,7 +46,7 @@ double gas_cooling(galaxy_t* gal)
 #if USE_MINI_HALOS
     else {
       halo_type = 2;
-      Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
+      /*Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
       log10Tvir = log10(Tvir);
       if (Tvir >= 1e3 && gal->Mvir >= gal->MvirCrit_MC) {
         double loglambdalim, LTEcool;
@@ -63,7 +63,7 @@ double gas_cooling(galaxy_t* gal)
       } else {
         halo_type = 0;
         cooling_mass = 0.0;
-      }
+      }*/
     }
 #else
     else {
@@ -82,7 +82,8 @@ double gas_cooling(galaxy_t* gal)
 
 #if USE_MINI_HALOS
       else if (halo_type == 2)
-        rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
+        //rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
+        cooling_mass = 0.0;
 #endif
 
       assert(rho_r_cool > 0);
