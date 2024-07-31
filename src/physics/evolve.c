@@ -50,7 +50,9 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
     if (fof_group[i_fof].FirstOccupiedHalo == NULL)
       continue;
 
+    mlog("Doing infall...");
     infalling_gas = gas_infall(&(fof_group[i_fof]), snapshot);
+    mlog("...infall done!");
 
     for (int i_step = 0; i_step < NSteps; i_step++) {
       halo = fof_group[i_fof].FirstHalo;
@@ -86,9 +88,10 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             }
           }
 #endif
-
+          mlog("Doing cooling...");
           if (gal->Type == 0) {
             cooling_mass = gas_cooling(gal);
+          mlog("...cooling done!");
 
             add_infall_to_hot(
               gal, infalling_gas / ((double)NSteps)); // This function is now updated! If the gal is externally
@@ -138,8 +141,9 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             if ((gal->GrossStellarMassIII > 1e-10) && (gal->GrossStellarMass < 1e-10))
               *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
 #endif
-
+            mlog("Doing sf...");
             insitu_star_formation(gal, snapshot);
+            mlog("...sf done!");
 
 #if USE_MINI_HALOS
             if ((Flag_Metals == true) && (gal->Type < 3)) { // For gal->Type > 0 you are just letting the bubble grow
