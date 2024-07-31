@@ -109,8 +109,10 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   //for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
     //galout->NewStars[ii] = (float)(gal.NewStars[ii]);
 #if USE_MINI_HALOS
+  for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
     galout->NewStars_III[ii] = (float)(gal.NewStars_III[ii]);
     galout->NewStars_II[ii] = (float)(gal.NewStars_II[ii]);
+  }
 #endif
   //}
 
