@@ -114,7 +114,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             else
               gal->Galaxy_Population = 3;
 #endif*/
-#if USE_MINI_HALOS // Preliminar test
+/*#if USE_MINI_HALOS // Preliminar test
             if ((gal->GrossStellarMass + gal->GrossStellarMassIII) > 1e-10)
               gal->Galaxy_Population = 2;
             else {
@@ -127,8 +127,8 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             
             if ((gal->GrossStellarMassIII > 1e-10) && (gal->GrossStellarMass < 1e-10))
               *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
-#endif
-
+#endif*/
+            gal->Galaxy_Population = 2;
             insitu_star_formation(gal, snapshot);
 
 #if USE_MINI_HALOS
