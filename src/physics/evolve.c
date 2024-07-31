@@ -64,7 +64,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             gal->Galaxy_Population = 2;
           else {
             gal->Galaxy_Population = 3;
-            gal_counter_enriched = *gal_counter_enriched + 1; //Use this as non forming stars!
+            *gal_counter_enriched = *gal_counter_enriched + 1; //Use this as non forming stars!
           }
               
           if (gal->GrossStellarMass > 1e-10)
