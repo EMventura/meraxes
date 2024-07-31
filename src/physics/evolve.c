@@ -157,14 +157,17 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 
           if (i_step == NSteps - 1)
             gal_counter++;
-
+          mlog("Moving to next gal in halo...", MLOG_MESG);
           gal = gal->NextGalInHalo;
+          mlog("...done!", MLOG_MESG);
         }
-
+        mlog("Moving to next FOF...", MLOG_MESG);
         halo = halo->NextHaloInFOFGroup;
+        mlog("...done!", MLOG_MESG);
       }
 
       // Check for mergers
+      mlog("Cheking for mergers...", MLOG_MESG);
       halo = fof_group[i_fof].FirstHalo;
       while (halo != NULL) {
         gal = halo->Galaxy;
@@ -179,6 +182,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
         }
         halo = halo->NextHaloInFOFGroup;
       }
+      mlog("...done!", MLOG_MESG);
     }
   }
 
