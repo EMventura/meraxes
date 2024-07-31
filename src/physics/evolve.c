@@ -107,7 +107,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
               previous_merger_driven_BH_growth(gal);
 
 #if USE_MINI_HALOS
-            DiskMetallicity = calc_metallicity(
+            /*DiskMetallicity = calc_metallicity(
               gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal enrichment!
             if ((DiskMetallicity / 0.01) > run_globals.params.physics.ZCrit) {
               gal->Galaxy_Population = 2;
@@ -123,7 +123,20 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
                 else
                   *gal_counter_enriched = *gal_counter_enriched + 1; 
               }
+            }*/
+            //PRELIMINAR TEST FOR LATE POPIII SF: IF Already formed stars has to be PopII
+            if ((gal->GrossStellarMass + gal->GrossStellarMassIII) > 1e-10)
+              gal->Galaxy_Population = 2;
+            else {
+              gal->Galaxy_Population = 3;
+              gal_counter_enriched = *gal_counter_enriched + 1; //Use this as non forming stars!
             }
+              
+            if (gal->GrossStellarMass > 1e-10)
+              *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
+            
+            if ((gal->GrossStellarMassIII > 1e-10) && (gal->GrossStellarMass < 1e-10))
+              *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
 #endif
 
             insitu_star_formation(gal, snapshot);

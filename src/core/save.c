@@ -136,12 +136,12 @@ void calc_hdf5_props()
     galaxy_output_t galout;
     int i; // dummy
 
-    h5props->n_props = 11;
+    h5props->n_props = 12;
 #if USE_SCALING_REL
     h5props->n_props += 2;
 #endif 
 #if USE_MINI_HALOS
-    h5props->n_props += 1; // Double check later
+    h5props->n_props += 3; 
 #endif
 
 #ifdef CALC_MAGS
@@ -451,12 +451,12 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MetalsEjectedGas);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MetalsEjectedGas);
     h5props->dst_field_sizes[i] = sizeof(galout.MetalsEjectedGas);
     h5props->field_names[i] = "MetalsEjectedGas";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
 /*#if USE_MINI_HALOS
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, RmetalBubble);
@@ -568,7 +568,7 @@ void calc_hdf5_props()
     h5props->field_types[i++] = h5props->array_nhist_f_tid;*/
 
 #if USE_MINI_HALOS || USE_SCALING_REL
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, NewStars_II);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, NewStars_II);
     h5props->dst_field_sizes[i] = sizeof(galout.NewStars_II);
     h5props->field_names[i] = "NewStarsPop2";
     h5props->field_units[i] = "1e10 solMass";
@@ -582,7 +582,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = h5props->array_nhist_f_tid;
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, FescIII);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, FescIII);
     h5props->dst_field_sizes[i] = sizeof(galout.FescIII);
     h5props->field_names[i] = "FescIII";
     h5props->field_units[i] = "None";
