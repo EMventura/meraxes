@@ -373,7 +373,7 @@ void init_reion_grids()
   grids->volume_ave_TK = 0.0;
   grids->volume_ave_xe = 0.0;
   grids->volume_ave_Tb = 0.0;
-/*#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS || USE_SCALING_REL
   grids->volume_ave_J_LW = 0.0;
 #endif
 #if USE_MINI_HALOS
@@ -383,13 +383,13 @@ void init_reion_grids()
   grids->volume_ave_TKII = 0.0;
   grids->volume_ave_TSII = 0.0;
   grids->volume_ave_TbII = 0.0;
-#endif*/
+#endif
 
   for (int ii = 0; ii < slab_n_real; ii++) {
     grids->xH[ii] = 1.0;
     grids->z_at_ionization[ii] = -1;
     grids->r_bubble[ii] = 0.0;
-/*#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS || USE_SCALING_REL
     if (run_globals.params.Flag_IncludeLymanWerner) {
       grids->JLW_box[ii] = 0.0;
     }
@@ -398,7 +398,7 @@ void init_reion_grids()
     if (run_globals.params.Flag_IncludeLymanWerner) {
       grids->JLW_boxII[ii] = 0.0;
     }
-#endif*/
+#endif
     if (run_globals.params.Flag_IncludeSpinTemp) {
       grids->Tk_box[ii] = 0.0;
       grids->TS_box[ii] = 0.0;
@@ -1693,7 +1693,7 @@ void save_reion_input_grids(int snapshot)
   // fftw padded grids
   float* grid = (float*)calloc((size_t)local_nix * (size_t)ReionGridDim * (size_t)ReionGridDim, sizeof(float));
 
-  /*for (int ii = 0; ii < local_nix; ii++)
+  for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
@@ -1807,7 +1807,7 @@ void save_reion_output_grids(int snapshot)
 
   // create and write the datasets
   write_grid_float("xH", grids->xH, file_id, fspace_id, memspace_id, dcpl_id);
-  /*write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
+  write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
   write_grid_float("r_bubble", grids->r_bubble, file_id, fspace_id, memspace_id, dcpl_id);
 
   if (run_globals.params.ReionUVBFlag) {
@@ -1820,12 +1820,12 @@ void save_reion_output_grids(int snapshot)
     if (run_globals.params.Flag_IncludeLymanWerner)
       write_grid_float("Mvir_crit_MC", grids->Mvir_crit_MC, file_id, fspace_id, memspace_id, dcpl_id);
 #endif
-  }*/
+  }
 
   // fftw padded grids
   float* grid = (float*)calloc((size_t)(local_nix * ReionGridDim * ReionGridDim), sizeof(float));
 
-/*#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
     write_grid_float("JLW_box", grids->JLW_box, file_id, fspace_id, memspace_id, dcpl_id);
   }
@@ -1852,7 +1852,7 @@ void save_reion_output_grids(int snapshot)
 
     write_grid_float("x_e_box", grid, file_id, fspace_id, memspace_id, dcpl_id);
   }
-  
+
   if (run_globals.params.Flag_Compute21cmBrightTemp) {
     write_grid_float("delta_T", grids->delta_T, file_id, fspace_id, memspace_id, dcpl_id);
 #if USE_MINI_HALOS
@@ -1911,13 +1911,12 @@ void save_reion_output_grids(int snapshot)
   H5LTset_attribute_double(file_id, "xH", "mass_weighted_global_xH", &(grids->mass_weighted_global_xH), 1);
 
   if (run_globals.params.Flag_IncludeSpinTemp) {
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_TS", &(grids->volume_ave_TS), 1);
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_TK", &(grids->volume_ave_TK), 1);
+    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_TS", &(grids->volume_ave_TS), 1);
+    H5LTset_attribute_double(file_id, "Tk_box", "volume_ave_TK", &(grids->volume_ave_TK), 1);
 #if USE_MINI_HALOS
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_TSII", &(grids->volume_ave_TSII), 1);
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_TKII", &(grids->volume_ave_TKII), 1);
+    H5LTset_attribute_double(file_id, "TS_boxII", "volume_ave_TSII", &(grids->volume_ave_TSII), 1);
+    H5LTset_attribute_double(file_id, "Tk_boxII", "volume_ave_TKII", &(grids->volume_ave_TKII), 1);
 #endif
-
     H5LTset_attribute_double(file_id, "x_e_box", "volume_ave_xe", &(grids->volume_ave_xe), 1);
 
     H5LTset_attribute_double(file_id, "TS_box", "volume_ave_J_alpha", &(grids->volume_ave_J_alpha), 1);
@@ -1926,21 +1925,21 @@ void save_reion_output_grids(int snapshot)
     H5LTset_attribute_double(file_id, "TS_box", "volume_ave_Xion", &(grids->volume_ave_Xion), 1);
 
 #if USE_MINI_HALOS
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_J_alphaII", &(grids->volume_ave_J_alphaII), 1);
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_XheatII", &(grids->volume_ave_XheatII), 1);
+    H5LTset_attribute_double(file_id, "TS_boxII", "volume_ave_J_alphaII", &(grids->volume_ave_J_alphaII), 1);
+    H5LTset_attribute_double(file_id, "TS_boxII", "volume_ave_XheatII", &(grids->volume_ave_XheatII), 1);
 
 #endif
   }
 
 #if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_JLW", &(grids->volume_ave_J_LW), 1);
+    H5LTset_attribute_double(file_id, "JLW_box", "volume_ave_JLW", &(grids->volume_ave_J_LW), 1);
   }
 #endif
 
 #if USE_MINI_HALOS 
   if (run_globals.params.Flag_IncludeLymanWerner) {
-    H5LTset_attribute_double(file_id, "xH", "volume_ave_JLW_II", &(grids->volume_ave_J_LWII), 1);
+    H5LTset_attribute_double(file_id, "JLW_boxII", "volume_ave_JLW_II", &(grids->volume_ave_J_LWII), 1);
   }
 #endif
 
@@ -1951,7 +1950,7 @@ void save_reion_output_grids(int snapshot)
 #endif
   }
 
-  /*if (run_globals.params.Flag_ComputePS) {
+  if (run_globals.params.Flag_ComputePS) {
 
     // create the filespace
     hsize_t dims_PS[1] = { (hsize_t)run_globals.params.PS_Length };
@@ -2026,7 +2025,7 @@ void save_reion_output_grids(int snapshot)
     H5Pclose(plist_id);
     H5Dclose(dset_id);
 #endif
-  }*/
+  }
 
   // tidy up
   free(grid);
@@ -2273,9 +2272,8 @@ void construct_scaling_sfr(int snapshot)
               //mlog("NormIII is = %f", MLOG_MESG, NormIII);
               NormII = get_NormValue(DeltaIndex, snapshot, 2);
               if (RandomUni <= NormIII) {
-                /*if (DeltaIndex == 8) {
-                  valIII = pow(10, NormalRandNum(-4.6, SigmaMCIII)) / ConvUnit;*/
                 if (DeltaIndex == 8) {
+                  //valIII = pow(10, NormalRandNum(-4.6, SigmaMCIII)) / ConvUnit;
                   valIII = pow(10, NormalRandNum(-3.8, SigmaMCIII)) / ConvUnit;
                 }
                 else {

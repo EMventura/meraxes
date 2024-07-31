@@ -43,7 +43,7 @@ double gas_cooling(galaxy_t* gal)
     // Implement Molecular cooling using fitting of cooling curves of Galli and Palla 1998, Include LW feedback
     // according to Visbal 2014
 
-/*#if USE_MINI_HALOS
+#if USE_MINI_HALOS
     else {
       halo_type = 2;
       Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
@@ -65,12 +65,12 @@ double gas_cooling(galaxy_t* gal)
         cooling_mass = 0.0;
       }
     }
-#else*/
+#else
     else {
       halo_type = 0;
       cooling_mass = 0.0;
     }
-//#endif
+#endif
 
     if (halo_type != 0) {
 
@@ -80,10 +80,10 @@ double gas_cooling(galaxy_t* gal)
       if (halo_type == 1)
         rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
 
-/*#if USE_MINI_HALOS
+#if USE_MINI_HALOS
       else if (halo_type == 2)
         rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
-#endif*/
+#endif
 
       assert(rho_r_cool > 0);
       isothermal_norm = gal->HotGas / (4. * M_PI * fof_group->Rvir);

@@ -313,8 +313,7 @@ void dracarys()
       int ngals_in_slabs = map_galaxies_to_slabs(NGal);
       if (run_globals.params.ReionUVBFlag) {
         assign_Mvir_crit_to_galaxies(ngals_in_slabs, 1);
-
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
         if (run_globals.params.Flag_IncludeLymanWerner)
           assign_Mvir_crit_to_galaxies(ngals_in_slabs, 2);
 #endif
