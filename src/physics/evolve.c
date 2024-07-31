@@ -58,6 +58,21 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
         gal = halo->Galaxy;
 
         while (gal != NULL) {
+        
+#if USE_MINI_HALOS // Preliminar test
+          if ((gal->GrossStellarMass + gal->GrossStellarMassIII) > 1e-10)
+            gal->Galaxy_Population = 2;
+          else {
+            gal->Galaxy_Population = 3;
+            gal_counter_enriched = *gal_counter_enriched + 1; //Use this as non forming stars!
+          }
+              
+          if (gal->GrossStellarMass > 1e-10)
+            *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
+            
+          if ((gal->GrossStellarMassIII > 1e-10) && (gal->GrossStellarMass < 1e-10))
+            *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
+#endif
 
 /*#if USE_MINI_HALOS
           if (Flag_Metals ==
@@ -114,21 +129,6 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             else
               gal->Galaxy_Population = 3;
 #endif*/
-/*#if USE_MINI_HALOS // Preliminar test
-            if ((gal->GrossStellarMass + gal->GrossStellarMassIII) > 1e-10)
-              gal->Galaxy_Population = 2;
-            else {
-              gal->Galaxy_Population = 3;
-              gal_counter_enriched = *gal_counter_enriched + 1; //Use this as non forming stars!
-            }
-              
-            if (gal->GrossStellarMass > 1e-10)
-              *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
-            
-            if ((gal->GrossStellarMassIII > 1e-10) && (gal->GrossStellarMass < 1e-10))
-              *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
-#endif*/
-            gal->Galaxy_Population = 2;
             insitu_star_formation(gal, snapshot);
 
 #if USE_MINI_HALOS
