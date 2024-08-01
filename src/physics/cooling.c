@@ -16,37 +16,47 @@ double gas_cooling(galaxy_t* gal)
   // we only need to do cooling if there is anything to cool!
   if (gal->HotGas > 1e-10) {
     fof_group_t* fof_group = gal->Halo->FOFGroup;
-    int halo_type = 1; // (1 = AC, 2 = MC, 0 = None)
+    //int halo_type = 1; // (1 = AC, 2 = MC, 0 = None)
 
     // calculate the halo virial temperature and log10 metallicity value
     double Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
     double log10Tvir = log10(Tvir);
-    double logZ;
+    /*double logZ;
     double t_cool, max_cooling_mass;
     double lambda, x, rho_r_cool, r_cool, isothermal_norm;
     run_units_t* units = &(run_globals.units);
-    double max_cooling_mass_factor = run_globals.params.physics.MaxCoolingMassFactor;
+    double max_cooling_mass_factor = run_globals.params.physics.MaxCoolingMassFactor;*/
 
-    if (gal->MetalsHotGas > 0)
+    /*if (gal->MetalsHotGas > 0)
       logZ = log10(calc_metallicity(gal->HotGas, gal->MetalsHotGas));
     else
-      logZ = -10.0;
+      logZ = -10.0;*/
 
     if (Tvir >= 1e4) {
+    
+      double logZ;
+      double t_cool, max_cooling_mass;
+      double lambda, x, rho_r_cool, r_cool, isothermal_norm;
+      run_units_t* units = &(run_globals.units);
+      double max_cooling_mass_factor = run_globals.params.physics.MaxCoolingMassFactor;
+    
+      if (gal->MetalsHotGas > 0)
+        logZ = log10(calc_metallicity(gal->HotGas, gal->MetalsHotGas));
+      else
+        logZ = -10.0;
 
       t_cool = fof_group->Rvir / fof_group->Vvir; // internal units
 
       // interpolate the temperature and metallicity dependant cooling rate (lambda)
       lambda = interpolate_cooling_rate(log10Tvir, logZ);
-    }
 
     // Implement Molecular cooling using fitting of cooling curves of Galli and Palla 1998, Include LW feedback
     // according to Visbal 2014
 
-#if USE_MINI_HALOS
+/*#if USE_MINI_HALOS
     else {
       halo_type = 2;
-      /*Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
+      Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
       log10Tvir = log10(Tvir);
       if (Tvir >= 1e3 && gal->Mvir >= gal->MvirCrit_MC) {
         double loglambdalim, LTEcool;
@@ -63,28 +73,26 @@ double gas_cooling(galaxy_t* gal)
       } else {
         halo_type = 0;
         cooling_mass = 0.0;
-      }*/
+      }
     }
 #else
     else {
       halo_type = 0;
       cooling_mass = 0.0;
     }
-#endif
-
-    if (halo_type != 0) {
+#endif*/
 
       x = PROTONMASS * BOLTZMANN * Tvir / lambda;              // now this has units sec g/cm^3
       x /= (units->UnitDensity_in_cgs * units->UnitTime_in_s); // now in internal units
 
-      if (halo_type == 1)
-        rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
+      //if (halo_type == 1)
+      rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
 
-#if USE_MINI_HALOS
+/*#if USE_MINI_HALOS
       else if (halo_type == 2)
         //rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
         cooling_mass = 0.0;
-#endif
+#endif*/
 
       assert(rho_r_cool > 0);
       isothermal_norm = gal->HotGas / (4. * M_PI * fof_group->Rvir);
