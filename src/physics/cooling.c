@@ -16,7 +16,7 @@ double gas_cooling(galaxy_t* gal)
   // we only need to do cooling if there is anything to cool!
   if (gal->HotGas > 1e-10) {
     fof_group_t* fof_group = gal->Halo->FOFGroup;
-    //int halo_type = 1; // (1 = AC, 2 = MC, 0 = None)
+    int halo_type = 1; // (1 = AC, 2 = MC, 0 = None)
 
     // calculate the halo virial temperature and log10 metallicity value
     double Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
