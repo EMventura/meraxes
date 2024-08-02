@@ -10,9 +10,9 @@
 #define RECYCLING_FRACTION 0
 #define TOTAL_METAL 1
 
-// Pop III stuff (Atm ENOVA_CC and ENOVA_PISN are the same but you could change)
+// Pop III stuff (ENOVA_PISN one order of magnitude higher)
 #define ENOVA_CC 1e51
-#define ENOVA_PISN 1e51
+#define ENOVA_PISN 1e52
 
 #ifdef __cplusplus
 extern "C"
