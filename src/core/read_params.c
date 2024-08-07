@@ -811,14 +811,14 @@ void read_parameter_file(char* fname, int mode)
       required_tag[n_param] = 1;
       params_type[n_param++] = PARAM_TYPE_DOUBLE;
       
-      strncpy(params_tag[n_param], "ReionNionPhotPerBaryIII", tag_length);
+      /*strncpy(params_tag[n_param], "ReionNionPhotPerBaryIII", tag_length);
       params_addr[n_param] = &(run_params->physics).ReionNionPhotPerBaryIII;
 #if USE_SCALING_REL
       required_tag[n_param] = 1;
 #else
       required_tag[n_param] = 0;
 #endif
-      params_type[n_param++] = PARAM_TYPE_DOUBLE;
+      params_type[n_param++] = PARAM_TYPE_DOUBLE;*/
 
       strncpy(params_tag[n_param], "BlackHoleMassLimitReion", tag_length);
       params_addr[n_param] = &(run_params->physics).BlackHoleMassLimitReion;
