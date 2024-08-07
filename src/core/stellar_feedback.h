@@ -12,7 +12,7 @@
 
 // Pop III stuff (Atm ENOVA_CC and ENOVA_PISN are the same but you could change)
 #define ENOVA_CC 1e51
-#define ENOVA_PISN 1e51
+#define ENOVA_PISN 1e52
 
 #ifdef __cplusplus
 extern "C"

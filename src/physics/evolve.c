@@ -16,7 +16,7 @@
 #include <math.h>
 
 //! Evolve existing galaxies forward in time
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
 int evolve_galaxies(fof_group_t* fof_group,
                     int snapshot,
                     int NGal,
@@ -106,6 +106,13 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             if (gal->BlackHoleAccretingColdMass > 0)
               previous_merger_driven_BH_growth(gal);
 
+#if USE_SCALING_REL //New test 
+            if ((gal->MvirCrit_MC > gal->Mvir) && ((gal->GrossStellarMass + gal->GrossStellarMassIII) < 1e-10))
+              gal->Galaxy_Population = 3; 
+            else
+              gal->Galaxy_Population = 2;
+#endif
+
 #if USE_MINI_HALOS
             DiskMetallicity = calc_metallicity(
               gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal enrichment!
@@ -116,6 +123,15 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 #endif
 
             insitu_star_formation(gal, snapshot);
+
+#if USE_SCALING_REL //Add this as test
+            if (gal->NewStars_III[0] > 1e-10)
+              *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
+            if (gal->NewStars_II[0] > 1e-10)
+              *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
+            if ((gal->NewStars_III[0] + gal->NewStars_II[0]) < 1e-10)
+              *gal_counter_enriched = *gal_counter_enriched + 1; //Use this as Non SF stars
+#endif
 
 #if USE_MINI_HALOS
             if ((Flag_Metals == true) && (gal->Type < 3)) { // For gal->Type > 0 you are just letting the bubble grow
