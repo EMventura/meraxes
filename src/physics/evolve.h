@@ -8,7 +8,7 @@ extern "C"
 {
 #endif
 
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
   int evolve_galaxies(fof_group_t* fof_group,
                       int snapshot,
                       int NGal,

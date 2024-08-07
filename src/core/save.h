@@ -59,15 +59,11 @@ typedef struct galaxy_output_t
   float BlackHoleAccretedColdMass;
 
   int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
-
-#if USE_MINI_HALOS || USE_SCALING_REL
+                         // = 2)*/
+#if USE_MINI_HALOS
   float GrossStellarMassIII;
-  //float FescIII;
-  //float FescIIIWeightedGSM;
-  //float StellarMass_II;
-  //float StellarMass_III;
-  float MvirCrit_MC;
-  //float Remnant_Mass;
+  float FescIII;
+  float FescIIIWeightedGSM;
 
   float RmetalBubble;
   int Flag_ExtMetEnr;

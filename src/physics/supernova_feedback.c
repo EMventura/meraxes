@@ -200,14 +200,14 @@ static inline double calc_sn_ejection_eff(galaxy_t* gal, int snapshot, int flag_
   double SnEjectionEff;
   double SnEjectionScaling;
   double SnEjectionNorm;
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
   if (flag_population == 2) {
 #endif
     SnEjectionRedshiftDep = params->SnEjectionRedshiftDep;
     SnEjectionEff = params->SnEjectionEff;
     SnEjectionScaling = params->SnEjectionScaling;
     SnEjectionNorm = params->SnEjectionNorm;
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
   } else if (flag_population == 3) {
     SnEjectionRedshiftDep = params->SnEjectionRedshiftDep_III;
     SnEjectionEff = params->SnEjectionEff_III;
@@ -399,12 +399,12 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
     // Calculate recycled mass and metals by yield tables
     // Total yield includes H and He and all other elements
     // Total metal yield includes all elements except H and He
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
     if (gal->Galaxy_Population == 2) {
 #endif
       *m_recycled = *m_stars * get_recycling_fraction(0, metallicity);
       *new_metals = *m_stars * get_metal_yield(0, metallicity);
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
     } else if (gal->Galaxy_Population == 3) {
       *m_recycled = *m_stars * (CCSN_PopIII_Yield(0, snapshot, 0)) * MassSNII;
       *new_metals = *m_stars * CCSN_PopIII_Yield(0, snapshot, 1) * MassSNII;
@@ -418,26 +418,27 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
 #endif
   } else {
     // Recycling fraction and metals yield are input parameters when using IRA
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
     if (gal->Galaxy_Population == 2) {
 #endif
       *m_recycled = *m_stars * run_globals.params.physics.SfRecycleFraction;
       *new_metals = *m_stars * run_globals.params.physics.Yield;
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
     } else if (gal->Galaxy_Population == 3) {
       *m_recycled = *m_stars * run_globals.params.physics.SfRecycleFraction_III;
       *new_metals = *m_stars * run_globals.params.physics.Yield_III;
     }
 #endif
   }
-#if USE_MINI_HALOS || USE_SCALING_REL
+
+#if USE_MINI_HALOS
   if (gal->Galaxy_Population == 2) {
 #endif
     // calculate the SNII energy and total reheated mass
     sn_energy = *m_stars * get_SN_energy(0, metallicity);
     *m_reheat = calc_sn_reheat_eff(gal, snapshot, 2) * sn_energy / get_total_SN_energy();
     sn_energy *= calc_sn_ejection_eff(gal, snapshot, 2);
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
   } else if (gal->Galaxy_Population == 3) {
     sn_energy = (*m_stars) * (get_SN_energy_PopIII(0, snapshot, 0) + get_SN_energy_PopIII(0, snapshot, 1)); // erg
     sn_energy /= energy_unit; // Convert this because you need in internal units it for m_ejected

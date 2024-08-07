@@ -140,13 +140,12 @@ void update_galaxy_fesc_vals(galaxy_t* gal, double new_stars, int snapshot)
   else if (fesc_bh < 0.0)
     fesc_bh = 0.0;
 
-
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
   if (gal->Galaxy_Population == 2) {
     gal->Fesc = fesc;
     gal->FescWeightedGSM += new_stars * fesc;
   }
-  
+
   if (gal->Galaxy_Population == 3) {
     gal->FescIII = fescIII;
     gal->FescIIIWeightedGSM += new_stars * fescIII;
@@ -1420,7 +1419,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   {
     prop_stellar,
     prop_weighted_sfr,
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS 
     prop_stellarIII,
     prop_weighted_sfrIII,
     prop_sfrIII,
@@ -1492,7 +1491,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
               }
               break;
 
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
             case prop_stellarIII:
 
               buffer[ind] += gal->FescIIIWeightedGSM;
@@ -1556,7 +1555,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
                   weighted_sfr_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
                 }
             break;
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
           case prop_weighted_sfrIII:
             for (int ix = 0; ix < slab_nix[i_r]; ix++)
               for (int iy = 0; iy < ReionGridDim; iy++)
@@ -1726,15 +1725,15 @@ void save_reion_input_grids(int snapshot)
                   UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
   write_grid_float("weighted_sfr", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
-/*#if USE_MINI_HALOS || USE_SCALING_REL
-  for (int ii = 0; ii < local_nix; ii++)
+#if USE_MINI_HALOS || USE_SCALING_REL
+  /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
           (grids->starsIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
   write_grid_float("starsIII", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
-  /*if (run_globals.params.Flag_IncludeSpinTemp) {
+  if (run_globals.params.Flag_IncludeSpinTemp) {
     for (int ii = 0; ii < local_nix; ii++)
       for (int jj = 0; jj < ReionGridDim; jj++)
         for (int kk = 0; kk < ReionGridDim; kk++)
@@ -1742,7 +1741,7 @@ void save_reion_input_grids(int snapshot)
             (float)((grids->sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
                     UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
     write_grid_float("sfrIII", grid, file_id, fspace_id, memspace_id, dcpl_id);
-  }*/
+  }
 
   /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)

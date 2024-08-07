@@ -85,7 +85,7 @@ void dracarys()
     int merger_counter = 0;
     int new_gal_counter = 0;
     int ghost_counter = 0;
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
     int gal_counter_Pop3 = 0;     // Newly formed Pop3 Gal
     int gal_counter_Pop2 = 0;     // Newly formed Pop2 Gal
     int gal_counter_enriched = 0; // Enriched but they could be still Pop3
@@ -332,7 +332,7 @@ void dracarys()
 
     // Do the physics
     if (NGal > 0)
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
       nout_gals = evolve_galaxies(fof_group,
                                   snapshot,
                                   NGal,
@@ -417,14 +417,14 @@ void dracarys()
     mlog("Newly created galaxies            :: %d", MLOG_MESG, new_gal_counter);
     mlog("Galaxies in ghost halos           :: %d", MLOG_MESG, ghost_counter);
 
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_Pop3, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_enriched, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_Pop2, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
 
-    mlog("PopIII star forming gal           :: %d", MLOG_MESG, gal_counter_Pop3);
-    mlog("Non star forming gal              :: %d", MLOG_MESG, gal_counter_enriched);
-    mlog("PopII star forming gal            :: %d", MLOG_MESG, gal_counter_Pop2);
+    mlog("Newly formed PopIII gal           :: %d", MLOG_MESG, gal_counter_Pop3);
+    mlog("Newly formed enriched gal         :: %d", MLOG_MESG, gal_counter_enriched);
+    mlog("Newly formed PopII gal            :: %d", MLOG_MESG, gal_counter_Pop2);
 #endif
 #endif
 
