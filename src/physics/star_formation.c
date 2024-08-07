@@ -99,7 +99,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     // reservoirs due to supernova feedback.
     if (gal->StellarMass < 0)
       gal->StellarMass = 0.0;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     if (gal->StellarMass_II < 0)
       gal->StellarMass_II = 0.0;
     if (gal->StellarMass_III < 0)
@@ -125,19 +125,19 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     double m_remnant;
     double zplus1;
     double zplus1_n;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     double zplus1_n_III;
     double m_crit_III;
 #endif
 
     zplus1 = 1.0 + run_globals.ZZ[snapshot];
     zplus1_n = pow(zplus1, run_globals.params.physics.SfEfficiencyScaling);
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     zplus1_n_III = pow(zplus1, run_globals.params.physics.SfEfficiencyScaling_III);
 #endif
 
     double SfEfficiency_II = run_globals.params.physics.SfEfficiency;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     double SfEfficiency_III = run_globals.params.physics.SfEfficiency_III;
     double SfCriticalSDNorm_III = run_globals.params.physics.SfCriticalSDNorm_III;
 #endif
@@ -278,7 +278,7 @@ double pressure_dependent_star_formation(galaxy_t* gal, int snapshot)
    */
 
   double SfEfficiency_II = run_globals.params.physics.SfEfficiency;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS 
   double SfEfficiency_III = run_globals.params.physics.SfEfficiency_III;
 #endif
   double Y_He = run_globals.params.physics.Y_He;
