@@ -109,7 +109,6 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 #if USE_SCALING_REL //New test 
             if ((gal->MvirCrit_MC > gal->Mvir) && ((gal->GrossStellarMass + gal->GrossStellarMassIII) < 1e-10))
               gal->Galaxy_Population = 3; 
-          
             else
               gal->Galaxy_Population = 2;
 #endif
@@ -130,6 +129,8 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
               *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
             if (gal->NewStars_II[0] > 1e-10)
               *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
+            if ((gal->NewStars_III[0] + gal->NewStars_II[0]) < 1e-10)
+              *gal_counter_enriched = *gal_counter_enriched + 1; //Use this as Non SF stars
 #endif
 
 #if USE_MINI_HALOS

@@ -424,9 +424,9 @@ void dracarys()
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_enriched, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
     MPI_Allreduce(MPI_IN_PLACE, &gal_counter_Pop2, 1, MPI_INT, MPI_SUM, run_globals.mpi_comm);
 
-    mlog("Newly formed PopIII gal           :: %d", MLOG_MESG, gal_counter_Pop3);
-    mlog("Newly formed enriched gal         :: %d", MLOG_MESG, gal_counter_enriched);
-    mlog("Newly formed PopII gal            :: %d", MLOG_MESG, gal_counter_Pop2);
+    mlog("PopIII star forming gal           :: %d", MLOG_MESG, gal_counter_Pop3);
+    mlog("Non star forming gal              :: %d", MLOG_MESG, gal_counter_enriched);
+    mlog("PopII star forming gal            :: %d", MLOG_MESG, gal_counter_Pop2);
 #endif
 #endif
 
