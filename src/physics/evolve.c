@@ -2,7 +2,7 @@
 #include "blackhole_feedback.h"
 #include "cooling.h"
 #include "core/stellar_feedback.h"
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS
 #include "core/PopIII.h"
 #include "core/misc_tools.h"
 #include "core/virial_properties.h"
