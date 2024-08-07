@@ -90,21 +90,23 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   galout->MergerStartRadius = (float)(gal.MergerStartRadius);
   galout->MWMSA = current_mwmsa(&gal, i_snap);*/
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_SCALING_REL
   galout->GrossStellarMassIII = (float)(gal.GrossStellarMassIII);
+  galout->StellarMass_II = (float)(gal.StellarMass_II);
+  galout->StellarMass_III = (float)(gal.StellarMass_III);
+  galout->MvirCrit_MC = (float)(gal.MvirCrit_MC);
+  galout->Galaxy_Population = (int)(gal.Galaxy_Population);
+#else
   galout->FescIII = (float)(gal.FescIII);
   galout->FescIIIWeightedGSM = (float)(gal.FescIIIWeightedGSM);
 
-  /*galout->MvirCrit_MC = (float)(gal.MvirCrit_MC);
-
   galout->RmetalBubble = (float)(gal.RmetalBubble); // new for MetalEvo
-  galout->Galaxy_Population = (int)(gal.Galaxy_Population);
   galout->Flag_ExtMetEnr = (int)(gal.Flag_ExtMetEnr);
   galout->Metal_Probability = (float)(gal.Metal_Probability);
   galout->GalMetal_Probability = (float)(gal.GalMetal_Probability);
-  galout->StellarMass_II = (float)(gal.StellarMass_II);
-  galout->StellarMass_III = (float)(gal.StellarMass_III);
-  galout->Remnant_Mass = (float)(gal.Remnant_Mass);*/
+  galout->Remnant_Mass = (float)(gal.Remnant_Mass);
+#endif
 #endif
 
   //for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
@@ -136,11 +138,12 @@ void calc_hdf5_props()
     int i; // dummy
 
     h5props->n_props = 11;
+#if USE_SCALING_REL || USE_MINI_HALOS
 #if USE_SCALING_REL
-    h5props->n_props += 3;
-#endif 
-#if USE_MINI_HALOS
-    h5props->n_props += 14; // Double check later
+    h5props->n_props += 5;
+#else
+    h5props->n_props += 9; // Double check later
+#endif
 #endif
 
 #ifdef CALC_MAGS
@@ -299,12 +302,12 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, HotGas);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, HotGas);
     h5props->dst_field_sizes[i] = sizeof(galout.HotGas);
     h5props->field_names[i] = "HotGas";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MetalsHotGas);
     h5props->dst_field_sizes[i] = sizeof(galout.MetalsHotGas);
@@ -369,7 +372,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, StellarMass_II);
     h5props->dst_field_sizes[i] = sizeof(galout.StellarMass_II);
     h5props->field_names[i] = "Pop2StellarMass";
@@ -384,16 +387,19 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Remnant_Mass);
-    h5props->dst_field_sizes[i] = sizeof(galout.Remnant_Mass);
-    h5props->field_names[i] = "RemnantMass";
-    h5props->field_units[i] = "1e10 solMass";
-    h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
-
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, GrossStellarMassIII);
     h5props->dst_field_sizes[i] = sizeof(galout.GrossStellarMassIII);
     h5props->field_names[i] = "GrossStellarMassIII";
+    h5props->field_units[i] = "1e10 solMass";
+    h5props->field_h_conv[i] = "v/h";
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
+#endif
+
+#if USE_MINI_HALOS
+
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Remnant_Mass);
+    h5props->dst_field_sizes[i] = sizeof(galout.Remnant_Mass);
+    h5props->field_names[i] = "RemnantMass";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
@@ -538,7 +544,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MvirCrit_MC);
     h5props->dst_field_sizes[i] = sizeof(galout.MvirCrit_MC);
     h5props->field_names[i] = "MvirCrit_MC";
