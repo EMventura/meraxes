@@ -1694,12 +1694,12 @@ void save_reion_input_grids(int snapshot)
   // fftw padded grids
   float* grid = (float*)calloc((size_t)local_nix * (size_t)ReionGridDim * (size_t)ReionGridDim, sizeof(float));
 
-  for (int ii = 0; ii < local_nix; ii++)
+  /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
           (grids->deltax)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
-  write_grid_float("deltax", grid, file_id, fspace_id, memspace_id, dcpl_id);
+  write_grid_float("deltax", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
   /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
@@ -1808,7 +1808,7 @@ void save_reion_output_grids(int snapshot)
 
   // create and write the datasets
   write_grid_float("xH", grids->xH, file_id, fspace_id, memspace_id, dcpl_id);
-  write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
+  /*write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
   write_grid_float("r_bubble", grids->r_bubble, file_id, fspace_id, memspace_id, dcpl_id);
 
   if (run_globals.params.ReionUVBFlag) {
@@ -1817,28 +1817,27 @@ void save_reion_output_grids(int snapshot)
     write_grid_float("J_21_at_ionization", grids->J_21_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
     write_grid_float("Mvir_crit", grids->Mvir_crit, file_id, fspace_id, memspace_id, dcpl_id);
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     if (run_globals.params.Flag_IncludeLymanWerner)
       write_grid_float("Mvir_crit_MC", grids->Mvir_crit_MC, file_id, fspace_id, memspace_id, dcpl_id);
 #endif
-  }
+  }*/
 
   // fftw padded grids
   float* grid = (float*)calloc((size_t)(local_nix * ReionGridDim * ReionGridDim), sizeof(float));
 
-//#if USE_MINI_HALOS || USE_SCALING_REL
-#if USE_MINI_HALOS
+/*#if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
     write_grid_float("JLW_box", grids->JLW_box, file_id, fspace_id, memspace_id, dcpl_id);
   }
-#endif
+#endif*/
 #if USE_MINI_HALOS 
   if (run_globals.params.Flag_IncludeLymanWerner) {
     write_grid_float("JLW_boxII", grids->JLW_boxII, file_id, fspace_id, memspace_id, dcpl_id);
   }
 #endif
 
-  if (run_globals.params.Flag_IncludeSpinTemp) {
+  /*if (run_globals.params.Flag_IncludeSpinTemp) {
     write_grid_float("TS_box", grids->TS_box, file_id, fspace_id, memspace_id, dcpl_id);
     write_grid_float("Tk_box", grids->Tk_box, file_id, fspace_id, memspace_id, dcpl_id);
 #if USE_MINI_HALOS
@@ -1853,7 +1852,7 @@ void save_reion_output_grids(int snapshot)
             (grids->x_e_box_prev)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
 
     write_grid_float("x_e_box", grid, file_id, fspace_id, memspace_id, dcpl_id);
-  }
+  }*/
 
   if (run_globals.params.Flag_Compute21cmBrightTemp) {
     write_grid_float("delta_T", grids->delta_T, file_id, fspace_id, memspace_id, dcpl_id);
@@ -1933,8 +1932,7 @@ void save_reion_output_grids(int snapshot)
 #endif
   }
 
-//#if USE_MINI_HALOS || USE_SCALING_REL
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
     H5LTset_attribute_double(file_id, "JLW_box", "volume_ave_JLW", &(grids->volume_ave_J_LW), 1);
   }
