@@ -1386,8 +1386,11 @@ void evolveInt(float zp,
 
   dcomp_dzp_II = dT_comp(zp, TII, x_e);
 
-  dxheat_dzp = (dxheat_dt_GAL + dxheat_dt_III) * dt_dzp * 2.0 / 3.0 / BOLTZMANN / (1.0 + x_e);
   dxheat_dzp_II = dxheat_dt_GAL * dt_dzp * 2.0 / 3.0 / BOLTZMANN / (1.0 + x_e);
+#endif
+
+#if USE_MINI_HALOS || USE_SCALING_REL
+  dxheat_dzp = (dxheat_dt_GAL + dxheat_dt_III) * dt_dzp * 2.0 / 3.0 / BOLTZMANN / (1.0 + x_e);
 #else
   dxheat_dzp = dxheat_dt_GAL * dt_dzp * 2.0 / 3.0 / BOLTZMANN / (1.0 + x_e);
 #endif
