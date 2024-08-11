@@ -1816,7 +1816,7 @@ void save_reion_output_grids(int snapshot)
     write_grid_float("J_21_at_ionization", grids->J_21_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
     write_grid_float("Mvir_crit", grids->Mvir_crit, file_id, fspace_id, memspace_id, dcpl_id);
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
     if (run_globals.params.Flag_IncludeLymanWerner)
       write_grid_float("Mvir_crit_MC", grids->Mvir_crit_MC, file_id, fspace_id, memspace_id, dcpl_id);
 #endif
