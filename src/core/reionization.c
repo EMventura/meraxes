@@ -1807,10 +1807,10 @@ void save_reion_output_grids(int snapshot)
 
   // create and write the datasets
   write_grid_float("xH", grids->xH, file_id, fspace_id, memspace_id, dcpl_id);
-  write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
-  write_grid_float("r_bubble", grids->r_bubble, file_id, fspace_id, memspace_id, dcpl_id);
+  //write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
+  //write_grid_float("r_bubble", grids->r_bubble, file_id, fspace_id, memspace_id, dcpl_id);
 
-  if (run_globals.params.ReionUVBFlag) {
+  /*if (run_globals.params.ReionUVBFlag) {
     write_grid_float("J_21", grids->J_21, file_id, fspace_id, memspace_id, dcpl_id);
     H5LTset_attribute_double(file_id, "J_21", "volume_weighted_global_J_21", &(grids->volume_weighted_global_J_21), 1);
     write_grid_float("J_21_at_ionization", grids->J_21_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
@@ -1820,16 +1820,16 @@ void save_reion_output_grids(int snapshot)
     if (run_globals.params.Flag_IncludeLymanWerner)
       write_grid_float("Mvir_crit_MC", grids->Mvir_crit_MC, file_id, fspace_id, memspace_id, dcpl_id);
 #endif
-  }
+  }*/
 
   // fftw padded grids
   float* grid = (float*)calloc((size_t)(local_nix * ReionGridDim * ReionGridDim), sizeof(float));
 
-#if USE_MINI_HALOS || USE_SCALING_REL
+/*#if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
     write_grid_float("JLW_box", grids->JLW_box, file_id, fspace_id, memspace_id, dcpl_id);
   }
-#endif
+#endif*/
 #if USE_MINI_HALOS 
   if (run_globals.params.Flag_IncludeLymanWerner) {
     write_grid_float("JLW_boxII", grids->JLW_boxII, file_id, fspace_id, memspace_id, dcpl_id);
@@ -1844,13 +1844,13 @@ void save_reion_output_grids(int snapshot)
     write_grid_float("Tk_boxII", grids->Tk_boxII, file_id, fspace_id, memspace_id, dcpl_id);
 #endif
 
-    for (int ii = 0; ii < local_nix; ii++)
+    /*for (int ii = 0; ii < local_nix; ii++)
       for (int jj = 0; jj < ReionGridDim; jj++)
         for (int kk = 0; kk < ReionGridDim; kk++)
           grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
             (grids->x_e_box_prev)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
 
-    write_grid_float("x_e_box", grid, file_id, fspace_id, memspace_id, dcpl_id);
+    write_grid_float("x_e_box", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
   }
 
   if (run_globals.params.Flag_Compute21cmBrightTemp) {
