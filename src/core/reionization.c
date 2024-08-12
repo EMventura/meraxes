@@ -1917,7 +1917,7 @@ void save_reion_output_grids(int snapshot)
     H5LTset_attribute_double(file_id, "TS_boxII", "volume_ave_TSII", &(grids->volume_ave_TSII), 1);
     H5LTset_attribute_double(file_id, "Tk_boxII", "volume_ave_TKII", &(grids->volume_ave_TKII), 1);
 #endif
-    H5LTset_attribute_double(file_id, "x_e_box", "volume_ave_xe", &(grids->volume_ave_xe), 1);
+    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_xe", &(grids->volume_ave_xe), 1);
 
     H5LTset_attribute_double(file_id, "TS_box", "volume_ave_J_alpha", &(grids->volume_ave_J_alpha), 1);
     H5LTset_attribute_double(file_id, "TS_box", "volume_ave_xalpha", &(grids->volume_ave_xalpha), 1);
@@ -1933,7 +1933,7 @@ void save_reion_output_grids(int snapshot)
 
 #if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
-    H5LTset_attribute_double(file_id, "JLW_box", "volume_ave_JLW", &(grids->volume_ave_J_LW), 1);
+    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_JLW", &(grids->volume_ave_J_LW), 1);
   }
 #endif
 
