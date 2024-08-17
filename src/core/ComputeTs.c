@@ -696,13 +696,9 @@ void _ComputeTs(int snapshot)
           evolveInt((float)zp,
                     run_globals.reion_grids.deltax[i_padded],
                     SFR_GAL,
-                    0,
                     freq_int_heat_GAL,
                     freq_int_ion_GAL,
                     freq_int_lya_GAL,
-                    0,
-                    0,
-                    0,
                     NO_LIGHT,
                     ans,
                     dansdz);
