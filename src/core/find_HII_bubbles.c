@@ -424,9 +424,11 @@ void _find_HII_bubbles(const int snapshot)
           else if (flag_last_filter_step && (xH[i_real] > REL_TOL)) {
 #if USE_MINI_HALOS || USE_SCALING_REL
             xH[i_real] =
-              (float)(neutral_fraction - (f_coll_stars * ReionEfficiency + f_coll_starsIII * ReionEfficiencyIII));
+              //(float)(neutral_fraction - (f_coll_stars * ReionEfficiency + f_coll_starsIII * ReionEfficiencyIII));
+              (float)(electron_fraction - (f_coll_stars * ReionEfficiency + f_coll_starsIII * ReionEfficiencyIII));
 #else
-            xH[i_real] = (float)(neutral_fraction - f_coll_stars * ReionEfficiency);
+            //xH[i_real] = (float)(neutral_fraction - f_coll_stars * ReionEfficiency);
+            xH[i_real] = (float)(electron_fraction - f_coll_stars * ReionEfficiency);
 #endif
             if (xH[i_real] < 0.) {
               xH[i_real] = (float)0.;
