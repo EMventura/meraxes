@@ -87,7 +87,7 @@ void _ComputeTs(int snapshot)
 
   double dt_dzpp_list[TsNumFilterSteps];
 
-  double ans[3], dansdz[20], xHII_call;
+  double ans[2], dansdz[20], xHII_call;
   double SFR_GAL[TsNumFilterSteps];
 
 #if USE_MINI_HALOS || USE_SCALING_REL
@@ -136,8 +136,13 @@ void _ComputeTs(int snapshot)
 
   x_e_ave = 0.0;
 
-  double J_alpha_ave, xalpha_ave, Xheat_ave, Xion_ave, J_LW_ave;
-  J_alpha_ave = xalpha_ave = Xheat_ave = Xion_ave = J_LW_ave = 0.0;
+  double J_alpha_ave, xalpha_ave, Xheat_ave, Xion_ave;
+  J_alpha_ave = xalpha_ave = Xheat_ave = Xion_ave = 0.0;
+  
+#if USE_MINI_HALOS || USE_SCALING_RE
+  double J_LW_ave;
+  J_LW_ave = 0.0;
+#endif
 
 #if USE_MINI_HALOS 
   double J_alpha_aveII, xalpha_aveII, Xheat_aveII, J_LW_aveII;

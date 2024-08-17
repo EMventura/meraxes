@@ -273,10 +273,11 @@ void call_find_HII_bubbles(int snapshot, int nout_gals, timer_info* timer)
 #endif
 
     // save the grids prior to doing FFTs to avoid precision loss and aliasing etc.
-    for (int i_out = 0; i_out < run_globals.NOutputSnaps; i_out++)
+    for (int i_out = 0; i_out < run_globals.NOutputSnaps; i_out++){
       if (snapshot == run_globals.ListOutputSnaps[i_out] && run_globals.params.Flag_OutputGrids &&
           !run_globals.params.FlagMCMC)
         save_reion_input_grids(snapshot);
+    }
   }
 
   mlog("...done", MLOG_CLOSE);
@@ -1613,11 +1614,11 @@ void construct_baryon_grids(int snapshot, int local_ngals)
             ABORT(EXIT_FAILURE);
         }
     }
-    MPI_Allreduce(MPI_IN_PLACE, &N_BlackHoleMassLimitReion, 1, MPI_LONG, MPI_SUM, run_globals.mpi_comm);
+    /*MPI_Allreduce(MPI_IN_PLACE, &N_BlackHoleMassLimitReion, 1, MPI_LONG, MPI_SUM, run_globals.mpi_comm);
     mlog("%d quasars are smaller than %g",
          MLOG_MESG,
          N_BlackHoleMassLimitReion,
-         run_globals.params.physics.BlackHoleMassLimitReion);
+         run_globals.params.physics.BlackHoleMassLimitReion);*/
   }
 
   mlog("done", MLOG_CLOSE | MLOG_TIMERSTOP);
