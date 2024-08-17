@@ -19,8 +19,8 @@ void update_galaxy_fesc_vals(galaxy_t* gal, double new_stars, int snapshot)
 {
   physics_params_t* params = &(run_globals.params.physics);
 
-  float fesc_bh = (float)(params->EscapeFracBHNorm *
-                          (powf((float)((1.0 + run_globals.ZZ[snapshot]) / 6.0), (float)params->EscapeFracBHScaling)));
+  //float fesc_bh = (float)(params->EscapeFracBHNorm *
+  //                        (powf((float)((1.0 + run_globals.ZZ[snapshot]) / 6.0), (float)params->EscapeFracBHScaling)));
 
   double fesc = params->EscapeFracNorm;
 #if USE_MINI_HALOS 
@@ -135,10 +135,10 @@ void update_galaxy_fesc_vals(galaxy_t* gal, double new_stars, int snapshot)
     fescIII = 0.0;
 #endif
 
-  if (fesc_bh > 1.0)
+  /*if (fesc_bh > 1.0)
     fesc_bh = 1.0;
   else if (fesc_bh < 0.0)
-    fesc_bh = 0.0;
+    fesc_bh = 0.0;*/
 
 #if USE_MINI_HALOS
   if (gal->Galaxy_Population == 2) {
@@ -164,7 +164,7 @@ void update_galaxy_fesc_vals(galaxy_t* gal, double new_stars, int snapshot)
   // here.  It's confusing I know.  I intend to re-write this to make things
   // more obvious at some point in the future.
   // TODO(smutch): Check this all out and ensure that it is valid for reidentified ghosts
-  gal->FescBH = fesc_bh;
+  //gal->FescBH = fesc_bh;
 }
 
 void set_quasar_fobs()
@@ -1439,7 +1439,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
 
     int i_gal = 0;
     int skipped_gals = 0;
-    long N_BlackHoleMassLimitReion = 0;
+    //long N_BlackHoleMassLimitReion = 0;
 
     for (int i_r = 0; i_r < run_globals.mpi_size; i_r++) {
       // init the buffer
@@ -1483,12 +1483,12 @@ void construct_baryon_grids(int snapshot, int local_ngals)
 
               buffer[ind] += gal->FescWeightedGSM; // Only Pop II
               // a trick to include quasar radiation using current 21cmFAST code
-              if (run_globals.params.physics.Flag_BHFeedback) {
+              /*if (run_globals.params.physics.Flag_BHFeedback) {
                 if (gal->BlackHoleMass >= run_globals.params.physics.BlackHoleMassLimitReion)
                   buffer[ind] += gal->EffectiveBHM;
                 else
                   N_BlackHoleMassLimitReion += 1;
-              }
+              }*/
               break;
 
 #if USE_MINI_HALOS
@@ -1514,10 +1514,10 @@ void construct_baryon_grids(int snapshot, int local_ngals)
               buffer[ind] += (gal->FescWeightedGSM);
               // for ionizing_source_formation_rate_grid, need further convertion due to different UV spectral index of
               // quasar and stellar component
-              if (run_globals.params.physics.Flag_BHFeedback)
+              /*if (run_globals.params.physics.Flag_BHFeedback)
                 if (gal->BlackHoleMass >= run_globals.params.physics.BlackHoleMassLimitReion)
                   buffer[ind] += gal->EffectiveBHM * run_globals.params.physics.ReionAlphaUVBH /
-                                 run_globals.params.physics.ReionAlphaUV;
+                                 run_globals.params.physics.ReionAlphaUV;*/
               break;
 
             case prop_sfr:
