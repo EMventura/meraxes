@@ -187,7 +187,7 @@ extern "C"
                  const double freq_int_heat_III[],
                  const double freq_int_ion_III[],
                  const double freq_int_lya_III[],
-                 int COMPUTE_Ts,
+                 //int COMPUTE_Ts,
                  const double y[],
                  double deriv[]);
 #else
@@ -197,7 +197,7 @@ extern "C"
                  const double freq_int_heat_GAL[],
                  const double freq_int_ion_GAL[],
                  const double freq_int_lya_GAL[],
-                 int COMPUTE_Ts,
+                 //int COMPUTE_Ts,
                  const double y[],
                  double deriv[]);
 #endif

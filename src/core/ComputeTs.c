@@ -50,7 +50,7 @@ void _ComputeTs(int snapshot)
     prev_redshift = run_globals.ZZ[snapshot - 1];
   }
 
-  int i_real, i_padded, i_smoothedSFR, R_ct, x_e_ct, n_ct, m_xHII_low, m_xHII_high, NO_LIGHT;
+  int i_real, i_padded, i_smoothedSFR, R_ct, x_e_ct, n_ct, m_xHII_low, m_xHII_high; //, NO_LIGHT;
 
   double prev_zpp, prev_R, zpp, zp, lower_int_limit_GAL, filling_factor_of_HI_zp, R_factor, R, nuprime, dzp,
     Luminosity_converstion_factor_GAL;
@@ -364,7 +364,7 @@ void _ComputeTs(int snapshot)
 
     // A condition (defined by whether or not there are stars) for evaluating the heating/ionisation integrals
     // if (collapse_fraction > 0.0) {
-#if USE_MINI_HALOS || USE_SCALING_REL
+/*#if USE_MINI_HALOS || USE_SCALING_REL
     if ((collapse_fraction + collapse_fractionIII) > 0.0) {
 #else
     if (collapse_fraction > 0.0) {
@@ -372,7 +372,7 @@ void _ComputeTs(int snapshot)
       NO_LIGHT = 0;
     } else {
       NO_LIGHT = 1;
-    }
+    }*/
 
     // Populate the initial ionisation/heating tables
     for (R_ct = 0; R_ct < TsNumFilterSteps; R_ct++) {
@@ -694,7 +694,7 @@ void _ComputeTs(int snapshot)
                     freq_int_heat_III,
                     freq_int_ion_III,
                     freq_int_lya_III,
-                    NO_LIGHT,
+                    //NO_LIGHT,
                     ans,
                     dansdz);
 #else
@@ -704,7 +704,7 @@ void _ComputeTs(int snapshot)
                     freq_int_heat_GAL,
                     freq_int_ion_GAL,
                     freq_int_lya_GAL,
-                    NO_LIGHT,
+                    //NO_LIGHT,
                     ans,
                     dansdz);
 #endif
