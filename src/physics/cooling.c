@@ -124,7 +124,7 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   cooling_metals = cooling_mass * calc_metallicity(gal->HotGas, gal->MetalsHotGas);
 
   // save the cooling mass
-  gal->Mcool = cooling_mass;
+  //gal->Mcool = cooling_mass;
 
   // update the galaxy reservoirs
   gal->HotGas -= cooling_mass;

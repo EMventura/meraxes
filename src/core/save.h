@@ -22,7 +22,7 @@ typedef struct galaxy_output_t
   int CentralGal;
   int GhostFlag;
   int Len;
-  int MaxLen;
+  //int MaxLen;
 
   float Pos[3];
   float Vel[3];
@@ -47,9 +47,9 @@ typedef struct galaxy_output_t
   float GrossStellarMass;
   float Fesc;
   float FescWeightedGSM;
-  float MetalsStellarMass;
+  float MetalsStellarMass;*/
   float Sfr;
-  float EjectedGas;
+  /*float EjectedGas;
   float MetalsEjectedGas;
   float BlackHoleMass;
   float FescBH;

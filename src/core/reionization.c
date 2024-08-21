@@ -1088,11 +1088,11 @@ void free_reionization_grids()
   fftwf_free(grids->z_at_ionization);
   fftwf_free(grids->xH);
 
-  fftwf_destroy_plan(grids->weighted_sfr_filtered_reverse_plan);
+  /*fftwf_destroy_plan(grids->weighted_sfr_filtered_reverse_plan);
   fftwf_destroy_plan(grids->weighted_sfr_forward_plan);
   fftwf_free(grids->weighted_sfr_filtered);
   fftwf_free(grids->weighted_sfr_unfiltered);
-  fftwf_free(grids->weighted_sfr);
+  fftwf_free(grids->weighted_sfr);*/ // REMOVE THIS LINE TO TEST AGAINST BALU'S VERSION
 
   fftwf_destroy_plan(grids->deltax_filtered_reverse_plan);
   fftwf_destroy_plan(grids->deltax_forward_plan);
@@ -1837,13 +1837,13 @@ void save_reion_output_grids(int snapshot)
   }
 #endif
 
-  if (run_globals.params.Flag_IncludeSpinTemp) {
+  /*if (run_globals.params.Flag_IncludeSpinTemp) {
     write_grid_float("TS_box", grids->TS_box, file_id, fspace_id, memspace_id, dcpl_id);
     write_grid_float("Tk_box", grids->Tk_box, file_id, fspace_id, memspace_id, dcpl_id);
 #if USE_MINI_HALOS
     write_grid_float("TS_boxII", grids->TS_boxII, file_id, fspace_id, memspace_id, dcpl_id);
     write_grid_float("Tk_boxII", grids->Tk_boxII, file_id, fspace_id, memspace_id, dcpl_id);
-#endif
+#endif*/
 
     /*for (int ii = 0; ii < local_nix; ii++)
       for (int jj = 0; jj < ReionGridDim; jj++)
@@ -1912,18 +1912,18 @@ void save_reion_output_grids(int snapshot)
   H5LTset_attribute_double(file_id, "xH", "mass_weighted_global_xH", &(grids->mass_weighted_global_xH), 1);
 
   if (run_globals.params.Flag_IncludeSpinTemp) {
-    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_TS", &(grids->volume_ave_TS), 1);
-    H5LTset_attribute_double(file_id, "Tk_box", "volume_ave_TK", &(grids->volume_ave_TK), 1);
+    H5LTset_attribute_double(file_id, "xH", "volume_ave_TS", &(grids->volume_ave_TS), 1);
+    H5LTset_attribute_double(file_id, "xH", "volume_ave_TK", &(grids->volume_ave_TK), 1);
 #if USE_MINI_HALOS
     H5LTset_attribute_double(file_id, "TS_boxII", "volume_ave_TSII", &(grids->volume_ave_TSII), 1);
     H5LTset_attribute_double(file_id, "Tk_boxII", "volume_ave_TKII", &(grids->volume_ave_TKII), 1);
 #endif
-    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_xe", &(grids->volume_ave_xe), 1);
+    H5LTset_attribute_double(file_id, "xH", "volume_ave_xe", &(grids->volume_ave_xe), 1);
 
-    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_J_alpha", &(grids->volume_ave_J_alpha), 1);
-    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_xalpha", &(grids->volume_ave_xalpha), 1);
-    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_Xheat", &(grids->volume_ave_Xheat), 1);
-    H5LTset_attribute_double(file_id, "TS_box", "volume_ave_Xion", &(grids->volume_ave_Xion), 1);
+    H5LTset_attribute_double(file_id, "xH", "volume_ave_J_alpha", &(grids->volume_ave_J_alpha), 1);
+    H5LTset_attribute_double(file_id, "xH", "volume_ave_xalpha", &(grids->volume_ave_xalpha), 1);
+    H5LTset_attribute_double(file_id, "xH", "volume_ave_Xheat", &(grids->volume_ave_Xheat), 1);
+    H5LTset_attribute_double(file_id, "xH", "volume_ave_Xion", &(grids->volume_ave_Xion), 1);
 
 #if USE_MINI_HALOS
     H5LTset_attribute_double(file_id, "TS_boxII", "volume_ave_J_alphaII", &(grids->volume_ave_J_alphaII), 1);
