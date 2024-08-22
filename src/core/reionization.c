@@ -1851,8 +1851,8 @@ void save_reion_output_grids(int snapshot)
           grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
             (grids->x_e_box_prev)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
 
-    write_grid_float("x_e_box", grid, file_id, fspace_id, memspace_id, dcpl_id);
-  }*/
+    write_grid_float("x_e_box", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
+  }
 
   if (run_globals.params.Flag_Compute21cmBrightTemp) {
     write_grid_float("delta_T", grids->delta_T, file_id, fspace_id, memspace_id, dcpl_id);
