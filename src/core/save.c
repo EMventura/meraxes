@@ -62,9 +62,9 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   galout->H2Frac = (float)(gal.H2Frac);
   galout->H2Mass = (float)(gal.H2Mass);
   galout->HIMass = (float)(gal.HIMass);
-  galout->Mcool = (float)(gal.Mcool);
+  galout->Mcool = (float)(gal.Mcool);*/
   galout->StellarMass = (float)(gal.StellarMass);
-  galout->GrossStellarMass = (float)(gal.GrossStellarMass);
+  /*galout->GrossStellarMass = (float)(gal.GrossStellarMass);
   galout->Fesc = (float)(gal.Fesc);
   galout->FescWeightedGSM = (float)(gal.FescWeightedGSM);
   galout->BlackHoleMass = (float)(gal.BlackHoleMass);
@@ -73,8 +73,8 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   galout->EffectiveBHM = (float)(gal.EffectiveBHM);
   galout->BlackHoleAccretedHotMass = (float)(gal.BlackHoleAccretedHotMass);
   galout->BlackHoleAccretedColdMass = (float)(gal.BlackHoleAccretedColdMass);
-  galout->DiskScaleLength = (float)(gal.DiskScaleLength);*/
-  galout->MetalsStellarMass = (float)(gal.MetalsStellarMass);
+  galout->DiskScaleLength = (float)(gal.DiskScaleLength);
+  galout->MetalsStellarMass = (float)(gal.MetalsStellarMass);*/
   galout->Sfr = (float)(gal.Sfr * units->UnitMass_in_g / units->UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
   galout->EjectedGas = (float)(gal.EjectedGas);
   /*galout->MetalsEjectedGas = (float)(gal.MetalsEjectedGas);
