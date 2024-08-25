@@ -54,9 +54,9 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   /*galout->Rvir = (float)(gal.Rvir);
   galout->Vvir = (float)(gal.Vvir);
   galout->Vmax = (float)(gal.Vmax);
-  galout->Spin = (float)(gal.Spin);
+  galout->Spin = (float)(gal.Spin);*/
   galout->HotGas = (float)(gal.HotGas);
-  galout->MetalsHotGas = (float)(gal.MetalsHotGas);*/
+  //galout->MetalsHotGas = (float)(gal.MetalsHotGas);
   galout->ColdGas = (float)(gal.ColdGas);
   /*galout->MetalsColdGas = (float)(gal.MetalsColdGas);
   galout->H2Frac = (float)(gal.H2Frac);
