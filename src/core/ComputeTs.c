@@ -139,7 +139,7 @@ void _ComputeTs(int snapshot)
   double J_alpha_ave, xalpha_ave, Xheat_ave, Xion_ave;
   J_alpha_ave = xalpha_ave = Xheat_ave = Xion_ave = 0.0;
   
-#if USE_MINI_HALOS || USE_SCALING_RE
+#if USE_MINI_HALOS || USE_SCALING_REL
   double J_LW_ave;
   J_LW_ave = 0.0;
 #endif

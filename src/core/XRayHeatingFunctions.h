@@ -176,7 +176,7 @@ extern "C"
 
   double interpolate_fcoll(double redshift, int snap_i, int flag_population);
 
-#if USE_MINI_HALOS || USE_SCALING_RELATION 
+#if USE_MINI_HALOS || USE_SCALING_REL
   void evolveInt(float zp,
                  float curr_delNL0,
                  const double SFR_GAL[],
