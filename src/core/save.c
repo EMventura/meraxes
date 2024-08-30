@@ -439,14 +439,14 @@ void calc_hdf5_props()
 #endif
 #endif
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, EjectedGas);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, EjectedGas);
     h5props->dst_field_sizes[i] = sizeof(galout.EjectedGas);
     h5props->field_names[i] = "EjectedGas";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MetalsEjectedGas);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, MetalsEjectedGas);
     h5props->dst_field_sizes[i] = sizeof(galout.MetalsEjectedGas);
     h5props->field_names[i] = "MetalsEjectedGas";
     h5props->field_units[i] = "1e10 solMass";
