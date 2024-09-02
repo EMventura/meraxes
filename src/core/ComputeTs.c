@@ -704,7 +704,7 @@ void _ComputeTs(int snapshot)
                     freq_int_heat_GAL,
                     freq_int_ion_GAL,
                     freq_int_lya_GAL,
-                    //NO_LIGHT,
+                    NO_LIGHT,
                     ans,
                     dansdz);
 #endif
