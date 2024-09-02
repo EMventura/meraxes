@@ -694,7 +694,7 @@ void _ComputeTs(int snapshot)
                     freq_int_heat_III,
                     freq_int_ion_III,
                     freq_int_lya_III,
-                    //NO_LIGHT,
+                    NO_LIGHT,
                     ans,
                     dansdz);
 #else
