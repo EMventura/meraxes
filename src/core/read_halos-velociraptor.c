@@ -110,10 +110,10 @@ void read_trees__velociraptor(int snapshot,
   {
     long ForestID;
     long Head;
-    //long Tail;
+    long Tail;
     long hostHaloID;
     float Mass_200crit;
-    //double Mass_FOF;
+    double Mass_FOF;
     float Mass_tot;
     float R_200crit;
     float Vmax;
@@ -124,9 +124,9 @@ void read_trees__velociraptor(int snapshot,
     float VYc;
     float VZc;
     float AngMom;
-    //double Lx;
-    //double Ly;
-    //double Lz;
+    double Lx;
+    double Ly;
+    double Lz;
     unsigned long ID;
     unsigned long npart;
   } tree_entry_t;
@@ -206,10 +206,10 @@ void read_trees__velociraptor(int snapshot,
 
       READ_TREE_ENTRY_PROP(ForestID, long, H5T_NATIVE_LONG);
       READ_TREE_ENTRY_PROP(Head, long, H5T_NATIVE_LONG);
-      //READ_TREE_ENTRY_PROP(Tail, long, H5T_NATIVE_LONG);
+      READ_TREE_ENTRY_PROP(Tail, long, H5T_NATIVE_LONG);
       READ_TREE_ENTRY_PROP(hostHaloID, long, H5T_NATIVE_LONG);
       READ_TREE_ENTRY_PROP(Mass_200crit, float, H5T_NATIVE_FLOAT);
-      //READ_TREE_ENTRY_PROP(Mass_FOF, double, H5T_NATIVE_DOUBLE);
+      READ_TREE_ENTRY_PROP(Mass_FOF, double, H5T_NATIVE_DOUBLE);
       READ_TREE_ENTRY_PROP(Mass_tot, float, H5T_NATIVE_FLOAT);
       READ_TREE_ENTRY_PROP(R_200crit, float, H5T_NATIVE_FLOAT);
       READ_TREE_ENTRY_PROP(Vmax, float, H5T_NATIVE_FLOAT);
@@ -220,9 +220,9 @@ void read_trees__velociraptor(int snapshot,
       READ_TREE_ENTRY_PROP(VYc, float, H5T_NATIVE_FLOAT);
       READ_TREE_ENTRY_PROP(VZc, float, H5T_NATIVE_FLOAT);
       READ_TREE_ENTRY_PROP(AngMom, float, H5T_NATIVE_FLOAT);
-      //READ_TREE_ENTRY_PROP(Lx, double, H5T_NATIVE_DOUBLE);
-      //READ_TREE_ENTRY_PROP(Ly, double, H5T_NATIVE_DOUBLE);
-      //READ_TREE_ENTRY_PROP(Lz, double, H5T_NATIVE_DOUBLE);
+      READ_TREE_ENTRY_PROP(Lx, double, H5T_NATIVE_DOUBLE);
+      READ_TREE_ENTRY_PROP(Ly, double, H5T_NATIVE_DOUBLE);
+      READ_TREE_ENTRY_PROP(Lz, double, H5T_NATIVE_DOUBLE);
       READ_TREE_ENTRY_PROP(ID, unsigned long, H5T_NATIVE_ULONG);
       READ_TREE_ENTRY_PROP(npart, unsigned long, H5T_NATIVE_ULONG);
 
@@ -231,10 +231,10 @@ void read_trees__velociraptor(int snapshot,
 
       double hubble_h = run_globals.params.Hubble_h;
       for (int ii = 0; ii < n_to_read; ii++) {
-        //tree_entries[ii].Mass_200crit *= hubble_h * mass_unit_to_internal;
-        //tree_entries[ii].Mass_FOF *= hubble_h * mass_unit_to_internal;
-        //tree_entries[ii].Mass_tot *= hubble_h * mass_unit_to_internal;
-        //tree_entries[ii].R_200crit *= hubble_h;
+        tree_entries[ii].Mass_200crit *= hubble_h * mass_unit_to_internal;
+        tree_entries[ii].Mass_FOF *= hubble_h * mass_unit_to_internal;
+        tree_entries[ii].Mass_tot *= hubble_h * mass_unit_to_internal;
+        tree_entries[ii].R_200crit *= hubble_h;
         tree_entries[ii].Xc *= hubble_h / scale_factor;
         tree_entries[ii].Yc *= hubble_h / scale_factor;
         tree_entries[ii].Zc *= hubble_h / scale_factor;
@@ -242,9 +242,9 @@ void read_trees__velociraptor(int snapshot,
         tree_entries[ii].VYc /= scale_factor;
         tree_entries[ii].VZc /= scale_factor;
         tree_entries[ii].AngMom *= hubble_h * hubble_h * mass_unit_to_internal;
-        //tree_entries[ii].Lx *= hubble_h * hubble_h * mass_unit_to_internal;
-        //tree_entries[ii].Ly *= hubble_h * hubble_h * mass_unit_to_internal;
-        //tree_entries[ii].Lz *= hubble_h * hubble_h * mass_unit_to_internal;
+        tree_entries[ii].Lx *= hubble_h * hubble_h * mass_unit_to_internal;
+        tree_entries[ii].Ly *= hubble_h * hubble_h * mass_unit_to_internal;
+        tree_entries[ii].Lz *= hubble_h * hubble_h * mass_unit_to_internal;
 
 
         // TEMPORARY HACK
@@ -287,15 +287,13 @@ void read_trees__velociraptor(int snapshot,
         tree_entry_t tree_entry = tree_entries[ii];
         halo_t* halo = &(halos[*n_halos]);
 
-        //halo->ID = (unsigned long)tree_entry.ID + (unsigned long)snapshot * 1e12l;
         halo->ID = tree_entry.ID;
         halo->DescIndex = id_to_ind(tree_entry.Head);
 
         if (run_globals.params.FlagIgnoreProgIndex)
           halo->ProgIndex = -1;
         else
-          halo->ProgIndex = tree_entry.ID-1;
-          //halo->ProgIndex = id_to_ind(tree_entry.Tail);
+          halo->ProgIndex = id_to_ind(tree_entry.Tail);
 
         halo->NextHaloInFOFGroup = NULL;
         halo->Type = tree_entry.hostHaloID == -1 ? 0 : 1;
@@ -328,8 +326,7 @@ void read_trees__velociraptor(int snapshot,
             // proxy masses, but flag this fact so we know not to do
             // any or allow any hot halo to exist.
             halo->TreeFlags |= TREE_CASE_BELOW_VIRIAL_THRESHOLD;
-            //fof_group->Mvir = tree_entry.Mass_FOF;
-            fof_group->Mvir = (double)tree_entry.Mass_tot * run_globals.params.Hubble_h * mass_unit_to_internal;
+            fof_group->Mvir = tree_entry.Mass_FOF;
             fof_group->Rvir = -1;
             // } else if (tree_entry.Mass_200crit < tree_entry.Mass_tot){
             // // The central subhalo has a proxy mass larger than the FOF
@@ -340,8 +337,8 @@ void read_trees__velociraptor(int snapshot,
             // fof_group->Mvir = tree_entry.Mass_FOF;
             // fof_group->Rvir = -1;
           } else {
-              fof_group->Mvir = (double)tree_entry.Mass_200crit * run_globals.params.Hubble_h * mass_unit_to_internal;
-              fof_group->Rvir = (double)tree_entry.R_200crit * run_globals.params.Hubble_h;
+              fof_group->Mvir = (double)tree_entry.Mass_200crit;
+              fof_group->Rvir = (double)tree_entry.R_200crit;
           }
           fof_group->Vvir = -1;
           //fof_group->FOFMvirModifier = 1.0;
@@ -358,8 +355,7 @@ void read_trees__velociraptor(int snapshot,
           // seem to appear before their subhalos (checked below) in the
           // trees to immediately connect FOF group members.
           int host_index = id_to_ind(tree_entry.hostHaloID);
-          //int host_index = tree_entry.hostHaloID-1;
-
+          
           if (index_lookup)
             host_index = find_original_index(host_index, index_lookup, *n_halos);
 
@@ -385,7 +381,7 @@ void read_trees__velociraptor(int snapshot,
         halo->Vmax = tree_entry.Vmax;
 
         // TODO: What masses and radii should I use for satellites (inclusive vs. exclusive etc.)?
-        halo->Mvir = (double)tree_entry.Mass_tot * run_globals.params.Hubble_h * mass_unit_to_internal;
+        halo->Mvir = (double)tree_entry.Mass_tot;
         halo->Rvir = -1;
         halo->Vvir = -1;
         convert_input_virial_props(&halo->Mvir, &halo->Rvir, &halo->Vvir, -1, snapshot);
