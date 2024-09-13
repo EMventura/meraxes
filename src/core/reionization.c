@@ -321,7 +321,7 @@ void call_ComputeTs(int snapshot, int nout_gals, timer_info* timer)
   construct_scaling_sfr(snapshot);
 #endif
 
-  // read in the velocity grids (only works for GBPTREES_TREES at the moment)
+  // read in the velocity grids
   if (run_globals.params.Flag_IncludePecVelsFor21cm > 0) {
     read_grid(run_globals.params.TsVelocityComponent, snapshot, grids->vel);
   }
@@ -2158,7 +2158,7 @@ void filter(fftwf_complex* box, int local_ix_start, int slab_nx, int grid_dim, f
   } // End looping through k box
 }
 
-void velocity_gradient(fftwf_complex* box, int local_ix_start, int slab_nx, int grid_dim)
+void velocity_gradient(fftwf_complex* box, int slab_nx, int grid_dim)
 {
   int middle = grid_dim / 2;
   float box_size = (float)run_globals.params.BoxSize;
