@@ -239,7 +239,6 @@ void read_trees__velociraptor(int snapshot,
         tree_entries[ii].VXc /= scale_factor;
         tree_entries[ii].VYc /= scale_factor;
         tree_entries[ii].VZc /= scale_factor;
-        tree_entries[ii].AngMom *= hubble_h * hubble_h * mass_unit_to_internal;
         tree_entries[ii].Lx *= hubble_h * hubble_h * mass_unit_to_internal;
         tree_entries[ii].Ly *= hubble_h * hubble_h * mass_unit_to_internal;
         tree_entries[ii].Lz *= hubble_h * hubble_h * mass_unit_to_internal;
