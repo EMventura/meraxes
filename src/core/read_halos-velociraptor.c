@@ -622,12 +622,8 @@ void read_trees__velociraptor_aug(int snapshot,
           fof_group->Vvir = -1;
           //fof_group->FOFMvirModifier = 1.0;
           
-
-          //convert_input_virial_props(
-          //  &fof_group->Mvir, &fof_group->Rvir, &fof_group->Vvir, &fof_group->FOFMvirModifier, -1, snapshot, true);
+          convert_input_virial_props(&fof_group->Mvir, &fof_group->Rvir, &fof_group->Vvir, -1, snapshot);
           
-          convert_input_virial_props(&halo->Mvir, &halo->Rvir, &halo->Vvir, -1, snapshot);
-
           halo->FOFGroup = &(fof_groups[*n_fof_groups]);
           fof_groups[(*n_fof_groups)++].FirstHalo = halo;
         } else {
