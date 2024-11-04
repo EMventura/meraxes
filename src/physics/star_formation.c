@@ -41,6 +41,17 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
   if (new_stars > 0) {
     double metallicity;
     bool Flag_IRA = (bool)(run_globals.params.physics.Flag_IRA);
+    
+#if USE_2DISK_MODEL
+    // This is the star forming region. Note that the factor 3.0 here could mess things 
+    gal->Rstar = gal->DiskScaleLength * 3.0; 
+    
+    // Combine the 2 gas reservoirs
+    gal->ColdGasD1 += gal->ColdGasD2
+    gal->ColdGasD2 = 0.0;
+    gal->MetalsColdGasD1 += gal->MetalsColdGasD2;
+    gal->MetalsColdGasD2 = 0.0;
+#endif
 
     // instantaneous recycling approximation of stellar mass
     metallicity = calc_metallicity(gal->ColdGas, gal->MetalsColdGas);
@@ -52,6 +63,10 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
 
     gal->ColdGas -= new_stars;
     gal->MetalsColdGas -= new_stars * metallicity;
+#if USE_2DISK_MODEL
+    gal->ColdGasD1 -= new_stars;
+    gal->MetalsColdGasD1 -= new_stars * metallicity;
+#endif
     gal->StellarMass += new_stars;
     gal->MetalsStellarMass += new_stars * metallicity;
 
@@ -117,6 +132,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     double v_disk;
     double m_crit;
     double m_stars;
+    double m_starstot;
     double m_reheat;
     double m_eject;
     double m_recycled;
@@ -127,6 +143,12 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
 #if USE_MINI_HALOS
     double zplus1_n_III;
     double m_crit_III;
+#endif
+#if USE_2DISK_MODEL
+    double m_stars2;
+    double m_reheat2;
+    double m_eject2;
+    double m_recycled2;
 #endif
 
     zplus1 = 1.0 + run_globals.ZZ[snapshot];
@@ -192,6 +214,21 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         // GALFORM
         m_stars = gal->ColdGas / (r_disk / v_disk / 0.029 * pow(200. / v_disk, 1.5)) * gal->dt;
         break;
+        
+      case 4:
+        // 2 Disk Model (in the future raise a warning)
+        // Assume just Pop. II atm
+        m_crit = SfCriticalSDNorm * v_disk * r_disk;
+        double fracNonSFGas = m_crit / gal->ColdGas;
+        if (gal->ColdGas > m_crit) {
+          m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+          m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+        }
+
+        else
+          // no star formation
+          return;
+        break;
 
       default:
         m_stars = 0;
@@ -199,14 +236,19 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         ABORT(EXIT_FAILURE);
         break;
     }
-    if (m_stars > gal->ColdGas)
-      m_stars = gal->ColdGas;
+    if (m_stars > gal->ColdGasD1)
+      m_stars = gal->ColdGasD1;
+#if USE_2DISK_MODEL
+    if (m_stars2 > gal->ColdGasD2)
+      m_stars2 = gal->ColdGasD2; 
+    m_starstot = m_stars + m_stars2;
+#endif
     // calculate the total supernova feedback which would occur if this star
     // formation happened continuously and evenly throughout the snapshot
     contemporaneous_supernova_feedback(
-      gal, &m_stars, snapshot, &m_reheat, &m_eject, &m_recycled, &m_remnant, &new_metals);
+      gal, &m_starstot, snapshot, &m_reheat, &m_eject, &m_recycled, &m_remnant, &new_metals);
     // update the baryonic reservoirs (note that the order we do this in will change the result!)
-    update_reservoirs_from_sf(gal, m_stars, snapshot, INSITU);
+    update_reservoirs_from_sf(gal, m_starstot, snapshot, INSITU);
 #if USE_MINI_HALOS
     if (gal->Galaxy_Population == 2)
 #endif

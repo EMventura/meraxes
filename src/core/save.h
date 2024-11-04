@@ -75,6 +75,14 @@ typedef struct galaxy_output_t
   float MvirCrit_MC;
 #endif
 
+#if USE_2DISK_MODEL
+  float Rstar; 
+  float ColdGasD1;
+  float MetalsColdGasD1;
+  float ColdGasD2;
+  float MetalsColdGasD2;
+#endif
+
   // misc
   /*float Rcool;
   float Cos_Inc;

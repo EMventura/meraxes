@@ -597,6 +597,15 @@ typedef struct galaxy_t
 
   int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
                          // = 2)
+                         
+#if USE_2DISK_MODEL
+  double Rstar; // Radius up to which you formed stars
+  double ColdGasD1;
+  double ColdGasD2;
+  double MetalsColdGasD1;
+  double MetalsColdGasD2;
+#endif
+
 #if USE_MINI_HALOS
   // Differentiation Pop III / Pop II
   double StellarMass_II;

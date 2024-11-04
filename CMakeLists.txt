@@ -56,6 +56,7 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared library version (required for
 option(CALC_MAGS "Calculate magnitude" OFF)
 option(USE_MINI_HALOS "Consider minihalos" OFF)
 option(USE_SCALING_REL "Use scaling relations" OFF)
+option(USE_2DISK_MODEL "Use 2 disk model" OFF)
 set(MAGS_N_SNAPS 3 CACHE STRING "Number of snapshots to compute magnitudes")
 set(MAGS_N_BANDS 6 CACHE STRING "Number of bands to compute")
 set(SECTOR_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src/sector" CACHE PATH "Base directory of sector library")
@@ -209,6 +210,10 @@ endif()
 # SCALING_RELATIONS
 if(USE_SCALING_REL)
 	add_definitions(-DUSE_SCALING_REL)
+	
+# TWO GAS MODEL
+if(USE_2DISK_MODEL)
+	add_definitions(-DUSE_2DISK_MODEL)
 endif()
 
 # MAGNITUDES

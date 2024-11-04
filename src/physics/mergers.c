@@ -217,6 +217,12 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   }
 #endif
 
+/*#if USE_2DISK_MODEL
+  // This is what you need to do in case of minor merger!
+  if (gal->Rstar > parent->Rstar)
+    parent->Rstar = gal->Rstar;
+#endif*/
+
   for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
     parent->NewStars[ii] += gal->NewStars[ii];
 #if USE_MINI_HALOS

@@ -95,6 +95,14 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
   gal->Galaxy_Population = 2;
 #endif
 
+#if USE_2DISK_MODEL
+  gal->Rstar = 0.0; 
+  gal->ColdGasD1 = 0.0;
+  gal->MetalsColdGasD1 = 0.0;
+  gal->ColdGasD2 = 0.0;
+  gal->MetalsColdGasD2 = 0.0;
+#endif
+
   for (int ii = 0; ii < 3; ii++) {
     gal->Pos[ii] = (float)-99999.9;
     gal->Vel[ii] = (float)-99999.9;

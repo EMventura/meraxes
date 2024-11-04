@@ -121,6 +121,9 @@ USE_MINI_HALOS
 USE_SCALING_REL
 : Use scaling-relations for Star formation in minihalos. Default is OFF.
 
+USE_2DISK_MODEL
+: Split cold gas into two different reservoirs. Default is OFF.
+
 You can set these on the command line when running cmake, e.g.:
 
 ```sh
