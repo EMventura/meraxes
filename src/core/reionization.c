@@ -1455,7 +1455,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
 
     int i_gal = 0;
     int skipped_gals = 0;
-    //long N_BlackHoleMassLimitReion = 0;
+    long N_BlackHoleMassLimitReion = 0;
 
     for (int i_r = 0; i_r < run_globals.mpi_size; i_r++) {
       // init the buffer
@@ -1499,12 +1499,12 @@ void construct_baryon_grids(int snapshot, int local_ngals)
 
               buffer[ind] += gal->FescWeightedGSM; // Only Pop II
               // a trick to include quasar radiation using current 21cmFAST code
-              /*if (run_globals.params.physics.Flag_BHFeedback) {
+              if (run_globals.params.physics.Flag_BHFeedback) {
                 if (gal->BlackHoleMass >= run_globals.params.physics.BlackHoleMassLimitReion)
                   buffer[ind] += gal->EffectiveBHM;
                 else
                   N_BlackHoleMassLimitReion += 1;
-              }*/
+              }
               break;
 
 #if USE_MINI_HALOS
