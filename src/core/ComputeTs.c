@@ -377,7 +377,6 @@ void _ComputeTs(int snapshot)
         }
 #ifdef DEBUG
           mlog("...done", MLOG_CLOSE);
->>>>>>> master
 #endif
       }
       else{
