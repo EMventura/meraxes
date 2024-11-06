@@ -301,8 +301,12 @@ void _ComputeTs(int snapshot)
 #ifdef DEBUG
           mlog("R_ct = %d, went beyong snapshot 0, clear tocf sfr grids.", MLOG_MESG, R_ct);
 #endif
-          for (int ii = 0; ii < slab_n_complex; ii++)
+          for (int ii = 0; ii < slab_n_complex; ii++) {
               grids->sfr[ii] = 0;
+#if USE_MINI_HALOS || USE_SCALING_REL
+              grids->sfrIII[ii] = 0;
+#endif
+          }
           snapshot_counter_backwards[R_ct] += 1;
       }
       else if (zpp_edge[R_ct] > run_globals.ZZ[snapshot - snapshot_counter_backwards[R_ct]]){
@@ -311,8 +315,12 @@ void _ComputeTs(int snapshot)
 #ifdef DEBUG
             mlog("R_ct = %d, reaching %d snapshots earlier, reweighting tocf sfr grids at snapshot %d with a weight of %.2f...", MLOG_OPEN, R_ct, snapshot_counter_backwards[R_ct]-1, snapshot-snapshot_counter_backwards[R_ct]+1, weight);
 #endif
-            for (int ii = 0; ii < slab_n_complex; ii++)
+            for (int ii = 0; ii < slab_n_complex; ii++) {
                  grids->sfr[ii] *= weight;
+#if USE_MINI_HALOS || USE_SCALING_REL
+                 grids->sfrIII[ii] *= weight;
+#endif
+            }
         }
         else{
           if (run_globals.ZZ[snapshot - snapshot_counter_backwards[R_ct]] > zpp_edge[R_ct-1]){
@@ -329,8 +337,12 @@ void _ComputeTs(int snapshot)
 #ifdef DEBUG
             mlog("R_ct = %d, reaching %d snapshots earlier, same as R_ct = %d, clear tocf sfr grids...", MLOG_OPEN, R_ct, snapshot_counter_backwards[R_ct], R_ct - 1);
 #endif
-            for (int ii = 0; ii < slab_n_complex; ii++)
-                 grids->sfr[ii] = 0;;
+            for (int ii = 0; ii < slab_n_complex; ii++) {
+                 grids->sfr[ii] = 0;
+#if USE_MINI_HALOS || USE_SCALING_REL
+                 grids->sfrIII[ii] = 0;
+#endif
+            }
           }
         }
         while (zpp_edge[R_ct] > run_globals.ZZ[snapshot - snapshot_counter_backwards[R_ct]]){
