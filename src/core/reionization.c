@@ -328,8 +328,7 @@ void call_ComputeTs(int snapshot, int nout_gals, timer_info* timer)
 
   // save the grids prior to doing FFTs to avoid precision loss and aliasing etc.
   for (int i_out = 0; i_out < run_globals.NOutputSnaps; i_out++)
-    if (snapshot == run_globals.ListOutputSnaps[i_out] && run_globals.params.Flag_OutputGrids &&
-        !run_globals.params.FlagMCMC)
+    if (snapshot == run_globals.ListOutputSnaps[i_out])
       save_reion_input_grids(snapshot);
 
   mlog("...done", MLOG_CLOSE);
@@ -505,6 +504,12 @@ void init_reion_grids()
 #if USE_MINI_HALOS || USE_SCALING_REL
       grids->sfrIII[ii] = 0;
 #endif
+      for (int jj = 0; jj < run_globals.NstoreSnapshots_SFR; jj++) {
+        grids->sfr_histories[jj*run_globals.NstoreSnapshots_SFR+ii] = 0;
+#if USE_MINI_HALOS
+        grids->sfrIII_histories[jj*run_globals.NstoreSnapshots_SFR+ii] = 0;
+#endif
+      }
     }
     if (run_globals.params.Flag_IncludeRecombinations) {
       grids->N_rec[ii] = 0;
@@ -583,6 +588,7 @@ void malloc_reionization_grids()
   grids->deltax_unfiltered = NULL;
   grids->deltax_filtered = NULL;
   grids->sfr = NULL;
+  grids->sfr_histories = NULL;
   grids->sfr_unfiltered = NULL;
   grids->sfr_filtered = NULL;
   grids->weighted_sfr = NULL;
@@ -598,6 +604,7 @@ void malloc_reionization_grids()
   grids->starsIII_unfiltered = NULL;
   grids->starsIII_filtered = NULL;
   grids->sfrIII = NULL;
+  grids->sfrIII_histories = NULL;
   grids->sfrIII_unfiltered = NULL;
   grids->sfrIII_filtered = NULL;
   grids->weighted_sfrIII = NULL;
@@ -808,6 +815,7 @@ void malloc_reionization_grids()
     if (run_globals.params.Flag_IncludeSpinTemp) {
 
       grids->sfr = fftwf_alloc_real((size_t)slab_n_complex * 2);
+      grids->sfr_histories = fftwf_alloc_real((size_t)slab_n_complex * 2 * run_globals.NstoreSnapshots_SFR);
       grids->sfr_unfiltered = fftwf_alloc_complex((size_t)slab_n_complex);
       grids->sfr_filtered = fftwf_alloc_complex((size_t)slab_n_complex);
 
@@ -843,6 +851,7 @@ void malloc_reionization_grids()
 
 #if USE_MINI_HALOS || USE_SCALING_REL
       grids->sfrIII = fftwf_alloc_real((size_t)slab_n_complex * 2);
+      grids->sfrIII_histories = fftwf_alloc_real((size_t)slab_n_complex * 2 * run_globals.NstoreSnapshots_SFR);
       grids->sfrIII_unfiltered = fftwf_alloc_complex((size_t)slab_n_complex);
       grids->sfrIII_filtered = fftwf_alloc_complex((size_t)slab_n_complex);
 
@@ -1063,6 +1072,7 @@ void free_reionization_grids()
     fftwf_free(grids->sfr_filtered);
     fftwf_free(grids->sfr_unfiltered);
     fftwf_free(grids->sfr);
+    fftwf_free(grids->sfr_histories);
 
 #if USE_MINI_HALOS || USE_SCALING_REL
     fftwf_destroy_plan(grids->sfrIII_filtered_reverse_plan);
@@ -1070,6 +1080,7 @@ void free_reionization_grids()
     fftwf_free(grids->sfrIII_filtered);
     fftwf_free(grids->sfrIII_unfiltered);
     fftwf_free(grids->sfrIII);
+    fftwf_free(grids->sfrIII_histories);
 #endif
   }
 
@@ -1374,12 +1385,14 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   double box_size = run_globals.params.BoxSize;
   float* stellar_grid = run_globals.reion_grids.stars;
   float* sfr_grid = run_globals.reion_grids.sfr;
+  float* sfr_histories_grid = run_globals.reion_grids.sfr_histories;
   float* weighted_sfr_grid = run_globals.reion_grids.weighted_sfr;
   int ReionGridDim = run_globals.params.ReionGridDim;
   double sfr_timescale = run_globals.params.ReionSfrTimescale * hubble_time(snapshot);
 #if USE_MINI_HALOS || USE_SCALING_REL
   float* stellarIII_grid = run_globals.reion_grids.starsIII;
   float* sfrIII_grid = run_globals.reion_grids.sfrIII;
+  float* sfrIII_histories_grid = run_globals.reion_grids.sfrIII_histories;
   float* weighted_sfrIII_grid = run_globals.reion_grids.weighted_sfrIII;
 #endif
 
@@ -1404,6 +1417,8 @@ void construct_baryon_grids(int snapshot, int local_ngals)
       sfr_grid[ii] = 0.0;
 #if USE_MINI_HALOS || USE_SCALING_REL
       sfrIII_grid[ii] = 0.0;
+      for (int snap = run_globals.NstoreSnapshots_SFR - 2; snap >= 0; snap--)
+          sfrIII_histories_grid[(snap+1)*local_n_complex * 2+ii] = sfrIII_histories_grid[snap*local_n_complex * 2+ii];
 #endif
     }
   }
@@ -1574,6 +1589,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
                   double val = (double)buffer[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)];
                   val = (val > 0) ? val / sfr_timescale : 0;
                   sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
+                  sfrIII_histories_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
                 }
             break;
 
@@ -1595,6 +1611,7 @@ void construct_baryon_grids(int snapshot, int local_ngals)
                   double val = (double)buffer[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)];
                   val = (val > 0) ? val / sfr_timescale : 0;
                   sfr_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
+                  sfr_histories_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] = (float)val;
                 }
             break;
 
@@ -1614,11 +1631,12 @@ void construct_baryon_grids(int snapshot, int local_ngals)
             ABORT(EXIT_FAILURE);
         }
     }
-    /*MPI_Allreduce(MPI_IN_PLACE, &N_BlackHoleMassLimitReion, 1, MPI_LONG, MPI_SUM, run_globals.mpi_comm);
-    mlog("%d quasars are smaller than %g",
+    MPI_Allreduce(MPI_IN_PLACE, &N_BlackHoleMassLimitReion, 1, MPI_LONG, MPI_SUM, run_globals.mpi_comm);
+    if (prop == prop_stellar)
+      mlog("%d quasars are smaller than %g",
          MLOG_MESG,
          N_BlackHoleMassLimitReion,
-         run_globals.params.physics.BlackHoleMassLimitReion);*/
+         run_globals.params.physics.BlackHoleMassLimitReion);
   }
 
   mlog("done", MLOG_CLOSE | MLOG_TIMERSTOP);
@@ -1694,19 +1712,6 @@ void save_reion_input_grids(int snapshot)
   // fftw padded grids
   float* grid = (float*)calloc((size_t)local_nix * (size_t)ReionGridDim * (size_t)ReionGridDim, sizeof(float));
 
-  /*for (int ii = 0; ii < local_nix; ii++)
-    for (int jj = 0; jj < ReionGridDim; jj++)
-      for (int kk = 0; kk < ReionGridDim; kk++)
-        grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
-          (grids->deltax)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
-  write_grid_float("deltax", grid, file_id, fspace_id, memspace_id, dcpl_id);
-
-  for (int ii = 0; ii < local_nix; ii++)
-    for (int jj = 0; jj < ReionGridDim; jj++)
-      for (int kk = 0; kk < ReionGridDim; kk++)
-        grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
-          (grids->stars)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
-  write_grid_float("stars", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
   if (run_globals.params.Flag_IncludeSpinTemp) {
     for (int ii = 0; ii < local_nix; ii++)
@@ -1716,7 +1721,31 @@ void save_reion_input_grids(int snapshot)
             (float)((grids->sfr)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g / UnitTime_in_s *
                     SEC_PER_YEAR / SOLAR_MASS);
     write_grid_float("sfr", grid, file_id, fspace_id, memspace_id, dcpl_id);
+#if USE_MINI_HALOS || USE_SCALING_REL
+    for (int ii = 0; ii < local_nix; ii++)
+      for (int jj = 0; jj < ReionGridDim; jj++)
+        for (int kk = 0; kk < ReionGridDim; kk++)
+          grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
+            (float)((grids->sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
+                    UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
+    write_grid_float("sfrIII", grid, file_id, fspace_id, memspace_id, dcpl_id);
+#endif
   }
+
+  for (int ii = 0; ii < local_nix; ii++)
+    for (int jj = 0; jj < ReionGridDim; jj++)
+      for (int kk = 0; kk < ReionGridDim; kk++)
+        grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
+          (grids->deltax)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
+  write_grid_float("deltax", grid, file_id, fspace_id, memspace_id, dcpl_id);
+
+  /*for (int ii = 0; ii < local_nix; ii++)
+    for (int jj = 0; jj < ReionGridDim; jj++)
+      for (int kk = 0; kk < ReionGridDim; kk++)
+        grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
+          (grids->stars)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
+  write_grid_float("stars", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
+
 
   /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
@@ -1726,32 +1755,22 @@ void save_reion_input_grids(int snapshot)
                   UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
   write_grid_float("weighted_sfr", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
-#if USE_MINI_HALOS || USE_SCALING_REL
+//#if USE_MINI_HALOS || USE_SCALING_REL
   /*for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
           (grids->starsIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)];
-  write_grid_float("starsIII", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
+  write_grid_float("starsIII", grid, file_id, fspace_id, memspace_id, dcpl_id);
 
-  if (run_globals.params.Flag_IncludeSpinTemp) {
-    for (int ii = 0; ii < local_nix; ii++)
-      for (int jj = 0; jj < ReionGridDim; jj++)
-        for (int kk = 0; kk < ReionGridDim; kk++)
-          grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
-            (float)((grids->sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
-                    UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
-    write_grid_float("sfrIII", grid, file_id, fspace_id, memspace_id, dcpl_id);
-  }
-
-  /*for (int ii = 0; ii < local_nix; ii++)
+  for (int ii = 0; ii < local_nix; ii++)
     for (int jj = 0; jj < ReionGridDim; jj++)
       for (int kk = 0; kk < ReionGridDim; kk++)
         grid[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
           (float)((grids->weighted_sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] * UnitMass_in_g /
                   UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
   write_grid_float("weighted_sfrIII", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
-#endif
+//#endif
 
   // tidy up
   free(grid);
@@ -1761,6 +1780,37 @@ void save_reion_input_grids(int snapshot)
   H5Fclose(file_id);
 
   mlog("...done", MLOG_CLOSE);
+}
+
+
+void load_reion_sfr_grids(int snapshot_counter_backwards, float weight, const int new_load)
+{
+  // TODO: currently only read sfr
+  reion_grids_t* grids = &(run_globals.reion_grids);
+  int ReionGridDim = run_globals.params.ReionGridDim;
+  int local_nix = (int)(run_globals.reion_grids.slab_nix[run_globals.mpi_rank]);
+  int local_n_complex = (int)(run_globals.reion_grids.slab_n_complex[run_globals.mpi_rank]);
+
+  if (new_load){
+    for (int ii = 0; ii < local_nix; ii++)
+      for (int jj = 0; jj < ReionGridDim; jj++)
+        for (int kk = 0; kk < ReionGridDim; kk++){
+            (grids->sfr)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] = grids->sfr_histories[snapshot_counter_backwards * local_n_complex * 2+grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)]  * weight;
+#if USE_MINI_HALOS || USE_SCALING_REL
+            (grids->sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] = grids->sfrIII_histories[snapshot_counter_backwards * local_n_complex * 2+grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)]  * weight;
+#endif
+		}
+  }
+  else{
+    for (int ii = 0; ii < local_nix; ii++)
+      for (int jj = 0; jj < ReionGridDim; jj++)
+        for (int kk = 0; kk < ReionGridDim; kk++){
+            (grids->sfr)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] += grids->sfr_histories[snapshot_counter_backwards * local_n_complex * 2+grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)]  * weight;
+#if USE_MINI_HALOS || USE_SCALING_REL
+            (grids->sfrIII)[grid_index(ii, jj, kk, ReionGridDim, INDEX_PADDED)] += grids->sfrIII_histories[snapshot_counter_backwards * local_n_complex * 2+grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)]  * weight;
+#endif
+        }
+  }
 }
 
 void save_reion_output_grids(int snapshot)
