@@ -506,7 +506,7 @@ void init_reion_grids()
 #endif
       for (int jj = 0; jj < run_globals.NstoreSnapshots_SFR; jj++) {
         grids->sfr_histories[jj*run_globals.NstoreSnapshots_SFR+ii] = 0;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_SCALING_REL
         grids->sfrIII_histories[jj*run_globals.NstoreSnapshots_SFR+ii] = 0;
 #endif
       }
@@ -1415,6 +1415,8 @@ void construct_baryon_grids(int snapshot, int local_ngals)
   if (run_globals.params.Flag_IncludeSpinTemp) { // For this duplicate the background
     for (int ii = 0; ii < local_n_complex * 2; ii++) {
       sfr_grid[ii] = 0.0;
+      for (int snap = run_globals.NstoreSnapshots_SFR - 2; snap >= 0; snap--)
+          sfr_histories_grid[(snap+1)*local_n_complex * 2+ii] = sfr_histories_grid[snap*local_n_complex * 2+ii];
 #if USE_MINI_HALOS || USE_SCALING_REL
       sfrIII_grid[ii] = 0.0;
       for (int snap = run_globals.NstoreSnapshots_SFR - 2; snap >= 0; snap--)
@@ -2232,11 +2234,13 @@ void construct_scaling_sfr(int snapshot)
   double box_size = run_globals.params.BoxSize;
   float* stellar_grid = run_globals.reion_grids.stars;
   float* sfr_grid = run_globals.reion_grids.sfr;
+  float* sfr_histories_grid = run_globals.reion_grids.sfr_histories;
   float* weighted_sfr_grid = run_globals.reion_grids.weighted_sfr;
   int ReionGridDim = run_globals.params.ReionGridDim;
   double sfr_timescale = run_globals.params.ReionSfrTimescale * hubble_time(snapshot);
   float* stellarIII_grid = run_globals.reion_grids.starsIII;
   float* sfrIII_grid = run_globals.reion_grids.sfrIII;
+  float* sfrIII_histories_grid = run_globals.reion_grids.sfrIII_histories;
   float* weighted_sfrIII_grid = run_globals.reion_grids.weighted_sfrIII;
   float* Delta_grid = run_globals.reion_grids.deltax;
   float* McritMC_grid = run_globals.reion_grids.Mvir_crit_MC;
@@ -2332,7 +2336,8 @@ void construct_scaling_sfr(int snapshot)
                 }
                 //mlog("valIII is = %f", MLOG_MESG, valIII * ConvUnit);
                 if (run_globals.params.Flag_IncludeSpinTemp) {
-                  sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII; 
+                  sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII;
+                  sfrIII_histories_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII; 
                 }
                 stellarIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII * sfr_timescale * fescIII; 
                 weighted_sfrIII_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valIII * fescIII;
@@ -2340,6 +2345,7 @@ void construct_scaling_sfr(int snapshot)
                   valII = pow(10,NormalRandNum(MuMCII, SigmaMCII)) / ConvUnit;
                   if (run_globals.params.Flag_IncludeSpinTemp) {
                     sfr_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII;
+                    sfr_histories_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII;
                   }
                   stellar_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII * sfr_timescale * fesc;
                   weighted_sfr_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_PADDED)] += valII * fesc;
