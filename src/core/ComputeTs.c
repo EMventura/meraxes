@@ -399,14 +399,14 @@ void _ComputeTs(int snapshot)
       // TODO: Double check that looping over correct number of elements here
       for (int ii = 0; ii < slab_n_complex; ii++)
         sfr_unfiltered[ii] /= (float)total_n_cells;
-  #if USE_MINI_HALOS
+  #if USE_MINI_HALOS || USE_SCALING_REL
       fftwf_execute(run_globals.reion_grids.sfrIII_forward_plan);
       for (int ii = 0; ii < slab_n_complex; ii++)
         sfrIII_unfiltered[ii] /= (float)total_n_cells;
   #endif
   
       memcpy(sfr_filtered, sfr_unfiltered, sizeof(fftwf_complex) * slab_n_complex);
-  #if USE_MINI_HALOS
+  #if USE_MINI_HALOS || USE_SCALING_REL
       memcpy(sfrIII_filtered, sfrIII_unfiltered, sizeof(fftwf_complex) * slab_n_complex);
   #endif
   
@@ -833,8 +833,7 @@ void _ComputeTs(int snapshot)
 #endif
           }
 
-          // Perform the calculation of the heating/ionisation integrals, updating relevant quantities etc. GET BACK AT
-          // THIS FOR USE_MINI_HALOS!!
+          // Perform the calculation of the heating/ionisation integrals, updating relevant quantities etc. 
 #if USE_MINI_HALOS || USE_SCALING_REL
           evolveInt((float)zp,
                     run_globals.reion_grids.deltax[i_padded],
