@@ -146,7 +146,7 @@ void calc_hdf5_props()
     galaxy_output_t galout;
     int i; // dummy
 
-    h5props->n_props = 11;
+    h5props->n_props = 10;
 #if USE_MINI_HALOS
     h5props->n_props += 3; // Double check later
 #endif
@@ -338,6 +338,12 @@ void calc_hdf5_props()
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
 #if USE_2DISK_MODEL
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Rstar);
+    h5props->dst_field_sizes[i] = sizeof(galout.Rstar);
+    h5props->field_names[i] = "Rstar";
+    h5props->field_units[i] = "Mpc"; 
+    h5props->field_h_conv[i] = "v/h";
+
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, ColdGasD1);
     h5props->dst_field_sizes[i] = sizeof(galout.ColdGas);
     h5props->field_names[i] = "ColdGas_1";
