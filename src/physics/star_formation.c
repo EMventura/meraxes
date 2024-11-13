@@ -47,7 +47,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     gal->Rstar = gal->DiskScaleLength * 3.0; 
     
     // Combine the 2 gas reservoirs
-    gal->ColdGasD1 += gal->ColdGasD2
+    gal->ColdGasD1 += gal->ColdGasD2;
     gal->ColdGasD2 = 0.0;
     gal->MetalsColdGasD1 += gal->MetalsColdGasD2;
     gal->MetalsColdGasD2 = 0.0;
