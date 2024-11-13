@@ -210,6 +210,7 @@ endif()
 # SCALING_RELATIONS
 if(USE_SCALING_REL)
 	add_definitions(-DUSE_SCALING_REL)
+endif()
 	
 # TWO GAS MODEL
 if(USE_2DISK_MODEL)
