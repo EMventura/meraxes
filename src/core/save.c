@@ -94,7 +94,7 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   galout->Rstar = (float)(gal.Rstar);
   galout->ColdGasD1 = (float)(gal.ColdGasD1);
   galout->MetalsColdGasD1 = (float)(gal.MetalsColdGasD1);
-  galout->ColdGasD2 = (float)(gal.ColdGasD1);
+  galout->ColdGasD2 = (float)(gal.ColdGasD2);
   galout->MetalsColdGasD2 = (float)(gal.MetalsColdGasD2);
   
 #endif
