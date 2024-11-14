@@ -41,8 +41,8 @@ typedef struct galaxy_output_t
   /*float H2Frac;
   float H2Mass;
   float HIMass;
-  float Mcool;
-  float DiskScaleLength;*/
+  float Mcool;*/
+  float DiskScaleLength;
   float StellarMass;
   float GrossStellarMass;
   /*float Fesc;
