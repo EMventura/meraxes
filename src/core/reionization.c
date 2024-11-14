@@ -1863,26 +1863,26 @@ void save_reion_output_grids(int snapshot)
   //write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
   //write_grid_float("r_bubble", grids->r_bubble, file_id, fspace_id, memspace_id, dcpl_id);
 
-  /*if (run_globals.params.ReionUVBFlag) {
-    write_grid_float("J_21", grids->J_21, file_id, fspace_id, memspace_id, dcpl_id);
+  if (run_globals.params.ReionUVBFlag) {
+    /*write_grid_float("J_21", grids->J_21, file_id, fspace_id, memspace_id, dcpl_id);
     H5LTset_attribute_double(file_id, "J_21", "volume_weighted_global_J_21", &(grids->volume_weighted_global_J_21), 1);
     write_grid_float("J_21_at_ionization", grids->J_21_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
-    write_grid_float("Mvir_crit", grids->Mvir_crit, file_id, fspace_id, memspace_id, dcpl_id);
+    write_grid_float("Mvir_crit", grids->Mvir_crit, file_id, fspace_id, memspace_id, dcpl_id);*/
 
 #if USE_MINI_HALOS || USE_SCALING_REL
     if (run_globals.params.Flag_IncludeLymanWerner)
       write_grid_float("Mvir_crit_MC", grids->Mvir_crit_MC, file_id, fspace_id, memspace_id, dcpl_id);
 #endif
-  }*/
+  }
 
   // fftw padded grids
   float* grid = (float*)calloc((size_t)(local_nix * ReionGridDim * ReionGridDim), sizeof(float));
 
-/*#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
     write_grid_float("JLW_box", grids->JLW_box, file_id, fspace_id, memspace_id, dcpl_id);
   }
-#endif*/
+#endif
 #if USE_MINI_HALOS 
   if (run_globals.params.Flag_IncludeLymanWerner) {
     write_grid_float("JLW_boxII", grids->JLW_boxII, file_id, fspace_id, memspace_id, dcpl_id);
@@ -2252,7 +2252,7 @@ void construct_scaling_sfr(int snapshot)
   // But to be sure we are in internal units, let's use the definition in Meraxes!
   
   //float MatoLim = 5.4 * 1e-3 * 0.6751 * pow(zplus1 / 11.0, -1.5);
-  float MatoLim = Tvir_to_Mvir(1e4, redshift);
+  float MatoLim = Tvir_to_Mvir(1e4, redshift); // in units of (1.e10 h^{-1}Msol)
   
   // Compute Norm Table at that snapshot
   //ComputeNormTables(snapshot);
@@ -2352,6 +2352,8 @@ void construct_scaling_sfr(int snapshot)
                 }
               }
             }
+            else 
+              mlog("McritGrid = %f, while MatoLim = %f", MLOG_MESG, McritMC_grid[grid_index(ix, iy, iz, ReionGridDim, INDEX_REAL)], MatoLim);
           }
         //}
         //break;
