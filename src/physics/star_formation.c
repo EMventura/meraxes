@@ -44,7 +44,8 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     
 #if USE_2DISK_MODEL
     // This is the star forming region. Note that the factor 3.0 here could mess things 
-    gal->Rstar = gal->DiskScaleLength * 3.0; 
+    if ((gal->DiskScaleLength * 3.0 > gal->Rstar) && (type == INSITU)) //Rstar can only become larger!
+      gal->Rstar = gal->DiskScaleLength * 3.0; 
     
     // Combine the 2 gas reservoirs
     gal->ColdGasD1 += gal->ColdGasD2;
