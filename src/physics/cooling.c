@@ -143,7 +143,7 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
 #if USE_2DISK_MODEL
   // This is still under development, numbers are just to test
   // Those number will be replaced with the integral
-  if (gal-> 3 * DiskScaleLength > gal->Rstar) {
+  if (3 * gal->DiskScaleLength > gal->Rstar) {
     gal->ColdGasD1 += 0.9 * cooling_mass;
     gal->MetalsColdGasD1 += 0.9 * cooling_metals;
     gal->ColdGasD2 += 0.1 * cooling_mass;
