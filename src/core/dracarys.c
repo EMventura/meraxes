@@ -332,7 +332,7 @@ void dracarys()
 
     // Do the physics
     if (NGal > 0)
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
       nout_gals = evolve_galaxies(fof_group,
                                   snapshot,
                                   NGal,
