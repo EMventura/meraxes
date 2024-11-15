@@ -146,13 +146,13 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
         parent, &burst_mass, &burst_mass2, snapshot, &m_reheat, &m_eject, &m_recycled, &m_recycled2, &m_remnant, &new_metals);
       // update the baryonic reservoirs (note that the order we do this in will change the result!)
       update_reservoirs_from_sf(parent, burst_mass, burst_mass2, snapshot, MERGER);
+      parent->MergerBurstMass += (burst_mass + burst_mass2);
       update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled2, m_remnant, new_metals);
 #else
       contemporaneous_supernova_feedback(
         parent, &burst_mass, snapshot, &m_reheat, &m_eject, &m_recycled, &m_remnant, &new_metals);
       // update the baryonic reservoirs (note that the order we do this in will change the result!)
       update_reservoirs_from_sf(parent, burst_mass, snapshot, MERGER);
-#endif
       parent->MergerBurstMass += burst_mass;
 #if USE_MINI_HALOS
       if (parent->Galaxy_Population == 2)
@@ -161,6 +161,7 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
 #if USE_MINI_HALOS
       else if (parent->Galaxy_Population == 3)
         update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled, 0, m_remnant, new_metals);
+#endif
 #endif
     }
   }
@@ -173,6 +174,9 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   double parent_baryons;
   double gal_baryons;
   double min_stellar_mass;
+#if USE_2DISK_MODEL
+  double ExtDiskMetallicity; // Metallicity of External Disk
+#endif
 
   // Identify the parent galaxy in the merger event.
   // Note that this relies on the merger target coming before this galaxy in
