@@ -42,7 +42,7 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     central = gal->Halo->FOFGroup->FirstOccupiedHalo->Galaxy;
 
 #if USE_2DISK_MODEL
-  double m_recylced = m_recycled_II + m_recycled_III;
+  double m_recycled = m_recycled_II + m_recycled_III;
 #endif
   gal->StellarMass -= m_recycled;
 #if USE_MINI_HALOS || USE_2DISK_MODEL
