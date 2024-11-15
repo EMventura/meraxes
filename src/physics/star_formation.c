@@ -165,7 +165,6 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     double v_disk;
     double m_crit;
     double m_stars;
-    double m_starstot;
     double m_reheat;
     double m_eject;
     double m_recycled;
@@ -179,8 +178,6 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
 #endif
 #if USE_2DISK_MODEL
     double m_stars2;
-    double m_reheat2;
-    double m_eject2;
     double m_recycled2;
 #endif
 

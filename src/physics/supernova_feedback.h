@@ -16,7 +16,7 @@ extern "C"
                                           double m_reheat,
                                           double m_eject,
                                           double m_recycled_II,
-                                          double m_recylced_III,
+                                          double m_recycled_III,
                                           double m_remnant,
                                           double new_metals);
 #else
@@ -25,7 +25,7 @@ extern "C"
                                           double m_eject,
                                           double m_recycled,
                                           double m_recycled_III,
-                                          double m_recylced_II,
+                                          double m_recycled_II,
                                           double m_remnant,
                                           double new_metals);
 #endif
@@ -41,7 +41,7 @@ extern "C"
                                           double* m_reheat,
                                           double* m_eject,
                                           double* m_recycled,
-                                          double* m_recylced2,
+                                          double* m_recycled2,
                                           double* m_remnant,
                                           double* new_metals);
 #else
