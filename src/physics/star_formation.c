@@ -302,6 +302,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     else if (gal->Galaxy_Population == 3)
       update_reservoirs_from_sn_feedback(gal, m_reheat, m_eject, m_recycled, m_recycled, 0, m_remnant, new_metals);
 #endif
+#endif
   }
 }
 
