@@ -112,14 +112,27 @@ double calculate_merging_time(galaxy_t* orphan, int snapshot)
 
 static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int snapshot)
 {
+// DOUBLE CHECK THE CASE FOR USE_2DISK_MODEL 
   if ((parent->ColdGas > 0) && (merger_ratio > run_globals.params.physics.MinMergerRatioForBurst)) {
     // Calculate a merger driven starburst following Guo+ 2010
     physics_params_t* params = &(run_globals.params.physics);
 
+#if USE_2DISK_MODEL
+    double burst_mass = params->MergerBurstFactor * pow(merger_ratio, params->MergerBurstScaling) * parent->ColdGasD1;
+    double burst_mass2 = params->MergerBurstFactor * pow(merger_ratio, params->MergerBurstScaling) * parent->ColdGasD2;
+#else
     double burst_mass = params->MergerBurstFactor * pow(merger_ratio, params->MergerBurstScaling) * parent->ColdGas;
+#endif
 
+#if USE_2DISK_MODEL
+    if (burst_mass > parent->ColdGasD1)
+      burst_mass = parent->ColdGasD1;
+    if (burst_mass2 > parent->ColdGasD2)
+      burst_mass2 = parent->ColdGasD2;
+#else
     if (burst_mass > parent->ColdGas)
       burst_mass = parent->ColdGas;
+#endif
 
     if (burst_mass > 0) {
       double m_reheat;
@@ -127,11 +140,19 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
       double m_recycled;
       double new_metals;
       double m_remnant;
-
+#if USE_2DISK_MODEL
+      double m_recycled2;
+      contemporaneous_supernova_feedback(
+        parent, &burst_mass, &burst_mass2, snapshot, &m_reheat, &m_eject, &m_recycled, &m_recycled2, &m_remnant, &new_metals);
+      // update the baryonic reservoirs (note that the order we do this in will change the result!)
+      update_reservoirs_from_sf(parent, burst_mass, burst_mass2, snapshot, MERGER);
+      update_reservoirs_from_sn_feedback(parent, m_reheat, m_eject, m_recycled, m_recycled2, m_remnant, new_metals);
+#else
       contemporaneous_supernova_feedback(
         parent, &burst_mass, snapshot, &m_reheat, &m_eject, &m_recycled, &m_remnant, &new_metals);
       // update the baryonic reservoirs (note that the order we do this in will change the result!)
       update_reservoirs_from_sf(parent, burst_mass, snapshot, MERGER);
+#endif
       parent->MergerBurstMass += burst_mass;
 #if USE_MINI_HALOS
       if (parent->Galaxy_Population == 2)
@@ -165,7 +186,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   // use the **baryonic** mass to calculate the merger ratio
   parent_baryons = parent->StellarMass + parent->ColdGas;
   gal_baryons = gal->StellarMass + gal->ColdGas;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
   parent_baryons += parent->Remnant_Mass;
   gal_baryons += gal->Remnant_Mass;
 #endif
@@ -178,7 +199,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
 
   // Add galaxies together
   parent->StellarMass += gal->StellarMass;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
   parent->StellarMass_II += gal->StellarMass_II;
   parent->StellarMass_III += gal->StellarMass_III;
   parent->Remnant_Mass += gal->Remnant_Mass;
@@ -193,6 +214,12 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   parent->MetalsHotGas += gal->MetalsHotGas;
   parent->ColdGas += gal->ColdGas;
   parent->MetalsColdGas += gal->MetalsColdGas;
+#if USE_2DISK_MODEL
+  // Here assume that all the gas is accreting on the external part of the disk!
+  // Compute also the metallicity of the external part of the disk!
+  parent->ColdGasD2 += gal->ColdGas;
+  parent->MetalsColdGasD2 += gal->MetalsColdGas;
+#endif
   parent->EjectedGas += gal->EjectedGas;
   parent->MetalsEjectedGas += gal->MetalsEjectedGas;
   parent->BlackHoleAccretedHotMass += gal->BlackHoleAccretedHotMass;
@@ -217,6 +244,16 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   }
 #endif
 
+#if USE_2DISK_MODEL
+  if (parent->ColdGasD2 > 0){
+    ExtDiskMetallicity = calc_metallicity(parent->ColdGasD2, parent->MetalsColdGasD2);
+    if ((ExtDiskMetallicity / 0.01) > run_globals.params.physics.ZCrit)
+      parent->Galaxy_Population = 2;
+    else
+      parent->Galaxy_Population = 3;
+  }
+#endif
+
 /*#if USE_2DISK_MODEL
   // This is what you need to do in case of minor merger!
   if (gal->Rstar > parent->Rstar)
@@ -225,7 +262,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
 
   for (int ii = 0; ii < N_HISTORY_SNAPS; ii++) {
     parent->NewStars[ii] += gal->NewStars[ii];
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
     parent->NewStars_II[ii] += gal->NewStars_II[ii];
     parent->NewStars_III[ii] += gal->NewStars_III[ii];
 #endif

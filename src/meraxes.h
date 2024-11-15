@@ -398,7 +398,7 @@ typedef struct reion_grids_t
   fftwf_plan sfr_filtered_reverse_plan;
   fftwf_plan weighted_sfr_filtered_reverse_plan;
 
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS || USE_SCALING_REL || USE_2DISK_MODEL
   float* starsIII;
   fftwf_complex* starsIII_unfiltered;
   fftwf_complex* starsIII_filtered;
@@ -447,13 +447,13 @@ typedef struct reion_grids_t
 #endif
 
   double* SMOOTHED_SFR_GAL;
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS || USE_SCALING_REL || USE_2DISK_MODEL
   double* SMOOTHED_SFR_III;
 #endif
 
   // Grids necessary for LW background and future disentangling between MC/AC Pop3/Pop2 stuff
 
-#if USE_MINI_HALOS || USE_SCALING_REL
+#if USE_MINI_HALOS || USE_SCALING_REL || USE_2DISK_MODEL
   float* JLW_box;
 #endif
 
@@ -534,7 +534,7 @@ typedef struct reion_grids_t
 typedef struct galaxy_t
 {
   double NewStars[N_HISTORY_SNAPS];
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
   double NewStars_II[N_HISTORY_SNAPS]; // New
   double NewStars_III[N_HISTORY_SNAPS];
 #endif
@@ -606,7 +606,7 @@ typedef struct galaxy_t
   double MetalsColdGasD2;
 #endif
 
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
   // Differentiation Pop III / Pop II
   double StellarMass_II;
   double StellarMass_III;
@@ -615,7 +615,10 @@ typedef struct galaxy_t
   double FescIIIWeightedGSM;
 
   double Remnant_Mass; // Coming from Pop III with M between 40 and 140 and larger than 260 Msol and remnant of CCSN
-                       // [8,40]Msun. Atm those are silent.
+                       // [8,40]Msun. Atm those are silent
+#endif
+
+#if USE_MINI_HALOS
 
   // Metallicity stuff
   double RmetalBubble; // New for MetalEvo

@@ -2,7 +2,7 @@
 #include "blackhole_feedback.h"
 #include "cooling.h"
 #include "core/stellar_feedback.h"
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
 #include "core/PopIII.h"
 #include "core/misc_tools.h"
 #include "core/virial_properties.h"
@@ -39,6 +39,9 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 #if USE_MINI_HALOS
   //double DiskMetallicity; // Need this to compute the internal enrichment in a more accurate way
   bool Flag_Metals = (bool)(run_globals.params.Flag_IncludeMetalEvo);
+#endif
+#if USE_2DISK_MODEL
+  double ExtDiskMetallicity; // Metallicity of External Disk
 #endif
 
   mlog("Doing physics...", MLOG_OPEN | MLOG_TIMERSTART);
@@ -120,7 +123,19 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 
             if (gal->BlackHoleAccretingColdMass > 0)
               previous_merger_driven_BH_growth(gal);
-
+              
+#if USE_2DISK_MODEL 
+// We need this to determine if we can form Pop. III stars
+// in the external part of the disk
+          if (gal->ColdGasD2 > 0){
+            ExtDiskMetallicity = calc_metallicity(
+                gal->ColdGasD2, gal->MetalsColdGasD2);
+            if ((ExtDiskMetallicity / 0.01) > run_globals.params.physics.ZCrit)
+              gal->Galaxy_Population = 2;
+            else
+              gal->Galaxy_Population = 3;
+          }
+#endif
 /*#if USE_MINI_HALOS
             DiskMetallicity = calc_metallicity(
               gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal enrichment!

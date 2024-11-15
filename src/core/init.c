@@ -17,7 +17,7 @@
 #include "save.h"
 #include "stellar_feedback.h"
 #include "virial_properties.h"
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
 #include "PopIII.h"
 #include "metal_evo.h"
 #endif
@@ -283,7 +283,7 @@ void init_meraxes()
 
 #endif
 
-#ifdef USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
   // initialize Pop III tables
   initialize_PopIII();
 #endif

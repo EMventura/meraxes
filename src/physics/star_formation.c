@@ -35,9 +35,18 @@ static void backfill_ghost_star_formation(galaxy_t* gal, double m_stars, double 
     }
   }
 }
-
+#if USE_2DISK_MODEL
+void update_reservoirs_from_sf(galaxy_t* gal, double new_starsD1, double new_starsD2, int snapshot, SFtype type)
+#else
 void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SFtype type)
+#endif
 {
+#if USE_2DISK_MODEL
+  double new_stars;
+  //double metallicityD1; Maybe in the future
+  //double metallicityD2; Maybe in the future
+  new_stars = new_starsD1 + new_starsD2;
+#endif
   if (new_stars > 0) {
     double metallicity;
     bool Flag_IRA = (bool)(run_globals.params.physics.Flag_IRA);
@@ -47,6 +56,8 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     if ((gal->DiskScaleLength * 3.0 > gal->Rstar) && (type == INSITU)) //Rstar can only become larger!
       gal->Rstar = gal->DiskScaleLength * 3.0; 
     
+    //metallicityD1 = calc_metallicity(gal->ColdGasD1, gal->MetalsColdGasD1); // Maybe in the future
+    //metallicityD2 = calc_metallicity(gal->ColdGasD2, gal->MetalsColdGasD2);
     // Combine the 2 gas reservoirs
     gal->ColdGasD1 += gal->ColdGasD2;
     gal->ColdGasD2 = 0.0;
@@ -79,6 +90,18 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
       gal->StellarMass_III += new_stars;
       gal->GrossStellarMassIII += new_stars;
     }
+#endif
+#if USE_2DISK_MODEL
+    if (gal->Galaxy_Population == 3) {
+      gal->StellarMass_III += new_starsD2;
+      gal->GrossStellarMassIII += new_starsD2;
+      gal->StellarMass_II += new_starsD1;
+      gal->GrossStellarMass += new_starsD1;
+    }
+    else { 
+      gal->StellarMass_II += new_stars;
+      gal->GrossStellarMass += new_stars;
+    }
 #else
     gal->GrossStellarMass +=
       new_stars; // If you are not distinguishing III/II you just have one variable which is the total one
@@ -102,6 +125,15 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
       else if (gal->Galaxy_Population == 3)
         gal->NewStars_III[0] += new_stars;
 #endif
+#if USE_2DISK_MODEL
+      if (gal->Galaxy_Population == 3) {
+        gal->NewStars_III[0] += new_starsD2;
+        gal->NewStars_II[0] += new_starsD1;
+      }
+      else {
+        gal->NewStars_II[0] += new_stars;
+      }
+#endif
       gal->NewMetals[0] += new_stars * metallicity;
 
       update_galaxy_fesc_vals(gal, new_stars, snapshot);
@@ -114,7 +146,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     // reservoirs due to supernova feedback.
     if (gal->StellarMass < 0)
       gal->StellarMass = 0.0;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISKMODEL
     if (gal->StellarMass_II < 0)
       gal->StellarMass_II = 0.0;
     if (gal->StellarMass_III < 0)
@@ -141,7 +173,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     double m_remnant;
     double zplus1;
     double zplus1_n;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
     double zplus1_n_III;
     double m_crit_III;
 #endif
@@ -154,12 +186,12 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
 
     zplus1 = 1.0 + run_globals.ZZ[snapshot];
     zplus1_n = pow(zplus1, run_globals.params.physics.SfEfficiencyScaling);
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
     zplus1_n_III = pow(zplus1, run_globals.params.physics.SfEfficiencyScaling_III);
 #endif
 
     double SfEfficiency_II = run_globals.params.physics.SfEfficiency;
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
     double SfEfficiency_III = run_globals.params.physics.SfEfficiency_III;
     double SfCriticalSDNorm_III = run_globals.params.physics.SfCriticalSDNorm_III;
 #endif
@@ -223,7 +255,12 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         double fracNonSFGas = m_crit / gal->ColdGas;
         if (gal->ColdGas > m_crit) {
           m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
-          m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+          if (gal->ColdGasD2 > 0) {
+            if (gal->Galaxy_Population == 3)
+              m_stars2 = zplus1_n_III * SfEfficiency_III * (gal->ColdGasD2 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+            else
+              m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+          }
         }
 
         else
@@ -237,19 +274,27 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         ABORT(EXIT_FAILURE);
         break;
     }
+#if USE_2DISK_MODEL
     if (m_stars > gal->ColdGasD1)
       m_stars = gal->ColdGasD1;
-#if USE_2DISK_MODEL
     if (m_stars2 > gal->ColdGasD2)
       m_stars2 = gal->ColdGasD2; 
-    m_starstot = m_stars + m_stars2;
+#else
+    if (m_stars > gal->ColdGas)
+      m_stars = gal->ColdGas;
 #endif
     // calculate the total supernova feedback which would occur if this star
     // formation happened continuously and evenly throughout the snapshot
+#if USE_2DISK_MODEL
     contemporaneous_supernova_feedback(
-      gal, &m_starstot, snapshot, &m_reheat, &m_eject, &m_recycled, &m_remnant, &new_metals);
+      gal, &m_stars, &m_stars2, snapshot, &m_reheat, &m_eject, &m_recycled, &m_recycled2, &m_remnant, &new_metals);
+    update_reservoirs_from_sf(gal, m_stars, m_stars2, snapshot, INSITU);
+    update_reservoirs_from_sn_feedback(gal, m_reheat, m_eject, m_recycled, m_recycled2, m_remnant, new_metals);
+#else
+    contemporaneous_supernova_feedback(
+      gal, &m_stars, snapshot, &m_reheat, &m_eject, &m_recycled, &m_remnant, &new_metals);
     // update the baryonic reservoirs (note that the order we do this in will change the result!)
-    update_reservoirs_from_sf(gal, m_starstot, snapshot, INSITU);
+    update_reservoirs_from_sf(gal, m_stars, snapshot, INSITU);
 #if USE_MINI_HALOS
     if (gal->Galaxy_Population == 2)
 #endif

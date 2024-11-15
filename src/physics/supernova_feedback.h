@@ -11,7 +11,15 @@
 extern "C"
 {
 #endif
-
+#if USE_2DISK_MODEL
+  void update_reservoirs_from_sn_feedback(struct galaxy_t* gal,
+                                          double m_reheat,
+                                          double m_eject,
+                                          double m_recycled_II,
+                                          double m_recylced_III,
+                                          double m_remnant,
+                                          double new_metals);
+#else
   void update_reservoirs_from_sn_feedback(struct galaxy_t* gal,
                                           double m_reheat,
                                           double m_eject,
@@ -20,10 +28,23 @@ extern "C"
                                           double m_recylced_II,
                                           double m_remnant,
                                           double new_metals);
+#endif
   void delayed_supernova_feedback(struct galaxy_t* gal, int snapshot);
 #if USE_MINI_HALOS
   void calc_metal_bubble(struct galaxy_t* gal, int snapshot);
 #endif
+#if USE_2DISK_MODEL
+  void contemporaneous_supernova_feedback(struct galaxy_t* gal,
+                                          double* m_stars,
+                                          double* m_stars2,
+                                          int snapshot,
+                                          double* m_reheat,
+                                          double* m_eject,
+                                          double* m_recycled,
+                                          double* m_recylced2,
+                                          double* m_remnant,
+                                          double* new_metals);
+#else
   void contemporaneous_supernova_feedback(struct galaxy_t* gal,
                                           double* m_stars,
                                           int snapshot,
@@ -32,6 +53,7 @@ extern "C"
                                           double* m_recycled,
                                           double* m_remnant,
                                           double* new_metals);
+#endif
 
 #ifdef __cplusplus
 }
