@@ -85,10 +85,10 @@ void dracarys()
     int merger_counter = 0;
     int new_gal_counter = 0;
     int ghost_counter = 0;
-#if USE_MINI_HALOS
-    int gal_counter_Pop3 = 0;     // Newly formed Pop3 Gal
-    int gal_counter_Pop2 = 0;     // Newly formed Pop2 Gal
-    int gal_counter_enriched = 0; // Enriched but they could be still Pop3
+#if USE_MINI_HALOS || USE_2DISK_MODEL
+    int gal_counter_Pop3 = 0;     // Pop. III star forming
+    int gal_counter_Pop2 = 0;     // Pop. II star forming
+    int gal_counter_enriched = 0; // Non sf
 #endif
 
     mlog("", MLOG_MESG);

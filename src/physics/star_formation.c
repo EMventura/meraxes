@@ -252,14 +252,13 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         // 2 Disk Model (in the future raise a warning)
         // Assume just Pop. II atm
         m_crit = SfCriticalSDNorm * v_disk * r_disk;
-        double fracNonSFGas = m_crit / gal->ColdGas;
         if (gal->ColdGas > m_crit) {
-          m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+          m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
           if (gal->ColdGasD2 > 0) {
             if (gal->Galaxy_Population == 3)
-              m_stars2 = zplus1_n_III * SfEfficiency_III * (gal->ColdGasD2 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+              m_stars2 = zplus1_n_III * SfEfficiency_III * (gal->ColdGasD2 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
             else
-              m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - fracNonSFGas)) / r_disk * v_disk * gal->dt;
+              m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
           }
         }
 

@@ -91,11 +91,11 @@ typedef struct galaxy_output_t
   float BaryonFracModifier;
   float FOFMvirModifier;
   float MvirCrit;
-  float dt;
+  float dt;*/
   float MergerBurstMass;
 
   // baryonic histories
-  float MWMSA; // Mass weighted mean stellar age
+  /*float MWMSA; // Mass weighted mean stellar age
   float NewStars[N_HISTORY_SNAPS];*/
 #if USE_MINI_HALOS
   float NewStars_II[N_HISTORY_SNAPS];

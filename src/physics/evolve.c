@@ -16,7 +16,7 @@
 #include <math.h>
 
 //! Evolve existing galaxies forward in time
-#if USE_MINI_HALOS
+#if USE_MINI_HALOS || USE_2DISK_MODEL
 int evolve_galaxies(fof_group_t* fof_group,
                     int snapshot,
                     int NGal,
@@ -62,21 +62,6 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 
         while (gal != NULL) {
         
-#if USE_MINI_HALOS // Preliminar test
-          if ((gal->GrossStellarMass + gal->GrossStellarMassIII) > 1e-10)
-            gal->Galaxy_Population = 2;
-          else {
-            gal->Galaxy_Population = 3;
-            *gal_counter_enriched = *gal_counter_enriched + 1; //Use this as non forming stars!
-          }
-              
-          if (gal->GrossStellarMass > 1e-10)
-            *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
-            
-          if ((gal->GrossStellarMassIII > 1e-10) && (gal->GrossStellarMass < 1e-10))
-            *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
-#endif
-
 /*#if USE_MINI_HALOS
           if (Flag_Metals ==
               true) { // Assign to newly formed galaxies metallicity of their cell according to a certain probability
@@ -130,7 +115,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
           if (gal->ColdGasD2 > 0){
             ExtDiskMetallicity = calc_metallicity(
                 gal->ColdGasD2, gal->MetalsColdGasD2);
-            if ((ExtDiskMetallicity / 0.01) > run_globals.params.physics.ZCrit)
+            if ((ExtDiskMetallicity / 0.02) >= run_globals.params.physics.ZCrit) //0.02 solar metallicity
               gal->Galaxy_Population = 2;
             else
               gal->Galaxy_Population = 3;
@@ -151,6 +136,18 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
               calc_metal_bubble(gal, snapshot);
             }
 #endif
+#if USE_MINI_HALOS || USE_2DISK_MODEL 
+//Just count how many gals are forming stars (here you aren't accounting mergers!
+            if (gal->NewStars_II[0] >= 1e-10)
+              *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
+            
+            if (gal->NewStars_III[0] >= 1e-10)
+              *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
+              
+            if (gal->NewStars[0] < 1e-10)
+              *gal_counter_enriched = *gal_counter_enriched + 1;  
+#endif
+
             // If this is a type 2 then decrement the merger clock
             if (gal->Type == 2)
               gal->MergTime -= gal->dt;
