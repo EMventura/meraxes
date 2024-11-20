@@ -150,6 +150,9 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   if (3 * gal->DiskScaleLength > gal->Rstar) {
     // frac computed integrating 2piR*Sigma(R)dR from Rstar to inf)
     frac = exp(-gal->Rstar / gal->DiskScaleLength) * (1 + (gal->Rstar / gal->DiskScaleLength));
+    if (frac < 0.0)
+      // This should never happen but you never know
+      frac = 0.0;
     gal->ColdGasD1 += (1 - frac) * cooling_mass;
     gal->MetalsColdGasD1 += (1 - frac) * cooling_metals;
     gal->ColdGasD2 += frac * cooling_mass;
