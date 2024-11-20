@@ -125,6 +125,10 @@ double gas_cooling(galaxy_t* gal)
 void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
 {
   double cooling_metals;
+#if USE_2DISK_MODEL
+  // frac of gas that falls in the external part of the disk
+  double frac = 0.0;
+#endif
 
   if (cooling_mass > gal->HotGas)
     cooling_mass = gal->HotGas;
@@ -144,10 +148,12 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   // This is still under development, numbers are just to test
   // Those number will be replaced with the integral
   if (3 * gal->DiskScaleLength > gal->Rstar) {
-    gal->ColdGasD1 += 0.9 * cooling_mass;
-    gal->MetalsColdGasD1 += 0.9 * cooling_metals;
-    gal->ColdGasD2 += 0.1 * cooling_mass;
-    gal->MetalsColdGasD2 += 0.1 * cooling_metals;
+    // frac computed integrating 2piR*Sigma(R)dR from Rstar to inf)
+    frac = exp(-gal->Rstar / gal->DiskScaleLength) * (1 + (gal->Rstar / gal->DiskScaleLength));
+    gal->ColdGasD1 += (1 - frac) * cooling_mass;
+    gal->MetalsColdGasD1 += (1 - frac) * cooling_metals;
+    gal->ColdGasD2 += frac * cooling_mass;
+    gal->MetalsColdGasD2 += frac * cooling_metals;
   }
   else {
     gal->ColdGasD1 += cooling_mass;
