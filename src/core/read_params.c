@@ -442,7 +442,7 @@ void read_parameter_file(char* fname, int mode)
       }
 #endif
 #if USE_2DISK_MODEL
-      if (run_params->physics.SfPrescription != 4) {
+      if (run_params->physics.SfPrescription < 4) {
         mlog("Warning the current version of USE_2DISK_MODEL only works with SfPrescription=4 (resetting...)", MLOG_MESG);
         run_params->physics.SfPrescription = 4;
       }

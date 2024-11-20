@@ -247,8 +247,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         break;
         
       case 4:
-        // 2 Disk Model (in the future raise a warning)
-        // Assume just Pop. II atm
+        // 2 Disk model with all non SF gas uniformely distributed between Int and Ext gas
         m_crit = SfCriticalSDNorm * v_disk * r_disk;
         if (gal->ColdGas > m_crit) {
           m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
@@ -258,8 +257,31 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
             else
               m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
           }
+          else
+            m_stars2 = 0.0;
         }
 
+        else
+          // no star formation
+          return;
+        break;
+        
+      case 5:
+        // 2 Disk model with all non SF gas in Ext gas
+        m_crit = SfCriticalSDNorm * v_disk * r_disk;
+        if (gal->ColdGas > m_crit) {
+          if (gal->ColdGasD2 > m_crit) {
+            m_stars = zplus1_n * SfEfficiency_II * gal->ColdGasD1 / r_disk * v_disk * gal->dt;
+            if (gal->Galaxy_Population == 3)
+              m_stars2 = zplus1_n_III * SfEfficiency_III * (gal->ColdGasD2 - m_crit) / r_disk * v_disk * gal->dt;
+            else
+              m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 - m_crit) / r_disk * v_disk * gal->dt;
+          }
+          else {
+            m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 - m_crit + gal->ColdGasD2) / r_disk * v_disk * gal->dt;  
+            m_stars2 = 0.0;
+          }
+        }
         else
           // no star formation
           return;
