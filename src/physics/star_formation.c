@@ -10,6 +10,7 @@
 
 static void backfill_ghost_star_formation(galaxy_t* gal, double m_stars, double sfr, double metallicity, int snapshot)
 {
+// YOU NEED TO WORK OUT WHAT TO DO WITH GHOSTS FOR 2DISK MODEL
   double* LTTime = run_globals.LTTime;
   double burst_time = LTTime[gal->LastIdentSnap] - gal->dt * 0.5;
 

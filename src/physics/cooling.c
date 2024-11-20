@@ -145,9 +145,8 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   gal->ColdGas += cooling_mass;
   gal->MetalsColdGas += cooling_metals;
 #if USE_2DISK_MODEL
-  // This is still under development, numbers are just to test
-  // Those number will be replaced with the integral
-  if (3 * gal->DiskScaleLength > gal->Rstar) {
+  // if you have already formed stars (so Rstar > 0) and there is gas outside Rstar
+  if ((3 * gal->DiskScaleLength > gal->Rstar) && (gal->Rstar > 0.)) {
     // frac computed integrating 2piR*Sigma(R)dR from Rstar to inf)
     frac = exp(-gal->Rstar / gal->DiskScaleLength) * (1 + (gal->Rstar / gal->DiskScaleLength));
     if (frac < 0.0)
