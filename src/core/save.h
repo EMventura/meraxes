@@ -48,9 +48,9 @@ typedef struct galaxy_output_t
   /*float Fesc;
   float FescWeightedGSM;
   float MetalsStellarMass;
-  float Sfr;
+  float Sfr;*/
   float EjectedGas;
-  float MetalsEjectedGas;
+  /*float MetalsEjectedGas;
   float BlackHoleMass;
   float FescBH;
   float BHemissivity;
