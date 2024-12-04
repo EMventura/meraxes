@@ -42,6 +42,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 #endif
 #if USE_2DISK_MODEL
   double ExtDiskMetallicity; // Metallicity of External Disk
+  double HotGasMetallicity; // Metallicity of HotGas 
 #endif
 
   mlog("Doing physics...", MLOG_OPEN | MLOG_TIMERSTART);
@@ -113,9 +114,11 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 // We need this to determine if we can form Pop. III stars
 // in the external part of the disk
           if (gal->ColdGasD2 > 0){
+            HotGasMetallicity = calc_metallicity(
+                gal->HotGas, gal->MetalsHotGas);
             ExtDiskMetallicity = calc_metallicity(
                 gal->ColdGasD2, gal->MetalsColdGasD2);
-            if ((ExtDiskMetallicity / 0.02) >= run_globals.params.physics.ZCrit) //0.02 solar metallicity
+            if (fmaxf((ExtDiskMetallicity / 0.02), (HotGasMetallicity / 0.02)) >= run_globals.params.physics.ZCrit) //0.02 solar metallicity
               gal->Galaxy_Population = 2;
             else
               gal->Galaxy_Population = 3;
