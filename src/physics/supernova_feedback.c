@@ -64,8 +64,12 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
 
   // assuming instantaneous recycling approximation and enrichment from SNII
   // only, work out the mass of metals returned to the ISM by this SF burst
-  if (gal->ColdGas > 1e-10)
+  if (gal->ColdGas > 1e-10) {
     gal->MetalsColdGas += new_metals;
+#if USE_2DISK_MODEL
+    gal->MetalsColdGasD1 += new_metals;
+#endif
+  }
   else
     central->MetalsHotGas += new_metals;
 
@@ -77,6 +81,10 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
 
   gal->ColdGas -= m_reheat;
   gal->MetalsColdGas -= m_reheat * metallicity;
+#if USE_2DISK_MODEL
+  gal->ColdGasD1 -= m_reheat;
+  gal->MetalsColdGasD1 -= m_reheat * metallicity;
+#endif
   central->MetalsHotGas += m_reheat * metallicity;
   central->HotGas += m_reheat;
 
@@ -119,6 +127,18 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     central->EjectedGas = 0.0;
   if (central->MetalsEjectedGas < 0)
     central->MetalsEjectedGas = 0.0;
+#if USE_2DISK_MODEL
+  if (gal->ColdGasD1 < 0)
+    gal->ColdGasD1 = 0.0;
+  if (gal->ColdGasD2 < 0)
+    gal->ColdGasD2 = 0.0;
+  if (gal->ColdGasD1 > gal->ColdGas)
+    gal->ColdGasD1 = gal->ColdGas;  
+  if (gal->MetalsColdGasD1 < 0)
+    gal->MetalsColdGasD1 = 0.0;
+  if (gal->MetalsColdGasD2 < 0)
+    gal->MetalsColdGasD2 = 0.0;
+#endif
 }
 
 static inline double calc_ejected_mass(double* m_reheat, double sn_energy, double Vvir, double fof_Vvir)
@@ -338,6 +358,10 @@ void delayed_supernova_feedback(galaxy_t* gal, int snapshot)
   // eject gas from the system.
   if (m_reheat > gal->ColdGas)
     m_reheat = gal->ColdGas;
+#if USE_2DISK_MODEL
+  if (gal->ColdGasD1 > gal->ColdGas)
+    gal->ColdGasD1 = gal->ColdGas;
+#endif
 
   assert(m_reheat >= 0);
   assert(m_recycled >= 0);
