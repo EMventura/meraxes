@@ -69,10 +69,10 @@ static int id_to_snap(long id)
 inline static void convert_input_virial_props(double* Mvir,
                                               double* Rvir,
                                               double* Vvir,
-                                              //double* FOFMvirModifier,
+                                              double* FOFMvirModifier,
                                               const int len,
                                               const int snapshot)//,
-                                              //const bool fof_flag)
+                                              const bool fof_flag)
 {
   // Update the virial properties for subhalos
   if (*Mvir == -1) {
