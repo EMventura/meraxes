@@ -153,6 +153,7 @@ static void merger_driven_starburst(galaxy_t* parent, double merger_ratio, int s
       // update the baryonic reservoirs (note that the order we do this in will change the result!)
       update_reservoirs_from_sf(parent, burst_mass, snapshot, MERGER);
       parent->MergerBurstMass += burst_mass;
+#endif
 #if USE_MINI_HALOS
       if (parent->Galaxy_Population == 2)
 #endif
