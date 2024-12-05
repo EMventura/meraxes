@@ -104,9 +104,19 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
           }
 
           if (gal->Type < 3) {
+#if USE_2DISK_MODEL 
+            if ((3 * gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
+              gal->ColdGasD1 += gal->ColdGasD2;
+              gal->MetalsColdGasD1 += gal->MetalsColdGasD2;
+              gal->ColdGasD2 = 0.0;
+              gal->MetalsColdGasD2 = 0.0;
+            }
+#endif
             if (!Flag_IRA)
               delayed_supernova_feedback(gal, snapshot);
 
+            // YOU NEED TO BE EXTREMELY CAREFUL WITH THIS ONE!
+            // PUT THE FLAG FOR BH FEEDBACK = 0 when using 2Disk Model
             if (gal->BlackHoleAccretingColdMass > 0)
               previous_merger_driven_BH_growth(gal);
               
