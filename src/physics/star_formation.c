@@ -246,6 +246,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         m_stars = gal->ColdGas / (r_disk / v_disk / 0.029 * pow(200. / v_disk, 1.5)) * gal->dt;
         break;
         
+#if USE_2DISK_MODEL        
       case 4:
         // 2 Disk model with all non SF gas uniformely distributed between Int and Ext gas
         m_crit = SfCriticalSDNorm * v_disk * r_disk;
@@ -286,7 +287,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
           // no star formation
           return;
         break;
-
+#endif
       default:
         m_stars = 0;
         mlog_error("Unknown SfPrescription!");
