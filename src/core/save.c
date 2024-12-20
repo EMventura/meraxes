@@ -43,10 +43,10 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   }
   galout->GhostFlag = (int)gal.ghost_flag;
 
-  for (int ii = 0; ii < 3; ii++) {
+  /*for (int ii = 0; ii < 3; ii++) {
     galout->Pos[ii] = gal.Pos[ii];
-    //galout->Vel[ii] = gal.Vel[ii];
-  }
+    galout->Vel[ii] = gal.Vel[ii];
+  }*/
 
   //galout->Len = gal.Len;
   //galout->MaxLen = gal.MaxLen;
@@ -61,8 +61,8 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   galout->MetalsColdGas = (float)(gal.MetalsColdGas);
   /*galout->H2Frac = (float)(gal.H2Frac);
   galout->H2Mass = (float)(gal.H2Mass);
-  galout->HIMass = (float)(gal.HIMass);
-  galout->Mcool = (float)(gal.Mcool);*/
+  galout->HIMass = (float)(gal.HIMass);*/
+  galout->Mcool = (float)(gal.Mcool);
   galout->StellarMass = (float)(gal.StellarMass);
   galout->GrossStellarMass = (float)(gal.GrossStellarMass);
   /*galout->Fesc = (float)(gal.Fesc);
@@ -253,14 +253,14 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_INT;*/
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Pos);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Pos);
     h5props->dst_field_sizes[i] = sizeof(galout.Pos);
     h5props->field_names[i] = "Pos";
     h5props->field_units[i] = "Mpc"; // comoving
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = h5props->array3f_tid;
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Vel);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Vel);
     h5props->dst_field_sizes[i] = sizeof(galout.Vel);
     h5props->field_names[i] = "Vel";
     h5props->field_units[i] = "km/s"; // comoving
@@ -393,14 +393,14 @@ void calc_hdf5_props()
     h5props->field_names[i] = "HIMass";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Mcool);
     h5props->dst_field_sizes[i] = sizeof(galout.Mcool);
     h5props->field_names[i] = "Mcool";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, DiskScaleLength);
     h5props->dst_field_sizes[i] = sizeof(galout.DiskScaleLength);
