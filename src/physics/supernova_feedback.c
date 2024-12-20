@@ -396,7 +396,7 @@ void delayed_supernova_feedback(galaxy_t* gal, int snapshot)
   // update the baryonic reservoirs
 #if USE_2DISK_MODEL
   update_reservoirs_from_sn_feedback(
-    gal, m_reheat, m_eject, m_recycled_III, m_recycled_II, m_remnant, new_metals);
+    gal, m_reheat, m_eject, m_recycled_II, m_recycled_III, m_remnant, new_metals);
 #else
   update_reservoirs_from_sn_feedback(
     gal, m_reheat, m_eject, m_recycled, m_recycled_III, m_recycled_II, m_remnant, new_metals);

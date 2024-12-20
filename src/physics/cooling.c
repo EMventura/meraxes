@@ -21,30 +21,19 @@ double gas_cooling(galaxy_t* gal)
     // calculate the halo virial temperature and log10 metallicity value
     double Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
     double log10Tvir = log10(Tvir);
-    /*double logZ;
+    double logZ;
     double t_cool, max_cooling_mass;
     double lambda, x, rho_r_cool, r_cool, isothermal_norm;
     run_units_t* units = &(run_globals.units);
-    double max_cooling_mass_factor = run_globals.params.physics.MaxCoolingMassFactor;*/
+    double max_cooling_mass_factor = run_globals.params.physics.MaxCoolingMassFactor;
 
-    /*if (gal->MetalsHotGas > 0)
+    if (gal->MetalsHotGas > 0)
       logZ = log10(calc_metallicity(gal->HotGas, gal->MetalsHotGas));
     else
-      logZ = -10.0;*/
+      logZ = -10.0;
 
     if (Tvir >= 1e4) {
-    
-      double logZ;
-      double t_cool, max_cooling_mass;
-      double lambda, x, rho_r_cool, r_cool, isothermal_norm;
-      run_units_t* units = &(run_globals.units);
-      double max_cooling_mass_factor = run_globals.params.physics.MaxCoolingMassFactor;
-    
-      if (gal->MetalsHotGas > 0)
-        logZ = log10(calc_metallicity(gal->HotGas, gal->MetalsHotGas));
-      else
-        logZ = -10.0;
-
+   
       t_cool = fof_group->Rvir / fof_group->Vvir; // internal units
 
       // interpolate the temperature and metallicity dependant cooling rate (lambda)
@@ -53,7 +42,7 @@ double gas_cooling(galaxy_t* gal)
     // Implement Molecular cooling using fitting of cooling curves of Galli and Palla 1998, Include LW feedback
     // according to Visbal 2014
 
-/*#if USE_MINI_HALOS
+#if USE_MINI_HALOS
     else {
       halo_type = 2;
       Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
@@ -80,19 +69,19 @@ double gas_cooling(galaxy_t* gal)
       halo_type = 0;
       cooling_mass = 0.0;
     }
-#endif*/
+#endif
 
       x = PROTONMASS * BOLTZMANN * Tvir / lambda;              // now this has units sec g/cm^3
       x /= (units->UnitDensity_in_cgs * units->UnitTime_in_s); // now in internal units
 
-      //if (halo_type == 1)
-      rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
+      if (halo_type == 1)
+        rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
 
-/*#if USE_MINI_HALOS
+#if USE_MINI_HALOS
       else if (halo_type == 2)
         //rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
         cooling_mass = 0.0;
-#endif*/
+#endif
 
       assert(rho_r_cool > 0);
       isothermal_norm = gal->HotGas / (4. * M_PI * fof_group->Rvir);
@@ -149,9 +138,11 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   if ((3 * gal->DiskScaleLength > gal->Rstar) && (gal->Rstar > 0.)) {
     // frac computed integrating 2piR*Sigma(R)dR from Rstar to inf)
     frac = exp(-gal->Rstar / gal->DiskScaleLength) * (1 + (gal->Rstar / gal->DiskScaleLength));
-    if (frac < 0.0)
+    if (frac < 0.0) {
       // This should never happen but you never know
+      mlog("strange value of frac = %.3f with Rstar = %f and Rdisk = %f", MLOG_MESG, frac, gal->Rstar, 3*gal->DiskScaleLength);
       frac = 0.0;
+    }
     if (frac > 1.0)
       frac = 1.0;
     gal->ColdGasD1 += (1 - frac) * cooling_mass;
