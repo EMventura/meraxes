@@ -74,8 +74,14 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     central->MetalsHotGas += new_metals;
 
   // make sure we aren't trying to use more cold gas than is available...
+#if USE_2DISK_MODEL
+  // In the 2Disk scenario the maximum reheatable is the internal one!
+  if (m_reheat > gal->ColdGasD1)
+    m_reheat = gal->ColdGasD1;
+#else
   if (m_reheat > gal->ColdGas)
     m_reheat = gal->ColdGas;
+#endif
 
   metallicity = calc_metallicity(gal->ColdGas, gal->MetalsColdGas);
 
@@ -356,11 +362,14 @@ void delayed_supernova_feedback(galaxy_t* gal, int snapshot)
   // We can only reheat as much gas as we have available.  Let's inforce this
   // now, to ensure that the maximal amount of available energy is used to
   // eject gas from the system.
-  if (m_reheat > gal->ColdGas)
-    m_reheat = gal->ColdGas;
 #if USE_2DISK_MODEL
   if (gal->ColdGasD1 > gal->ColdGas)
     gal->ColdGasD1 = gal->ColdGas;
+  if (m_reheat > gal->ColdGasD1)
+    m_reheat = gal->ColdGasD1;
+#else
+  if (m_reheat > gal->ColdGas)
+    m_reheat = gal->ColdGas;
 #endif
 
   assert(m_reheat >= 0);
@@ -548,6 +557,9 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
   // We can only reheat as much gas as we have available.  Let's inforce this
   // now, to ensure that the maximal amount of available energy is used to
   // eject gas from the system.
+  
+  // Here it's fine to keep this condition also in the 2DISK scenario because
+  // as soon as we form stars the Coldgas becomes just one reservoir
   if (*m_reheat > gal->ColdGas)
     *m_reheat = gal->ColdGas;
 
