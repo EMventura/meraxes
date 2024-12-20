@@ -38,6 +38,7 @@ double gas_cooling(galaxy_t* gal)
 
       // interpolate the temperature and metallicity dependant cooling rate (lambda)
       lambda = interpolate_cooling_rate(log10Tvir, logZ);
+    }
 
     // Implement Molecular cooling using fitting of cooling curves of Galli and Palla 1998, Include LW feedback
     // according to Visbal 2014
@@ -71,6 +72,8 @@ double gas_cooling(galaxy_t* gal)
     }
 #endif
 
+    if (halo_type != 0) {
+    
       x = PROTONMASS * BOLTZMANN * Tvir / lambda;              // now this has units sec g/cm^3
       x /= (units->UnitDensity_in_cgs * units->UnitTime_in_s); // now in internal units
 
@@ -79,8 +82,7 @@ double gas_cooling(galaxy_t* gal)
 
 #if USE_MINI_HALOS
       else if (halo_type == 2)
-        //rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
-        cooling_mass = 0.0;
+        rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
 #endif
 
       assert(rho_r_cool > 0);
