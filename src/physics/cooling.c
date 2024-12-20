@@ -140,7 +140,7 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   if ((3.0 * gal->DiskScaleLength > gal->Rstar) && (gal->Rstar > 0.)) {
     // frac computed integrating 2piR*Sigma(R)dR from Rstar to inf)
     frac = exp(-gal->Rstar / gal->DiskScaleLength) * (1.0 + (gal->Rstar / gal->DiskScaleLength));
-    mlog("frac = %.5f with Rstar = %f and Rdisk = %f", MLOG_MESG, frac, gal->Rstar, gal->DiskScaleLength);
+    //mlog("frac = %.5f with Rstar = %f and Rdisk = %f", MLOG_MESG, frac, gal->Rstar, gal->DiskScaleLength);
     if (frac < 0.0) {
       // This should never happen but you never know
       mlog("strange value of frac = %.3f with Rstar = %f and Rdisk = %f", MLOG_MESG, frac, gal->Rstar, 3*gal->DiskScaleLength);
