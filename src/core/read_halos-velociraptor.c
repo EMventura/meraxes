@@ -275,22 +275,22 @@ void read_trees__velociraptor(int snapshot,
           // This check is to ensure sensible values of mass_200crit and avoid having 
           // very weird halos. Put this check back if you feel that the N-body is weird.
           
-          /*if ((Mass_200crit[ii] < 5 * Mass_tot[ii])) {
-              fof_group->Mvir = Mass_200crit[ii] * hubble_h * mass_unit_to_internal;;
-              fof_group->Rvir = R_200crit[ii] * hubble_h;
-          }*/
-          //else {
+          if ((Mass_200crit[ii] < 3 * Mass_tot[ii])) {
+            fof_group->Mvir = Mass_200crit[ii] * hubble_h * mass_unit_to_internal;;
+            fof_group->Rvir = R_200crit[ii] * hubble_h;
+          }
+          else {
             // BELOW_VIRIAL_THRESHOLD merger halo swammping
-          if (Mass_200crit[ii] <= 0) {
-            halo->TreeFlags |= TREE_CASE_BELOW_VIRIAL_THRESHOLD;
+            if (Mass_200crit[ii] <= 0) 
+              halo->TreeFlags |= TREE_CASE_BELOW_VIRIAL_THRESHOLD;
             fof_group->Mvir = Mass_tot[ii] * hubble_h * mass_unit_to_internal;  
             fof_group->Rvir = -1;
           }
           
-          else {
+          /*else {
             fof_group->Mvir = (double)Mass_200crit[ii] * hubble_h * mass_unit_to_internal;
             fof_group->Rvir = (double)R_200crit[ii] * hubble_h;
-          }
+          }*/
           
           fof_group->Vvir = -1;
           fof_group->FOFMvirModifier = 1.0;
