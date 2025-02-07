@@ -220,16 +220,17 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   parent->MetalsColdGas += gal->MetalsColdGas;
 #if USE_2DISK_MODEL
   // Here assume that all the gas is accreting on the external part of the disk!
-  // (If there is one!)
+  // (If there is one!) 
   // Compute also the metallicity of the external part of the disk!
-  if ((3 * parent->DiskScaleLength > parent->Rstar) && (parent->Rstar > 0.)) {
+  /*if ((3 * parent->DiskScaleLength > parent->Rstar) && (parent->Rstar > 0.)) {
     parent->ColdGasD2 += gal->ColdGas;
     parent->MetalsColdGasD2 += gal->MetalsColdGas;
   }
-  else {
+  else {*/
+    // TEST THAT ALL THE GAS GOES IN THE INNER PART OF THE DISK!
     parent->ColdGasD1 += gal->ColdGas;
     parent->MetalsColdGasD1 += gal->MetalsColdGas;
-  }
+  //}
 #endif
   parent->EjectedGas += gal->EjectedGas;
   parent->MetalsEjectedGas += gal->MetalsEjectedGas;
