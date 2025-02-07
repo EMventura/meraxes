@@ -133,6 +133,8 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             else
               gal->Galaxy_Population = 3;
           }
+          else
+            gal->Galaxy_Population = 2;
 #endif
 /*#if USE_MINI_HALOS
             DiskMetallicity = calc_metallicity(
@@ -150,7 +152,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             }
 #endif
 #if USE_MINI_HALOS || USE_2DISK_MODEL 
-//Just count how many gals are forming stars (here you aren't accounting mergers!
+//Just count how many gals are forming stars (here you aren't accounting mergers!)
             if (gal->NewStars_II[0] >= 1e-10)
               *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
             
