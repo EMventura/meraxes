@@ -45,8 +45,8 @@ double gas_infall(fof_group_t* FOFgroup, int snapshot)
 #endif
 
       if (gal != central) {
-        central->HotGas += gal->HotGas + gal->EjectedGas;
-        central->MetalsHotGas += gal->MetalsHotGas + gal->MetalsEjectedGas;
+        //central->HotGas += gal->HotGas + gal->EjectedGas;
+        //central->MetalsHotGas += gal->MetalsHotGas + gal->MetalsEjectedGas;
         gal->HotGas = 0.0;
         gal->MetalsHotGas = 0.0;
         gal->EjectedGas = 0.0;
