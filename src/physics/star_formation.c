@@ -65,8 +65,9 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
       // Here I have a doubt though... Shouldn't be StellarDiskScaleLength = 3*DiskScaleLength?
       add_disks(gal, 0, new_stars, gal->DiskScaleLength, gal->VGasDisk,
                 angmom);
-      add_disks(gal, 1, -new_stars, gal->DiskScaleLength, gal->VGasDisk,
-                angmom); // subtract non-projected gas disk from total gas disk
+      // THE ONE BELOW IS NOT NEEDED!!           
+      //add_disks(gal, 1, -new_stars, gal->DiskScaleLength, gal->VGasDisk,
+      //          angmom); // subtract non-projected gas disk from total gas disk
       increment_angular_momentum(gal->AMcold, angmom, -1);
       increment_angular_momentum(gal->AMstars, angmom, +1);
     }

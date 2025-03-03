@@ -58,6 +58,8 @@ static void update_reservoirs_from_quasar_mode_bh_feedback(galaxy_t* gal, double
 #if USE_ANG_MOM
     gal->VGasDisk = 0.0;
     gal->DiskScaleLength = 0.0;
+    for (int ii = 0; ii < 3; ii++)
+      gal->AMcold[ii] = 0.0;
 #endif
     gal->MetalsColdGas = 0.0;
     central->HotGas -= m_reheat;

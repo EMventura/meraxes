@@ -132,7 +132,7 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
 #if USE_ANG_MOM
   // update the gas disk size and velocity. assumes that V=Vvir, j=jhalo and
   // R=j/2V
-  double AMcool[3];
+  double AMcool[3]; // This is total!
   specific_to_total_angmom(gal->Halo->AngMom, cooling_mass, AMcool);
   add_disks(gal, 1, cooling_mass,
             vector_magnitude(gal->Halo->AngMom) / (2 * gal->Vvir),
