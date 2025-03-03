@@ -3,8 +3,8 @@
 #include "misc_tools.h"
 #include "angular_momentum.h"
 
-// If incrementing total angular momentum then set `mass=1`.
-// Otherwise `angmom` is interpreted as specific angular momentum.
+// "If incrementing total angular momentum then set `mass=1`.
+// Otherwise `angmom` is interpreted as specific angular momentum."
 void increment_angular_momentum(double *reservoir, double *angmom,
                                 double mass) {
   for (int ii = 0; ii < 3; ii++)
@@ -39,6 +39,7 @@ double calculate_spin_param(halo_t* halo)
 #if USE_ANG_MOM
 void add_disks(galaxy_t *gal, int gas, double new_mass, double new_rad,
                double new_vel, double *new_am) {
+  // new_am is total AM!
   if ((gas == 0) && (gal->StellarDiskScaleLength < 1e-10)) {
     // First time you form stars (see star_formation.c)
     gal->VStellarDisk = new_vel;

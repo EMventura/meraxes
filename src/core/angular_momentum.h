@@ -1,6 +1,8 @@
 #ifndef ANGULAR_MOMENTUM_H
 #define ANGULAR_MOMENTUM_H
 
+#include "meraxes.h"
+
 #include <stdbool.h>
 #include <stdlib.h>
 
