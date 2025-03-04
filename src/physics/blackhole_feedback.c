@@ -89,6 +89,8 @@ static void update_reservoirs_from_quasar_mode_bh_feedback(galaxy_t* gal, double
 #if USE_ANG_MOM
     gal->VStellarDisk = 0.0;
     gal->StellarDiskScaleLength = 0.0;
+    for (int ii = 0; ii < 3; ii++)
+      gal->AMstars[ii] = 0.0;
 #endif    
     }
   if (central->EjectedGas < 0)

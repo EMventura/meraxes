@@ -73,6 +73,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     }
     else {
     // Merger burst SF scenario (add_to_bulge = 1)
+    // TODO: After this you have to update the StellarDisk as well!
       if (gal->ColdGas - new_stars > 0) {
         gal->DiskScaleLength *=
              gal->ColdGas / (gal->ColdGas - new_stars);
