@@ -54,7 +54,7 @@ void add_disks(galaxy_t *gal, int gas, double new_mass, double new_rad,
       return;
   else if (new_mass != 0) {
     double AMcombined[3];
-    if ((gas == 0) & (new_mass + gal->StellarMass > 1e-10)) {
+    if ((gas == 0) && (new_mass + gal->StellarMass > 1e-10)) {
       for (int ii = 0; ii < 3; ii++) {
         AMcombined[ii] =
             gal->AMstars[ii] + ((new_mass > 0) - (new_mass < 0)) * new_am[ii];

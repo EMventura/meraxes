@@ -36,7 +36,7 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     
 #if USE_ANG_MOM
 // Adapted from Maddie's version but there is no bulge here.
-  if (gal->StellarDiskScaleLength > 0) {
+  if (gal->StellarMass > 0) {
     double specific_delta_angmom[3];
     double total_delta_angmom[3];
     total_to_specific_angmom(gal->AMstars, gal->StellarMass,
