@@ -50,11 +50,11 @@ void add_disks(galaxy_t *gal, int gas, double new_mass, double new_rad,
     gal->DiskScaleLength = new_rad;
   } else if (((gas == 0) && (gal->StellarDiskScaleLength == new_rad)) ||
              ((gas == 1) && (gal->DiskScaleLength == new_rad)) ||
-             (new_mass == 0))
+             (fabs(new_mass) < 1e-10))
       return;
-  else if (new_mass != 0) {
+  else if (fabs(new_mass) >= 1e-10) {
     double AMcombined[3];
-    if ((gas == 0) && (new_mass + gal->StellarMass > 1e-10)) {
+    if ((gas == 0) && (fabs(new_mass + gal->StellarMass) >= 1e-10)) {
       for (int ii = 0; ii < 3; ii++) {
         AMcombined[ii] =
             gal->AMstars[ii] + ((new_mass > 0) - (new_mass < 0)) * new_am[ii];
@@ -70,7 +70,7 @@ void add_disks(galaxy_t *gal, int gas, double new_mass, double new_rad,
       gal->StellarDiskScaleLength =
           vector_magnitude(AMcombined) / (2 * mplusm * v_final);
       gal->VStellarDisk = v_final;
-    } else if ((gas == 1) && (new_mass + gal->ColdGas != 0)) {
+    } else if ((gas == 1) && (fabs(new_mass + gal->ColdGas) > 1e-10)) {
       // You have already cool down gas once (see cooling.c)
       // You enter here also when you form stars (see star_formation.c)
       // and you are removing angular momentum from gas disk
