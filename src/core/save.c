@@ -56,9 +56,9 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   galout->MaxLen = gal.MaxLen;*/
   galout->Mvir = (float)(gal.Mvir);
   galout->Rvir = (float)(gal.Rvir);
-  /*galout->Vvir = (float)(gal.Vvir);
+  galout->Vvir = (float)(gal.Vvir);
   galout->Vmax = (float)(gal.Vmax);
-  galout->Spin = (float)(gal.Spin);*/
+  galout->Spin = (float)(gal.Spin);
   galout->HotGas = (float)(gal.HotGas);
   //galout->MetalsHotGas = (float)(gal.MetalsHotGas);
   galout->ColdGas = (float)(gal.ColdGas);
@@ -145,7 +145,7 @@ void calc_hdf5_props()
     int i; // dummy
 
     //h5props->n_props = 49;
-    h5props->n_props = 9;
+    h5props->n_props = 12;
 #if USE_MINI_HALOS
     h5props->n_props += 14; // Double check later
 #endif
@@ -262,14 +262,14 @@ void calc_hdf5_props()
     h5props->field_names[i] = "Vel";
     h5props->field_units[i] = "km/s"; // comoving
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = h5props->array3f_tid;
+    h5props->field_types[i++] = h5props->array3f_tid;*/
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Spin);
     h5props->dst_field_sizes[i] = sizeof(galout.Spin);
     h5props->field_names[i] = "Spin";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Mvir);
     h5props->dst_field_sizes[i] = sizeof(galout.Mvir);
@@ -285,7 +285,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Vvir);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Vvir);
     h5props->dst_field_sizes[i] = sizeof(galout.Vvir);
     h5props->field_names[i] = "Vvir";
     h5props->field_units[i] = "km/s"; // physical
@@ -297,7 +297,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "Vmax";
     h5props->field_units[i] = "km/s"; // physical
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
     
 #if USE_ANG_MOM
     /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, VGasDisk);
