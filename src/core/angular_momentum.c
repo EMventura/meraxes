@@ -36,7 +36,7 @@ double calculate_spin_param(halo_t* halo)
   spin = sqrt(halo->AngMom[0] * halo->AngMom[0] + 
                     halo->AngMom[1] * halo->AngMom[1] +
                     halo->AngMom[2] * halo->AngMom[2]);
-  spin = spin / (1.414213562 * halo->Vvir * halo->Rvir)
+  spin = spin / (1.414213562 * halo->Vvir * halo->Rvir);
   return (double)spin;
 #else
   return halo->AngMom / (1.414213562 * halo->Vvir * halo->Rvir);
