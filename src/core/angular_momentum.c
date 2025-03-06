@@ -29,8 +29,15 @@ void specific_to_total_angmom(double *specific, double mass, double *total) {
 double calculate_spin_param(halo_t* halo)
 {
 #if USE_ANG_MOM
-  double angmom_mag = vector_magnitude(halo->AngMom);
-  return angmom_mag / (1.414213562 * halo->Vvir * halo->Rvir);
+  // Test if there is an issue from float to double 
+  // halo->AngMom is float, while vector_magnitude takes double as an argument
+  //double angmom_mag = vector_magnitude(halo->AngMom);
+  float spin;
+  spin = sqrt(halo->AngMom[0] * halo->AngMom[0] + 
+                    halo->AngMom[1] * halo->AngMom[1] +
+                    halo->AngMom[2] * halo->AngMom[2]);
+  spin = spin / (1.414213562 * halo->Vvir * halo->Rvir)
+  return (double)spin;
 #else
   return halo->AngMom / (1.414213562 * halo->Vvir * halo->Rvir);
 #endif
