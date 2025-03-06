@@ -29,6 +29,7 @@ typedef struct galaxy_output_t
 #if USE_ANG_MOM
   float AMstars[3];
   float AMcold[3];
+  float AMhalo[3];
 #endif
   float Spin;
   float Mvir;

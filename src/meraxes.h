@@ -583,6 +583,7 @@ typedef struct galaxy_t
   // angular momentum
   double AMstars[3]; //Total angular momentum vector  [Mpc/h *km/s]
   double AMcold[3]; //Total angular momentum vector  [Mpc/h *km/s]
+  double AMhalo[3];
 #endif
   double Sfr;
   double EjectedGas;

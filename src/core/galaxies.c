@@ -107,6 +107,7 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
 #if USE_ANG_MOM
     gal->AMstars[ii] = 0.0;
     gal->AMcold[ii] = 0.0;
+    gal->AMhalo[ii] = 0.0;
 #endif
   }
 
@@ -170,6 +171,9 @@ void copy_halo_props_to_galaxy(halo_t* halo, galaxy_t* gal)
   for (int ii = 0; ii < 3; ii++) {
     gal->Pos[ii] = halo->Pos[ii];
     gal->Vel[ii] = halo->Vel[ii];
+#if USE_ANG_MOM
+    gal->AMhalo[ii] = halo->AngMom[ii];
+#endif
   }
 
   // record the maximum Len value if necessary
