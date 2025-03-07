@@ -130,13 +130,13 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   gal->Mcool = cooling_mass;
   
 #if USE_ANG_MOM
-  if (cooling_mass >= 1e-10) {
     // update the gas disk size and velocity. assumes that V=Vvir, j=jhalo and
     // R=j/2V
-    double AMcool[3]; // This is total!
+  double AMcool[3]; // This is total!
     // Doing this just because you found a stupid float/double bug!
-    double newAngMom[3] = { gal->Halo->AngMom[0], gal->Halo->AngMom[1], gal->Halo->AngMom[2] };
+  double newAngMom[3] = { gal->Halo->AngMom[0], gal->Halo->AngMom[1], gal->Halo->AngMom[2] };
     specific_to_total_angmom(newAngMom, cooling_mass, AMcool);
+  if (cooling_mass >= 1e-10) {
     //specific_to_total_angmom(gal->Halo->AngMom, cooling_mass, AMcool);
     // Do this for now.
     /*double HaloAngMomMag = sqrt(gal->Halo->AngMom[0] * gal->Halo->AngMom[0] + 
