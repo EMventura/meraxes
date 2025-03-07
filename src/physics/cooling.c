@@ -135,8 +135,8 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   double AMcool[3]; // This is total!
     // Doing this just because you found a stupid float/double bug!
   double newAngMom[3] = { gal->Halo->AngMom[0], gal->Halo->AngMom[1], gal->Halo->AngMom[2] };
-    specific_to_total_angmom(newAngMom, cooling_mass, AMcool);
   if (cooling_mass >= 1e-10) {
+    specific_to_total_angmom(newAngMom, cooling_mass, AMcool);
     //specific_to_total_angmom(gal->Halo->AngMom, cooling_mass, AMcool);
     // Do this for now.
     /*double HaloAngMomMag = sqrt(gal->Halo->AngMom[0] * gal->Halo->AngMom[0] + 
