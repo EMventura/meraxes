@@ -133,18 +133,21 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   // update the gas disk size and velocity. assumes that V=Vvir, j=jhalo and
   // R=j/2V
   double AMcool[3]; // This is total!
-  specific_to_total_angmom(gal->Halo->AngMom, cooling_mass, AMcool);
+  // Doing this just because you found a stupid float/double bug!
+  double newAngMom[3] = { gal->Halo->AngMom[0], gal->Halo->AngMom[1], gal->Halo->AngMom[2] };
+  specific_to_total_angmom(newAngMom, cooling_mass, AMcool);
+  //specific_to_total_angmom(gal->Halo->AngMom, cooling_mass, AMcool);
   // Do this for now.
-  double HaloAngMomMag = sqrt(gal->Halo->AngMom[0] * gal->Halo->AngMom[0] + 
+  /*double HaloAngMomMag = sqrt(gal->Halo->AngMom[0] * gal->Halo->AngMom[0] + 
                           gal->Halo->AngMom[1] * gal->Halo->AngMom[1] +
-                          gal->Halo->AngMom[2] * gal->Halo->AngMom[2]);
+                          gal->Halo->AngMom[2] * gal->Halo->AngMom[2]);*/
   // vector_magnitude needs a double vector, not a float!!!
-  /*add_disks(gal, 1, cooling_mass,
-            vector_magnitude(gal->Halo->AngMom) / (2 * gal->Vvir),
-            gal->Vvir, AMcool);*/
   add_disks(gal, 1, cooling_mass,
-            HaloAngMomMag / (2 * gal->Vvir),
+            vector_magnitude(newAngMom) / (2 * gal->Vvir),
             gal->Vvir, AMcool);
+  /*add_disks(gal, 1, cooling_mass,
+            HaloAngMomMag / (2 * gal->Vvir),
+            gal->Vvir, AMcool);*/
 #endif
 
   // update the galaxy reservoirs
@@ -153,7 +156,9 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   gal->ColdGas += cooling_mass;
   gal->MetalsColdGas += cooling_metals;
 #if USE_ANG_MOM
-  increment_angular_momentum(gal->AMcold, gal->Halo->AngMom,
-                             cooling_mass);
+  /*increment_angular_momentum(gal->AMcold, gal->Halo->AngMom,
+                             cooling_mass);*/
+  increment_angular_momentum(gal->AMcold, newAngMom,
+                             cooling_mass);                             
 #endif
 }
