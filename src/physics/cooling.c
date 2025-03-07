@@ -134,8 +134,16 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   // R=j/2V
   double AMcool[3]; // This is total!
   specific_to_total_angmom(gal->Halo->AngMom, cooling_mass, AMcool);
-  add_disks(gal, 1, cooling_mass,
+  // Do this for now.
+  double HaloAngMomMag = sqrt(gal->Halo->AngMom[0] * gal->Halo->AngMom[0] + 
+                          gal->Halo->AngMom[1] * gal->Halo->AngMom[1] +
+                          gal->Halo->AngMom[2] * gal->Halo->AngMom[2]);
+  // vector_magnitude needs a double vector, not a float!!!
+  /*add_disks(gal, 1, cooling_mass,
             vector_magnitude(gal->Halo->AngMom) / (2 * gal->Vvir),
+            gal->Vvir, AMcool);*/
+  add_disks(gal, 1, cooling_mass,
+            HaloAngMomMag / (2 * gal->Vvir),
             gal->Vvir, AMcool);
 #endif
 
