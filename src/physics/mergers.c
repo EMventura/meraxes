@@ -191,6 +191,10 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
 #if USE_ANG_MOM
   add_disks(primary, 1, secondary->ColdGas, secondary->DiskScaleLength,
             secondary->VGasDisk, secondary->AMcold);
+  // Differently from Maddie's version, we need to add up also the stellar disks
+  // This would be different if we had bulges/major mergers.
+  add_disks(primary, 0, secondary->StellarMass, secondary->StellarDiskScaleLength,
+            secondary->VStellarDisk, secondary->AMstars);
 #endif
   // This sum of StellarMass is different from Maddie's model because we don't have major mergers
   // and we don't have bulge.

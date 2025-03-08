@@ -98,6 +98,18 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
   central->MetalsHotGas += m_reheat * metallicity;
   central->HotGas += m_reheat;
 
+  // This check was not present in Maddie's version 
+  // But I think we should do this.  
+#if USE_ANG_MOM
+  if (gal->ColdGas < 1e-10) {
+    gal->ColdGas = 0.0;
+    gal->VGasDisk = 0.0;
+    gal->DiskScaleLength = 0.0;
+    for (int ii = 0; ii < 3; ii++)
+      gal->AMcold[ii] = 0.0;
+  }
+#endif
+
   // If this is a ghost then we don't know what the real ejected mass is as we
   // don't know the properties of the halo!
   if (!gal->ghost_flag) {

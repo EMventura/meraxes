@@ -54,6 +54,8 @@ static void update_reservoirs_from_quasar_mode_bh_feedback(galaxy_t* gal, double
     central->HotGas += m_reheat;
   } else {
     metallicity = calc_metallicity(central->HotGas, central->MetalsHotGas);
+    // Amount of gas that is actually ejected
+    m_reheat -= gal->ColdGas;
     gal->ColdGas = 0.0;
 #if USE_ANG_MOM
     gal->VGasDisk = 0.0;

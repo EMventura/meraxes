@@ -53,6 +53,8 @@ void add_disks(galaxy_t *gal, int gas, double new_mass, double new_rad,
     gal->StellarDiskScaleLength = new_rad;
   } else if ((gas == 1) && (gal->DiskScaleLength < 1e-10)) {
     // First time you cool down the gas (see cooling.c)!
+    // Be careful! You enter here also if you are not cooling the gas 
+    // and your DiskScaleLength = 0!
     gal->VGasDisk = new_vel;
     gal->DiskScaleLength = new_rad;
   } else if (((gas == 0) && (gal->StellarDiskScaleLength == new_rad)) ||

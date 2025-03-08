@@ -50,7 +50,10 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     metallicity = calc_metallicity(gal->ColdGas, gal->MetalsColdGas);
     
 #if USE_ANG_MOM
-    if (type == INSITU) {
+  // You are not differentiating for SF burst mergers (differently from Maddie's version.
+  // Again, this is because you don't have bulges and you can't simply assume that AM of stars
+  // disappears.
+    //if (type == INSITU) {
       double *angmom;
       // Differently from Maddie's version you only have a disk so all stars are formed in the disk
       // In this case, we must calculate the transferred angular momentum from
@@ -69,7 +72,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
                 angmom); // subtract non-projected gas disk from total gas disk
       increment_angular_momentum(gal->AMcold, angmom, -1);
       increment_angular_momentum(gal->AMstars, angmom, +1);
-    }
+    /*}
     else {
     // Merger burst SF scenario (add_to_bulge = 1)
     // TODO: After this you have to update the StellarDisk as well!
@@ -80,7 +83,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
       else {
         gal->DiskScaleLength = 0;
       }
-    }
+    }*/
 #endif
 
     // update the galaxy's SFR value
@@ -190,6 +193,12 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     int SfPrescription = run_globals.params.physics.SfPrescription;
 
     // What velocity are we going to use as a proxy for the disk rotation velocity?
+    
+#if USE_ANG_MOM
+    // If you are tracking correctly the size of the gas disk, use that!
+    v_disk = gal->VGasDisk;
+    r_disk = gal->DiskScaleLength;
+#else
     switch (SfDiskVelOpt) {
       case 1:
         v_disk = gal->Vmax;
@@ -207,6 +216,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     // multiply it by 3 to approximate the star forming region size (ala
     // Croton+ 2006).
     r_disk = gal->DiskScaleLength * 3.0;
+#endif
 
     switch (SfPrescription) {
       case 1:
