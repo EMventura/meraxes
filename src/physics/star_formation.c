@@ -192,6 +192,10 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         // GALFORM
         m_stars = gal->ColdGas / (r_disk / v_disk / 0.029 * pow(200. / v_disk, 1.5)) * gal->dt;
         break;
+        
+      case 4:
+        // Remove (almost) all the stochasticity. What is the best way to do this?
+        m_stars = gal->ColdGas * SfEfficiency; 
 
       default:
         m_stars = 0;

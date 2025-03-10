@@ -382,6 +382,12 @@ typedef struct reion_grids_t
   fftwf_complex* deltax_filtered;
   fftwf_plan deltax_forward_plan;
   fftwf_plan deltax_filtered_reverse_plan;
+  
+  float* Ngals; // Do float just because I'm not 100% sure int is gonna work
+  fftwf_complex* Ngals_unfiltered;
+  fftwf_complex* Ngals_filtered;
+  fftwf_plan Ngals_forward_plan;
+  fftwf_plan Ngals_filtered_reverse_plan;
 
   float* sfr;
   float* sfr_histories;
