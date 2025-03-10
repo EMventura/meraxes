@@ -1886,7 +1886,7 @@ void save_reion_output_grids(int snapshot)
   H5Pset_chunk(dcpl_id, 3, (hsize_t[3]){ 1, (hsize_t)ReionGridDim, (hsize_t)ReionGridDim });
 
   // create and write the datasets
-  //write_grid_float("xH", grids->xH, file_id, fspace_id, memspace_id, dcpl_id);
+  write_grid_float("xH", grids->xH, file_id, fspace_id, memspace_id, dcpl_id);
   //write_grid_float("Ngals", grids->Ngals, file_id, fspace_id, memspace_id, dcpl_id);
   //write_grid_float("z_at_ionization", grids->z_at_ionization, file_id, fspace_id, memspace_id, dcpl_id);
   //write_grid_float("r_bubble", grids->r_bubble, file_id, fspace_id, memspace_id, dcpl_id);
@@ -1913,7 +1913,7 @@ void save_reion_output_grids(int snapshot)
   }
 #endif
 
-  /*if (run_globals.params.Flag_IncludeSpinTemp) {
+  if (run_globals.params.Flag_IncludeSpinTemp) {
     write_grid_float("TS_box", grids->TS_box, file_id, fspace_id, memspace_id, dcpl_id);
     write_grid_float("Tk_box", grids->Tk_box, file_id, fspace_id, memspace_id, dcpl_id);
 #if USE_MINI_HALOS
@@ -1935,7 +1935,7 @@ void save_reion_output_grids(int snapshot)
 #if USE_MINI_HALOS
     write_grid_float("delta_TII", grids->delta_TII, file_id, fspace_id, memspace_id, dcpl_id);
 #endif
-  }*/
+  }
 
   if (run_globals.params.Flag_ConstructLightcone && run_globals.params.EndSnapshotLightcone == snapshot &&
       snapshot != 0) {
