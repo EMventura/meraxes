@@ -44,6 +44,10 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
   else
     central = gal->Halo->FOFGroup->FirstOccupiedHalo->Galaxy;
     
+#if USE_2DISK_MODEL
+  double m_recycled = m_recycled_II + m_recycled_III;
+#endif
+    
 #if USE_ANG_MOM
 // Adapted from Maddie's version but there is no bulge here.
   if (gal->StellarMass > 1e-10) {
@@ -67,10 +71,6 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     increment_angular_momentum(gal->AMstars, total_delta_angmom, -1);
     increment_angular_momentum(gal->AMcold, total_delta_angmom, 1);
   }
-#endif
-
-#if USE_2DISK_MODEL
-  double m_recycled = m_recycled_II + m_recycled_III;
 #endif
   gal->StellarMass -= m_recycled;
 #if USE_MINI_HALOS || USE_2DISK_MODEL
