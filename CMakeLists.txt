@@ -218,6 +218,7 @@ endif()
 # TWO GAS MODEL
 if(USE_2DISK_MODEL)
 	add_definitions(-DUSE_2DISK_MODEL)
+endif()
 # ANG_MOM
 if(USE_ANG_MOM)
     add_definitions(-DUSE_ANG_MOM)
