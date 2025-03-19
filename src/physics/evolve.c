@@ -106,7 +106,9 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
           if (gal->Type < 3) {
 #if USE_2DISK_MODEL
 #if USE_ANG_MOM
-            if ((gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
+// Test to keep factor of 3. This would represent the fact that enrichment can go past the disk
+// [TODO: if we decide to confirm this we need to put as a free parameter]
+            if ((3 * gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
 #else 
             if ((3 * gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
 #endif
