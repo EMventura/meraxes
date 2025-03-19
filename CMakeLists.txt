@@ -61,6 +61,7 @@ option(USE_HST "Calculate HST band magnitude (125, 160)" OFF)
 option(USE_MINI_HALOS "Consider minihalos" OFF)
 option(USE_SCALING_REL "Use scaling relations" OFF)
 option(USE_2DISK_MODEL "Use 2 disk model" OFF)
+option(USE_ANG_MOM "Consider new Ang Mom" OFF)
 set(SECTOR_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src/sector" CACHE PATH "Base directory of sector library")
 option(BUILD_TESTS "Build criterion tests" OFF)
 option(GDB "Drop into GDB with mpi_debug_here() calls" OFF)
@@ -217,6 +218,9 @@ endif()
 # TWO GAS MODEL
 if(USE_2DISK_MODEL)
 	add_definitions(-DUSE_2DISK_MODEL)
+# ANG_MOM
+if(USE_ANG_MOM)
+    add_definitions(-DUSE_ANG_MOM)
 endif()
 
 # MAGNITUDES

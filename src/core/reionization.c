@@ -106,7 +106,7 @@ void update_galaxy_fesc_vals(galaxy_t* gal, double new_stars, int snapshot)
       break;
     case 6: // specific star formation rate (10/ Gyr)
       if ((gal->Sfr > 0.0) && (gal->StellarMass > 0.0)) {
-        fesc *= pow(gal->Sfr / gal->StellarMass / run_globals.units.UnitTime_in_s * SEC_PER_MEGAYEAR / 100,
+        fesc *= pow(gal->Sfr / gal->StellarMass / run_globals.units.UnitTime_in_s * SEC_PER_MEGAYEAR * 100,
                     params->EscapeFracPropScaling);
 #if USE_MINI_HALOS || USE_2DISK_MODEL
         fescIII *= pow(gal->Sfr / gal->StellarMass / run_globals.units.UnitTime_in_s * SEC_PER_MEGAYEAR / 100,

@@ -750,6 +750,19 @@ void get_output_magnitudes(float* mags, float* dusty_mags, galaxy_t* gal, int sn
       mags[i_band] = (float)(-2.5 * log10(pInBCFlux[i_band] + pOutBCFlux[i_band]) + 8.9 + sfr_unit);
     }
 
+    
+#if USE_ANG_MOM
+    // Slightly changed parameters but still between 84th-16th percentile found in 
+    // fit dust--gas model from Qiu, Mutch, da Cunha et al. 2019, MNRAS, 489, 1357
+    double factor = pow(calc_metallicity(gal->ColdGas, gal->MetalsColdGas) / 0.02, 1.4) * gal->ColdGas *
+                    pow(gal->DiskScaleLength * 1e3, -2.0) * exp(-0.25 * redshift);
+
+    dust_params_t dust_params = { .tauUV_ISM = 17.0 * factor,
+                                  .nISM = -1.6,
+                                  .tauUV_BC = 475.0 * factor,
+                                  .nBC = -1.6,
+                                  .tBC = run_globals.mag_params.tBC };
+#else
     // Best fit dust--gas model from Qiu, Mutch, da Cunha et al. 2019, MNRAS, 489, 1357
     double factor = pow(calc_metallicity(gal->ColdGas, gal->MetalsColdGas) / 0.02, 1.2) * gal->ColdGas *
                     pow(gal->DiskScaleLength * 1e3, -2.0) * exp(-0.35 * redshift);
@@ -758,6 +771,7 @@ void get_output_magnitudes(float* mags, float* dusty_mags, galaxy_t* gal, int sn
                                   .tauUV_BC = 381.3 * factor,
                                   .nBC = -1.6,
                                   .tBC = run_globals.mag_params.tBC };
+#endif
 
     double local_InBCFlux[MAGS_N_BANDS], local_OutBCFlux[MAGS_N_BANDS];
     memcpy(local_InBCFlux, pInBCFlux, sizeof(local_InBCFlux));

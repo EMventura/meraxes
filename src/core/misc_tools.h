@@ -44,9 +44,7 @@ extern "C"
   double interp(double xp, double* x, double* y, int nPts);
   double trapz_table(double* y, double* x, int nPts, double a, double b);
   bool check_for_flag(int flag, int tree_flags);
-  
 #if USE_SCALING_REL
-
 #define NDelta 9
 
   void read_scaling_rel_tables(void);
@@ -57,6 +55,9 @@ extern "C"
   //double NormFitting_Function(double x, double a0, double a1, double a2, double a3, double a4, double a5, double x0);
   double NormalRandNum(double ave, double std);
   int Find_DeltaIndex(double DeltaVal);
+#endif
+#if USE_ANG_MOM
+  double vector_magnitude(double vector[3]);
 #endif
 
 #ifdef __cplusplus

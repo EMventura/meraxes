@@ -122,7 +122,10 @@ USE_CUDA
 : Use CUDA accelerated reionization calculation. Default is OFF.
 
 USE_MINI_HALOS
-: Use mini-halos. Default is ON.
+: Use mini-halos according to Ventura+24 model (10.1093/mnras/stae567). Default is OFF.
+
+USE_ANG_MOM
+: Updated angular momentum according to Marshall+19 model (10.1093/mnras/stz1810). Default is OFF.
 
 USE_SCALING_REL
 : Use scaling-relations for Star formation in minihalos. Default is OFF.
