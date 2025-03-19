@@ -58,8 +58,15 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     
 #if USE_2DISK_MODEL
     // This is the star forming region. Note that the factor 3.0 here could mess things 
+#if USE_ANG_MOM
+    // Here should you use DiskScaleLength or StellarDiskScaleLenght?
+    // I believe it should be the same here!
+    if (gal->DiskScaleLength > gal->Rstar) //Rstar can only become larger!
+      gal->Rstar = gal->DiskScaleLength; 
+#else
     if (gal->DiskScaleLength * 3.0 > gal->Rstar) //Rstar can only become larger!
       gal->Rstar = gal->DiskScaleLength * 3.0; 
+#endif
     
     //metallicityD1 = calc_metallicity(gal->ColdGasD1, gal->MetalsColdGasD1); // Maybe in the future
     //metallicityD2 = calc_metallicity(gal->ColdGasD2, gal->MetalsColdGasD2);

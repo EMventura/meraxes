@@ -104,8 +104,12 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
           }
 
           if (gal->Type < 3) {
-#if USE_2DISK_MODEL 
+#if USE_2DISK_MODEL
+#if USE_ANG_MOM
+            if ((gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
+#else 
             if ((3 * gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
+#endif
               gal->ColdGasD1 += gal->ColdGasD2;
               gal->MetalsColdGasD1 += gal->MetalsColdGasD2;
               gal->ColdGasD2 = 0.0;
