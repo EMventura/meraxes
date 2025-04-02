@@ -245,8 +245,8 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
     // that the specific angular momentum of gas and stars added to the primary
     // is dictated by the host halo.
 
-    // TODO: Use the AM of the satellite gas and stellar disks, or assume have
-    // AM of halo as in Tonini?
+    // Here we use the AM of the satellite gas and stellar disks
+    // But potentially we could use the AM of halo as in Tonini.
     // primary->AMcold[ii]   += secondary->ColdGas *
     // secondary->Halo->FOFGroup->AngMom[ii];  primary->AMstars[ii] +=
     // secondary->StellarMass * secondary->Halo->FOFGroup->AngMom[ii];

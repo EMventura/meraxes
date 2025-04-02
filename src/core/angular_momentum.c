@@ -29,9 +29,6 @@ void specific_to_total_angmom(double *specific, double mass, double *total) {
 double calculate_spin_param(halo_t* halo)
 {
 #if USE_ANG_MOM
-  // Test if there is an issue from float to double 
-  // halo->AngMom is float, while vector_magnitude takes double as an argument
-  //double angmom_mag = vector_magnitude(halo->AngMom);
   float spin;
   spin = sqrt(halo->AngMom[0] * halo->AngMom[0] + 
                     halo->AngMom[1] * halo->AngMom[1] +
@@ -48,13 +45,9 @@ void add_disks(galaxy_t *gal, int gas, double new_mass, double new_rad,
                double new_vel, double *new_am) {
   // new_am is total AM!
   if ((gas == 0) && (gal->StellarDiskScaleLength < 1e-10)) {
-    // First time you form stars (see star_formation.c)
     gal->VStellarDisk = new_vel;
     gal->StellarDiskScaleLength = new_rad;
   } else if ((gas == 1) && (gal->DiskScaleLength < 1e-10)) {
-    // First time you cool down the gas (see cooling.c)!
-    // Be careful! You enter here also if you are not cooling the gas 
-    // and your DiskScaleLength = 0!
     gal->VGasDisk = new_vel;
     gal->DiskScaleLength = new_rad;
   } else if (((gas == 0) && (gal->StellarDiskScaleLength == new_rad)) ||
@@ -80,10 +73,6 @@ void add_disks(galaxy_t *gal, int gas, double new_mass, double new_rad,
           vector_magnitude(AMcombined) / (2 * mplusm * v_final);
       gal->VStellarDisk = v_final;
     } else if ((gas == 1) && (fabs(new_mass + gal->ColdGas) >= 1e-10)) {
-      // You have already cool down gas once (see cooling.c)
-      // You enter here also when you form stars (see star_formation.c)
-      // and you are removing angular momentum from gas disk
-      // You enter here also in Sn feedback (new gas)
       for (int ii = 0; ii < 3; ii++) {
        // sum each vector component of am
         AMcombined[ii] =

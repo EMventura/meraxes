@@ -195,7 +195,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     // What velocity are we going to use as a proxy for the disk rotation velocity?
     
 #if USE_ANG_MOM
-    // If you are tracking correctly the size of the gas disk, use that!
+    // Since you are tracking correctly the size of the gas disk, use that!
     v_disk = gal->VGasDisk;
     r_disk = gal->DiskScaleLength;
 #else
