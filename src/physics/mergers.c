@@ -279,7 +279,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
 #if USE_2DISK_MODEL
   if (primary->ColdGasD2 > 0){
     ExtDiskMetallicity = calc_metallicity(primary->ColdGasD2, primary->MetalsColdGasD2);
-    if ((ExtDiskMetallicity / 0.01) > run_globals.params.physics.ZCrit)
+    if ((ExtDiskMetallicity / 0.02) > run_globals.params.physics.ZCrit)
       primary->Galaxy_Population = 2;
     else
       primary->Galaxy_Population = 3;
