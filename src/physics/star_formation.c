@@ -59,9 +59,9 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
 #if USE_2DISK_MODEL
     // This is the star forming region. Note that the factor 3.0 here could mess things 
 #if USE_ANG_MOM
-    // See comment in evolve.c about why we take 3*DiskScaleLength
-    if (gal->DiskScaleLength * 3.0 > gal->Rstar) //Rstar can only become larger!
-      gal->Rstar = gal->DiskScaleLength * 3.0; 
+    // See comment in cooling.c about why we take 7*DiskScaleLength
+    if (gal->DiskScaleLength * 7.0 > gal->Rstar) //Rstar can only become larger!
+      gal->Rstar = gal->DiskScaleLength * 7.0; 
 #else
     if (gal->DiskScaleLength * 3.0 > gal->Rstar) //Rstar can only become larger!
       gal->Rstar = gal->DiskScaleLength * 3.0; 

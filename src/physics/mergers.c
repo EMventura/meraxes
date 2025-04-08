@@ -243,6 +243,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   // Here assume that all the gas is accreting on the external part of the disk!
   // (If there is one!) Be careful: there might be an inconsistency with NewAngMom
   // Compute also the metallicity of the external part of the disk!
+  // Since you added the factor of 7 I am not really sure what would be the correct thing to do
   if ((primary->DiskScaleLength > primary->Rstar) && (primary->Rstar > 0.)) {
     primary->ColdGasD2 += secondary->ColdGas;
     primary->MetalsColdGasD2 += secondary->MetalsColdGas;

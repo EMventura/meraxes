@@ -164,7 +164,10 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
 #if USE_2DISK_MODEL
   // if you have already formed stars (so Rstar > 0) and there is gas outside Rstar
 #if USE_ANG_MOM
-  if ((gal->DiskScaleLength > gal->Rstar) && (gal->Rstar > 0.)) {
+  // The factor of 7 is given by the fact that if Rstar/Rd > 7
+  // less than 1% of the gas falls outside Rstar.
+  // In principle, you could remove this condition and put just Rstar > 0
+  if ((7 * gal->DiskScaleLength > gal->Rstar) && (gal->Rstar > 0.)) {
 #else
   if ((3 * gal->DiskScaleLength > gal->Rstar) && (gal->Rstar > 0.)) {
 #endif
