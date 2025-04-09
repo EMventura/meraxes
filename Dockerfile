@@ -1,8 +1,17 @@
-# Install required tools
+FROM ubuntu:22.04
+
+# Install required tools and MPI
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     git \
+    mpich \
+    libmpich-dev \
+    pkg-config \
+    libgsl-dev \
+    libfftw3-dev \
+    libfftw3-mpi-dev \
+    libhdf5-mpi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -11,8 +20,14 @@ WORKDIR /meraxes
 # Copy all source code into container
 COPY . .
 
-# Create and move into build dir
-RUN mkdir build && cd build && cmake .. && make -j$(nproc)
+# Configure and build
+RUN mkdir build && cd build && \
+    cmake .. \
+      -DMPI_C_COMPILER=/usr/bin/mpicc \
+      -DMPI_C_INCLUDE_PATH=/usr/include/x86_64-linux-gnu/mpich \
+      -DMPI_C_LIBRARIES=/usr/lib/x86_64-linux-gnu/libmpich.so && \
+    make -j$(nproc)
 
-# Set default command (meraxes is the output binary file name)
+# Set default command
 CMD ["./build/meraxes"]
+
