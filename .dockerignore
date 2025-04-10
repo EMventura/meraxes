@@ -1,0 +1,36 @@
+# Ignore Git metadata ATM don't ignore git metadata, but after I'll have to remove this
+#.git
+.gitignore
+
+# Ignore compiled object and binary files
+*.o
+*.out
+*.exe
+*.a
+*.so
+
+# Ignore Fortran module files
+*.mod
+
+# Ignore CMake and build directories
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+install/
+meraxes        # compiled binary
+
+# Ignore documentation and plotting notebooks
+docs/
+*.ipynb
+plots/
+postprocess/
+
+# Ignore test outputs
+*.log
+*.dat
+
+# Ignore OS/system files
+.DS_Store
+Thumbs.db
