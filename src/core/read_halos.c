@@ -315,7 +315,7 @@ static void select_forests()
           int rank = rank_argsort_ind[0];
           rank_counts[rank] += final_counts[jj];
           assigned_ids[rank * max_rank_n_forests + rank_n_assigned[rank]] = forest_ids[jj];
-          //assigned_ids[rank * n_forests + rank_n_assigned[rank]] = forest_ids[jj];
+          // assigned_ids[rank * n_forests + rank_n_assigned[rank]] = forest_ids[jj];
           rank_n_assigned[rank]++;
           if (rank_n_assigned[rank] >= max_rank_n_forests) {
             mlog_error("Forest load-imbalance is above currently allowed threshold.");
@@ -372,7 +372,7 @@ static void select_forests()
   int* displs = calloc(run_globals.mpi_size, sizeof(int));
   for (int ii = 0; ii < run_globals.mpi_size; ++ii) {
     displs[ii] = ii * max_rank_n_forests;
-    //displs[ii] = ii * n_forests;
+    // displs[ii] = ii * n_forests;
   }
   MPI_Scatterv(assigned_ids,
                rank_n_assigned,

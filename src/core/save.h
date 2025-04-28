@@ -85,7 +85,7 @@ typedef struct galaxy_output_t
 #endif
 
 #if USE_2DISK_MODEL
-  float Rstar; 
+  float Rstar;
   float ColdGasD1;
   float MetalsColdGasD1;
   float ColdGasD2;

@@ -1296,7 +1296,7 @@ void evolveInt(float zp,
         zpp = (zpp_edge[zpp_ct] + zpp_edge[zpp_ct - 1]) * 0.5;
         dzpp = zpp_edge[zpp_ct - 1] - zpp_edge[zpp_ct];
       }
-	  dt_dzpp = dtdz(zpp);
+      dt_dzpp = dtdz(zpp);
 
       // Use this when using the SFR provided by Meraxes
       // Units should be M_solar/s. Factor of (dt_dzp * dzpp) converts from per s to per z'
@@ -1421,7 +1421,7 @@ void evolveInt(float zp,
 
   // stuff for marcos
   deriv[3] = dxheat_dzp;
-  
+
 #if USE_MINI_HALOS || USE_SCALING_REL
   if (run_globals.params.Flag_IncludeLymanWerner) {
     deriv[5] = (dstarlyLW_dt_GAL + dstarlyLW_dt_III) * (PLANCK * 1e21);
@@ -1429,7 +1429,7 @@ void evolveInt(float zp,
   deriv[4] = dt_dzp * (dxion_source_dt_GAL + dxion_source_dt_III);
 #else
   deriv[4] = dt_dzp * dxion_source_dt_GAL;
-  
+
 #endif
 
 #if USE_MINI_HALOS

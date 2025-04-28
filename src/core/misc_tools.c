@@ -21,7 +21,8 @@ void myexit(int signum)
 }
 
 #if USE_ANG_MOM
-double vector_magnitude(double vector[3]) {
+double vector_magnitude(double vector[3])
+{
   double magnitude = 0;
   for (int ii = 0; ii < 3; ii++)
     magnitude += vector[ii] * vector[ii];
@@ -344,7 +345,7 @@ bool check_for_flag(int flag, int tree_flags)
 
 #if USE_SCALING_REL
 static double Delta[NDelta];
-static double NormIIITable[NDelta * 120]; //substitute 120 with snap_length
+static double NormIIITable[NDelta * 120]; // substitute 120 with snap_length
 static double NormIITable[NDelta * 120];
 
 void read_scaling_rel_tables(void)
@@ -352,8 +353,8 @@ void read_scaling_rel_tables(void)
   if (run_globals.mpi_rank == 0) {
     hid_t fdd;
     char fname[STRLEN];
-    
-    sprintf(fname, "%s/ScalingFunc3_%d.hdf5", run_globals.params.ScalingRelDir,run_globals.params.ScalingRelModel);
+
+    sprintf(fname, "%s/ScalingFunc3_%d.hdf5", run_globals.params.ScalingRelDir, run_globals.params.ScalingRelModel);
     fdd = H5Fopen(fname, H5F_ACC_RDONLY, H5P_DEFAULT);
     // Read Delta [Overdensity]
     H5LTread_dataset_double(fdd, "Delta", Delta);
@@ -375,14 +376,14 @@ void initialize_ScalingRel()
 // things in a nicer way.
 {
   int Scaling_Model = run_globals.params.ScalingRelModel;
-  //int n_snaps = run_globals.params.SnaplistLength;
-  
+  // int n_snaps = run_globals.params.SnaplistLength;
+
   double MuIII;
   double SigmaIII;
   double MuII;
   double SigmaII;
-  
-  switch (Scaling_Model) { 
+
+  switch (Scaling_Model) {
     case 1:
       MuIII = -4.9;
       SigmaIII = 0.65;
@@ -403,7 +404,7 @@ void initialize_ScalingRel()
       SigmaII = 0.6;
       break;
   }
-  
+
   run_globals.mu_MCIII = MuIII;
   run_globals.mu_MCII = MuII;
   run_globals.sigma_MCIII = SigmaIII;
@@ -415,13 +416,13 @@ void initialize_ScalingRel()
        run_globals.sigma_MCIII,
        run_globals.sigma_MCII);
   // THIS IS JUST A TEST!
-/*#ifdef DEBUG
-    mlog("Init NormIII snap 5 = [", MLOG_MESG);
-    for (int ii = 0; ii < NDelta; ++ii) {
-      mlog(" %f", MLOG_CONT, NormIIITable[ii * 120 + 5]); 
-    }
-    mlog(" ]", MLOG_CONT);
-#endif*/
+  /*#ifdef DEBUG
+      mlog("Init NormIII snap 5 = [", MLOG_MESG);
+      for (int ii = 0; ii < NDelta; ++ii) {
+        mlog(" %f", MLOG_CONT, NormIIITable[ii * 120 + 5]);
+      }
+      mlog(" ]", MLOG_CONT);
+  #endif*/
 }
 
 /*void ComputeNormTables(int snapshot)
@@ -434,7 +435,7 @@ void initialize_ScalingRel()
     double a3_II = PopIIParams[i_delta * 6 + 2];
     double a4_II = PopIIParams[i_delta * 6 + 1];
     double a5_II = PopIIParams[i_delta * 6 + 0];
-  
+
     double z0_III = PopIIIz0[i_delta];
     double a0_III = PopIIIParams[i_delta * 6 + 5];
     double a1_III = PopIIIParams[i_delta * 6 + 4];
@@ -443,22 +444,24 @@ void initialize_ScalingRel()
     double a4_III = PopIIIParams[i_delta * 6 + 1];
     double a5_III = PopIIIParams[i_delta * 6 + 0];
     //mlog("Init Params = %f, %f", MLOG_MESG, a0_III, z0_III);
-    
-    NormIIITable[i_delta][snapshot] = NormFitting_Function(run_globals.ZZ[snapshot], a0_III, a1_III, a2_III, a3_III, a4_III, a5_III, z0_III);
-    NormIITable[i_delta][snapshot] = NormFitting_Function(run_globals.ZZ[snapshot], a0_II, a1_II, a2_II, a3_II, a4_II, a5_II, z0_II);
+
+    NormIIITable[i_delta][snapshot] = NormFitting_Function(run_globals.ZZ[snapshot], a0_III, a1_III, a2_III, a3_III,
+a4_III, a5_III, z0_III); NormIITable[i_delta][snapshot] = NormFitting_Function(run_globals.ZZ[snapshot], a0_II, a1_II,
+a2_II, a3_II, a4_II, a5_II, z0_II);
     //if (snapshot == 2)
-    //  mlog("Init Norm Scaling at Delta = %f and snap 2 = %f ", MLOG_MESG, Delta[i_delta], NormIIITable[i_delta][snapshot]);
+    //  mlog("Init Norm Scaling at Delta = %f and snap 2 = %f ", MLOG_MESG, Delta[i_delta],
+NormIIITable[i_delta][snapshot]);
   }
 }*/
 
 double get_NormValue(int i_delta, int snapshot, int flag)
 {
   if (flag == 3)
-    //return NormIIITable[snapshot][i_delta];
+    // return NormIIITable[snapshot][i_delta];
     return NormIIITable[snapshot * 9 + i_delta];
-  
+
   else if (flag == 2)
-    //return NormIITable[snapshot][i_delta];
+    // return NormIITable[snapshot][i_delta];
     return NormIITable[snapshot * 9 + i_delta];
 }
 
@@ -476,8 +479,8 @@ double NormalRandNum(double ave, double std) // Generate normal random number
   double U1 = gsl_rng_uniform(run_globals.random_generator);
   double U2 = gsl_rng_uniform(run_globals.random_generator);
 
-  double RanNorm = sqrt(-2*log(U1)) * cos(2*M_PI*U2);
-  
+  double RanNorm = sqrt(-2 * log(U1)) * cos(2 * M_PI * U2);
+
   return ave + std * RanNorm;
 }
 
@@ -487,26 +490,26 @@ int Find_DeltaIndex(double DeltaVal)
   double DDelta = Delta[1] - Delta[0];
   for (int i = 0; i < NDelta; i++) {
     if (i == 0) {
-      if (DeltaVal < Delta[i] + DDelta / 2.0); {
+      if (DeltaVal < Delta[i] + DDelta / 2.0)
+        ;
+      {
         delta_index = i;
-        //break;
+        // break;
       }
-    }
-    else if (i == NDelta - 1) {
+    } else if (i == NDelta - 1) {
       if (DeltaVal >= Delta[i] - DDelta / 2.0) {
-        delta_index = i; 
-        //break;
+        delta_index = i;
+        // break;
       }
-      //else
-      //  mlog_error("Haven't found the Delta index");
-    }
-    else {
+      // else
+      //   mlog_error("Haven't found the Delta index");
+    } else {
       if (fabs(DeltaVal - Delta[i]) < DDelta / 2.0) {
         delta_index = i;
-       // break;
+        // break;
       }
     }
   }
-  return delta_index;  
+  return delta_index;
 }
 #endif

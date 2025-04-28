@@ -20,14 +20,14 @@ extern "C"
                                           double m_remnant,
                                           double new_metals);
 #else
-  void update_reservoirs_from_sn_feedback(struct galaxy_t* gal,
-                                          double m_reheat,
-                                          double m_eject,
-                                          double m_recycled,
-                                          double m_recycled_III,
-                                          double m_recycled_II,
-                                          double m_remnant,
-                                          double new_metals);
+void update_reservoirs_from_sn_feedback(struct galaxy_t* gal,
+                                        double m_reheat,
+                                        double m_eject,
+                                        double m_recycled,
+                                        double m_recycled_III,
+                                        double m_recycled_II,
+                                        double m_remnant,
+                                        double new_metals);
 #endif
   void delayed_supernova_feedback(struct galaxy_t* gal, int snapshot);
 #if USE_MINI_HALOS
@@ -45,14 +45,14 @@ extern "C"
                                           double* m_remnant,
                                           double* new_metals);
 #else
-  void contemporaneous_supernova_feedback(struct galaxy_t* gal,
-                                          double* m_stars,
-                                          int snapshot,
-                                          double* m_reheat,
-                                          double* m_eject,
-                                          double* m_recycled,
-                                          double* m_remnant,
-                                          double* new_metals);
+void contemporaneous_supernova_feedback(struct galaxy_t* gal,
+                                        double* m_stars,
+                                        int snapshot,
+                                        double* m_reheat,
+                                        double* m_eject,
+                                        double* m_recycled,
+                                        double* m_remnant,
+                                        double* new_metals);
 #endif
 
 #ifdef __cplusplus

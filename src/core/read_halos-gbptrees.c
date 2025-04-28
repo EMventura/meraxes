@@ -225,7 +225,7 @@ static void read_catalog_halos(FILE** fin,
 inline static void convert_input_virial_props(double* Mvir,
                                               double* Rvir,
                                               double* Vvir,
-                                              //double* FOFMvirModifier,
+                                              // double* FOFMvirModifier,
                                               int len,
                                               int snapshot)
 {
@@ -462,9 +462,10 @@ void read_trees__gbptrees(int snapshot,
 
           cur_group->Mvir = cur_cat_group->M_vir;
           cur_group->Rvir = cur_cat_group->R_vir;
-          //cur_group->FOFMvirModifier = 1.0;
+          // cur_group->FOFMvirModifier = 1.0;
 
-          //convert_input_virial_props(&(cur_group->Mvir), &(cur_group->Rvir), &(cur_group->Vvir), &(cur_group->FOFMvirModifier), -1, snapshot);
+          // convert_input_virial_props(&(cur_group->Mvir), &(cur_group->Rvir), &(cur_group->Vvir),
+          // &(cur_group->FOFMvirModifier), -1, snapshot);
           convert_input_virial_props(&(cur_group->Mvir), &(cur_group->Rvir), &(cur_group->Vvir), -1, snapshot);
 
           fof_group[(*n_fof_groups_kept)++].FirstHalo = &(halo[*n_halos_kept]);
@@ -490,7 +491,9 @@ void read_trees__gbptrees(int snapshot,
         cur_halo->AngMom[1] = cur_cat_halo->ang_mom[1];
         cur_halo->AngMom[2] = cur_cat_halo->ang_mom[2];
 #else
-        cur_halo->AngMom = sqrt(cur_cat_halo->ang_mom[0] * cur_cat_halo->ang_mom[0] + cur_cat_halo->ang_mom[1] * cur_cat_halo->ang_mom[1] + cur_cat_halo->ang_mom[2]* cur_cat_halo->ang_mom[2]);
+        cur_halo->AngMom = sqrt(cur_cat_halo->ang_mom[0] * cur_cat_halo->ang_mom[0] +
+                                cur_cat_halo->ang_mom[1] * cur_cat_halo->ang_mom[1] +
+                                cur_cat_halo->ang_mom[2] * cur_cat_halo->ang_mom[2]);
 #endif
         cur_halo->Galaxy = NULL;
         cur_halo->Mvir = cur_cat_halo->M_vir;
@@ -506,7 +509,7 @@ void read_trees__gbptrees(int snapshot,
         else
           Len = cur_halo->Len;
 
-        //convert_input_virial_props(&(cur_halo->Mvir), &(cur_halo->Rvir), &(cur_halo->Vvir), NULL, Len, snapshot);
+        // convert_input_virial_props(&(cur_halo->Mvir), &(cur_halo->Rvir), &(cur_halo->Vvir), NULL, Len, snapshot);
         convert_input_virial_props(&(cur_halo->Mvir), &(cur_halo->Rvir), &(cur_halo->Vvir), Len, snapshot);
 
         // // Replace the virial properties of the FOF group by those of the first

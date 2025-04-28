@@ -44,8 +44,7 @@ static void update_reservoirs_from_quasar_mode_bh_feedback(galaxy_t* gal, double
     total_to_specific_angmom(gal->AMcold, gal->ColdGas, angmom);
     double AMheat[3];
     specific_to_total_angmom(angmom, m_reheat, AMheat);
-    add_disks(gal, 1, -m_reheat, gal->DiskScaleLength, gal->VGasDisk,
-              AMheat);
+    add_disks(gal, 1, -m_reheat, gal->DiskScaleLength, gal->VGasDisk, AMheat);
     increment_angular_momentum(gal->AMcold, AMheat, -1);
 #endif
     gal->ColdGas -= m_reheat;
@@ -76,14 +75,14 @@ static void update_reservoirs_from_quasar_mode_bh_feedback(galaxy_t* gal, double
   if (central->MetalsHotGas < 0)
     central->MetalsHotGas = 0.0;
   if (gal->ColdGas < 0) {
-    gal->ColdGas = 0.0; 
+    gal->ColdGas = 0.0;
 #if USE_ANG_MOM
     gal->VGasDisk = 0.0;
     gal->DiskScaleLength = 0.0;
     for (int ii = 0; ii < 3; ii++)
       gal->AMcold[ii] = 0.0;
 #endif
-    }
+  }
   if (gal->MetalsColdGas < 0)
     gal->MetalsColdGas = 0.0;
   if (gal->StellarMass < 0) {
@@ -93,8 +92,8 @@ static void update_reservoirs_from_quasar_mode_bh_feedback(galaxy_t* gal, double
     gal->StellarDiskScaleLength = 0.0;
     for (int ii = 0; ii < 3; ii++)
       gal->AMstars[ii] = 0.0;
-#endif    
-    }
+#endif
+  }
   if (central->EjectedGas < 0)
     central->EjectedGas = 0.0;
   if (central->MetalsEjectedGas < 0)
