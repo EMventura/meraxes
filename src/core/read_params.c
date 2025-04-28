@@ -879,11 +879,7 @@ void read_parameter_file(char* fname, int mode)
 
       strncpy(params_tag[n_param], "Flag_IncludeMetalEvo", tag_length); // New for MetalEvo
       params_addr[n_param] = &(run_params->Flag_IncludeMetalEvo);
-#if USE_MINI_HALOS
       required_tag[n_param] = 1;
-#else
-      required_tag[n_param] = 0;
-#endif
       params_type[n_param++] = PARAM_TYPE_INT;
    
       // Each model corresponds to a combination of AstroParameter for Pop. III 
@@ -964,11 +960,8 @@ void read_parameter_file(char* fname, int mode)
 
       strncpy(params_tag[n_param], "MetalGridDim", tag_length); // New for MetalEvo
       params_addr[n_param] = &(run_params->MetalGridDim);
-#if USE_MINI_HALOS
       required_tag[n_param] = 1;
-#else
       required_tag[n_param] = 0;
-#endif
       params_type[n_param++] = PARAM_TYPE_INT;
 
       strncpy(params_tag[n_param], "ReionRBubbleMin", tag_length);

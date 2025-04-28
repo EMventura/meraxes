@@ -7,9 +7,7 @@
 #include "parse_paramfile.h"
 #include "reionization.h"
 #include "save.h"
-#if USE_MINI_HALOS
 #include "metal_evo.h"
-#endif
 
 static float current_mwmsa(galaxy_t* gal, int i_snap)
 {
@@ -851,22 +849,20 @@ void create_master_file()
     }
   }
 
-#if USE_MINI_HALOS
   if (run_globals.params.Flag_IncludeMetalEvo) {
     const char* group_name = { "Units/MetalGrids" };
     group_id = H5Gcreate(file_id, group_name, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    H5LTset_attribute_string(file_id, group_name, "mass_metals", "solMass");
-    H5LTset_attribute_string(file_id, group_name, "mass_gas", "solMass");
+    //H5LTset_attribute_string(file_id, group_name, "mass_metals", "solMass");
+    //H5LTset_attribute_string(file_id, group_name, "mass_gas", "solMass");
     H5LTset_attribute_string(file_id, group_name, "Zigm_box", "Zsol");
     H5LTset_attribute_string(file_id, group_name, "Probability_metals", "none");
-    H5LTset_attribute_string(file_id, group_name, "N_bubbles", "none");
-    H5LTset_attribute_string(file_id, group_name, "R_ave", "cMpc");
-    H5LTset_attribute_string(file_id, group_name, "R_max", "cMpc");
-    H5LTset_attribute_string(file_id, group_name, "mass_IGM", "solMass");
+    //H5LTset_attribute_string(file_id, group_name, "N_bubbles", "none");
+    //H5LTset_attribute_string(file_id, group_name, "R_ave", "cMpc");
+    //H5LTset_attribute_string(file_id, group_name, "R_max", "cMpc");
+    //H5LTset_attribute_string(file_id, group_name, "mass_IGM", "solMass");
 
     H5Gclose(group_id);
   }
-#endif
 
   if (run_globals.params.Flag_PatchyReion) {
     {
@@ -1065,7 +1061,6 @@ void create_master_file()
         }
       }
 
-#if USE_MINI_HALOS
       if ((i_core == 0) && (run_globals.params.Flag_IncludeMetalEvo)) {
         // create links to the 21cmFAST grids that exist
         gen_metal_grids_fname(run_globals.ListOutputSnaps[i_out], relative_source_file, true);
@@ -1076,7 +1071,6 @@ void create_master_file()
           H5Fclose(source_file_id);
         }
       }
-#endif
     }
 
     // Save a few useful attributes

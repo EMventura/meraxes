@@ -17,9 +17,9 @@
 #include "save.h"
 #include "stellar_feedback.h"
 #include "virial_properties.h"
+#include "metal_evo.h"
 #if USE_MINI_HALOS || USE_2DISK_MODEL
 #include "PopIII.h"
-#include "metal_evo.h"
 #endif
 
 static void init_gpu()
@@ -211,10 +211,8 @@ void init_storage()
 
   malloc_reionization_grids();
 
-#if USE_MINI_HALOS
   if (run_globals.params.Flag_IncludeMetalEvo)
     malloc_metal_grids();
-#endif
 
   // calculate the output hdf5 file properties for later use
   calc_hdf5_props();

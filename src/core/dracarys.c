@@ -10,10 +10,10 @@
 #include "physics/reionization.h"
 #include "read_halos.h"
 #include "reionization.h"
-#if USE_MINI_HALOS
-#include "PopIII.h"
 #include "metal_evo.h"
 #include "read_grids.h"
+#if USE_MINI_HALOS
+#include "PopIII.h"
 #include "stellar_feedback.h"
 #include "virial_properties.h"
 #endif
@@ -320,7 +320,6 @@ void dracarys()
       }
     }
 
-#if USE_MINI_HALOS
     if (run_globals.params.Flag_IncludeMetalEvo) { // Need this for metal grid, here you assign to galaxies their
                                                    // metallicity and probabilities from bubbles
       int ngals_in_metal_slabs = map_galaxies_to_slabs_metals(NGal);
@@ -328,7 +327,6 @@ void dracarys()
         assign_probability_to_galaxies(ngals_in_metal_slabs, snapshot, ii);
       }
     }
-#endif
 
     // Do the physics
     if (NGal > 0)
@@ -395,7 +393,6 @@ void dracarys()
       free(run_globals.reion_grids.galaxy_to_slab_map);
     }
 
-#if USE_MINI_HALOS
     if (run_globals.params.Flag_IncludeMetalEvo) {
 
       construct_metal_grids(snapshot, nout_gals);
@@ -403,7 +400,6 @@ void dracarys()
       save_metal_input_grids(snapshot);
       free(run_globals.metal_grids.galaxy_to_slab_map_metals);
     }
-#endif
 
 #ifdef DEBUG
     // print some statistics for this snapshot

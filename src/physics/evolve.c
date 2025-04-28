@@ -36,10 +36,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
   double cooling_mass = 0;
   int NSteps = run_globals.params.NSteps;
   bool Flag_IRA = (bool)(run_globals.params.physics.Flag_IRA);
-#if USE_MINI_HALOS
-  //double DiskMetallicity; // Need this to compute the internal enrichment in a more accurate way
   bool Flag_Metals = (bool)(run_globals.params.Flag_IncludeMetalEvo);
-#endif
 #if USE_2DISK_MODEL
   double ExtDiskMetallicity; // Metallicity of External Disk
   double HotGasMetallicity; // Metallicity of HotGas 
@@ -63,7 +60,6 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 
         while (gal != NULL) {
         
-/*#if USE_MINI_HALOS
           if (Flag_Metals ==
               true) { // Assign to newly formed galaxies metallicity of their cell according to a certain probability
             if ((gal->Type == 0) &&
@@ -73,23 +69,24 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
                   (gal->GrossStellarMass + gal->GrossStellarMassIII) > 1e-10) {
                 gal->Flag_ExtMetEnr = 1; // Just update the flag. Here what I am saying is that a galaxy that already
                                          // experienced SN events will surely be inside a metal bubble!
-
+#if USE_MINI_HALOS
                 *gal_counter_enriched = *gal_counter_enriched + 1;
-                if ((gal->Metallicity_IGM / 0.01) > run_globals.params.physics.ZCrit) {
+                if ((gal->Metallicity_IGM / 0.02) > run_globals.params.physics.ZCrit) {
                   *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
                   gal->Galaxy_Population = 2;
                 } else
                   gal->Galaxy_Population = 3; // Enriched but not enough
+#endif
               }
-
               else {
+#if USE_MINI_HALOS
                 gal->Galaxy_Population = 3;
-                gal->Flag_ExtMetEnr = 0;
                 *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
-              }
+#endif
+                gal->Flag_ExtMetEnr = 0;
+                }
             }
           }
-#endif*/
 
           if (gal->Type == 0) {
             cooling_mass = gas_cooling(gal);
@@ -152,11 +149,9 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 #endif*/
             insitu_star_formation(gal, snapshot);
 
-#if USE_MINI_HALOS
             if ((Flag_Metals == true) && (gal->Type < 3)) { // For gal->Type > 0 you are just letting the bubble grow
               calc_metal_bubble(gal, snapshot);
             }
-#endif
 #if USE_MINI_HALOS || USE_2DISK_MODEL 
 //Just count how many gals are forming stars (here you aren't accounting mergers!)
             if (gal->NewStars_II[0] >= 1e-10)
