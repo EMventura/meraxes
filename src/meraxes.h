@@ -339,7 +339,6 @@ typedef struct hdf5_output_t
   // TOTAL : 52 + 4 padding (must be multiple of 8)
 } hdf5_output_t;
 
-#if USE_MINI_HALOS
 typedef struct metal_grids_t // New stuff for MetalEvo, probably you will need to add new stuff
 {
   ptrdiff_t* slab_nix_metals;
@@ -364,7 +363,6 @@ typedef struct metal_grids_t // New stuff for MetalEvo, probably you will need t
   float* R_max; // Max radius in the bubble
 
 } metal_grids_t;
-#endif
 
 typedef struct reion_grids_t
 {
@@ -628,8 +626,6 @@ typedef struct galaxy_t
                        // [8,40]Msun. Atm those are silent
 #endif
 
-#if USE_MINI_HALOS
-
   // Metallicity stuff
   double RmetalBubble; // New for MetalEvo
   double PrefactorBubble;
@@ -646,7 +642,6 @@ typedef struct galaxy_t
   double Prefactor[N_HISTORY_SNAPS]; // here you store the prefactors of the metal bubbles
   double Times[N_HISTORY_SNAPS];     // Time at which the SN explode!
   double Radii[N_HISTORY_SNAPS];
-#endif
 
   // baryonic hostories
   double mwmsa_num;
@@ -777,9 +772,7 @@ typedef struct run_globals_t
   struct run_params_t params;
   char FNameOut[STRLEN];
   reion_grids_t reion_grids;
-#if USE_MINI_HALOS
   metal_grids_t metal_grids;
-#endif
   struct run_units_t units;
   hdf5_output_t hdf5props;
 

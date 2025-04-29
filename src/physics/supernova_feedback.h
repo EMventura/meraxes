@@ -2,11 +2,6 @@
 #define SUPERNOVA_FEEDBACK_H
 
 #include "meraxes.h"
-
-#define EnergySN 1e51  // erg, maybe you can read it from tables
-#define N_SN_Pop2 0.01 // number of SN x solar mass, you might add this as an input parameter
-#define N_SN_Pop3 0.1  // So far you don't have separation between Pop 2 and Pop 3 but soon...
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -30,9 +25,7 @@ extern "C"
                                           double new_metals);
 #endif
   void delayed_supernova_feedback(struct galaxy_t* gal, int snapshot);
-#if USE_MINI_HALOS
   void calc_metal_bubble(struct galaxy_t* gal, int snapshot);
-#endif
 #if USE_2DISK_MODEL
   void contemporaneous_supernova_feedback(struct galaxy_t* gal,
                                           double* m_stars,

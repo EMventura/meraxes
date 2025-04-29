@@ -7,11 +7,8 @@
 #include "read_grids.h"
 #include "reionization.h"
 #include <string.h>
-
-#if USE_MINI_HALOS
 #include "metal_evo.h"
 #include <math.h>
-#endif
 
 void read_grid(const enum grid_prop property, const int snapshot, float* slab)
 {
@@ -55,7 +52,6 @@ double calc_resample_factor(int n_cell[3])
     return 1.0;
 }
 
-#if USE_MINI_HALOS
 void smooth_Densitygrid_real(int snapshot) // Need this to put the overdensity in the metal grid.
 {
   mlog("Smoothing the overdensity of the reionization grid into the metal grid...", MLOG_MESG);
@@ -123,7 +119,6 @@ void smooth_Densitygrid_real(int snapshot) // Need this to put the overdensity i
   }
   mlog("...done", MLOG_MESG);
 }
-#endif
 
 void smooth_grid(double resample_factor,
                  int n_cell[3],

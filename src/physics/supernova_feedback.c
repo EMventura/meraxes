@@ -645,7 +645,6 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
   assert(*m_eject >= 0);
 }
 
-#if USE_MINI_HALOS
 void calc_metal_bubble(galaxy_t* gal, int snapshot) // result in internal units (Mpc/h) This new function assumes that a
                                                     // bubble will overtake a previous one in no more than 17 snapshots!
 {
@@ -731,4 +730,3 @@ void calc_metal_bubble(galaxy_t* gal, int snapshot) // result in internal units 
   }
   gal->Radii[0] = 0.0;
 }
-#endif

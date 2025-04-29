@@ -6,7 +6,6 @@
 #include <math.h>
 #include <sys/stat.h>
 
-#if USE_MINI_HALOS
 #include "meraxes.h"
 #include "metal_evo.h"
 #include "misc_tools.h"
@@ -57,9 +56,9 @@ void construct_metal_grids(int snapshot, int local_ngals)
   float* mass_metals_grid_metals = run_globals.metal_grids.mass_metals;
   float* mass_gas_grid_metals = run_globals.metal_grids.mass_gas;
   float* prob_grid_metals = run_globals.metal_grids.Probability_metals;
-  float* Rave_grid_metals = run_globals.metal_grids.R_ave;
-  float* Rmax_grid_metals = run_globals.metal_grids.R_max;
-  float* count_bubble_metals = run_globals.metal_grids.N_bubbles;
+  //float* Rave_grid_metals = run_globals.metal_grids.R_ave;
+  //float* Rmax_grid_metals = run_globals.metal_grids.R_max;
+  //float* count_bubble_metals = run_globals.metal_grids.N_bubbles;
 
   int MetalGridDim = run_globals.params.MetalGridDim;
   double redshift = run_globals.ZZ[snapshot];
@@ -77,9 +76,9 @@ void construct_metal_grids(int snapshot, int local_ngals)
     mass_metals_grid_metals[ii] = 0.0;
     mass_gas_grid_metals[ii] = 0.0;
     prob_grid_metals[ii] = 0.0;
-    count_bubble_metals[ii] = 0.0;
-    Rave_grid_metals[ii] = 0.0;
-    Rmax_grid_metals[ii] = 0.0;
+    //count_bubble_metals[ii] = 0.0;
+    //Rave_grid_metals[ii] = 0.0;
+    //Rmax_grid_metals[ii] = 0.0;
   }
 
   // loop through each slab
@@ -89,9 +88,9 @@ void construct_metal_grids(int snapshot, int local_ngals)
   enum property
   {
     prop_prob,
-    prop_count,
-    prop_Rave,
-    prop_Rmax,
+    //prop_count,
+    //prop_Rave,
+    //prop_Rmax,
     prop_mass_ej_metals,
     prop_mass_ej_gas
   };
@@ -149,7 +148,7 @@ void construct_metal_grids(int snapshot, int local_ngals)
 
               break;
 
-            case prop_Rave:
+            /*case prop_Rave:
 
               if (gal->RmetalBubble > 0.)
                 buffer_metals[ind] += gal->RmetalBubble * (1 + redshift); // cMpc/h
@@ -168,7 +167,7 @@ void construct_metal_grids(int snapshot, int local_ngals)
               if (gal->RmetalBubble > 0.)
                 buffer_metals[ind] += 1;
 
-              break;
+              break;*/
 
             case prop_mass_ej_metals:
 
@@ -233,7 +232,7 @@ void construct_metal_grids(int snapshot, int local_ngals)
                 }
             break;
 
-          case prop_count:
+          /*case prop_count:
             for (int ix = 0; ix < slab_nix_metals[i_r]; ix++)
               for (int iy = 0; iy < MetalGridDim; iy++)
                 for (int iz = 0; iz < MetalGridDim; iz++) {
@@ -265,7 +264,7 @@ void construct_metal_grids(int snapshot, int local_ngals)
                   if (val >= Rmax_grid_metals[grid_index(ix, iy, iz, MetalGridDim, INDEX_REAL)])
                     Rmax_grid_metals[grid_index(ix, iy, iz, MetalGridDim, INDEX_REAL)] = val;
                 }
-            break;
+            break;*/
 
           case prop_mass_ej_metals: // Need this to compute average metallicity of the cell
             for (int ix = 0; ix < slab_nix_metals[i_r]; ix++)
@@ -355,7 +354,7 @@ void save_metal_input_grids(int snapshot)
           (float)((grids->Probability_metals)[grid_index(ii, jj, kk, MetalGridDim, INDEX_REAL)]);
   write_grid_float("Probability_metals", grid, file_id, fspace_id, memspace_id, dcpl_id);
 
-  for (int ii = 0; ii < local_nix_metals; ii++)
+  /*for (int ii = 0; ii < local_nix_metals; ii++)
     for (int jj = 0; jj < MetalGridDim; jj++)
       for (int kk = 0; kk < MetalGridDim; kk++)
         grid[grid_index(ii, jj, kk, MetalGridDim, INDEX_REAL)] =
@@ -367,7 +366,7 @@ void save_metal_input_grids(int snapshot)
       for (int kk = 0; kk < MetalGridDim; kk++)
         grid[grid_index(ii, jj, kk, MetalGridDim, INDEX_REAL)] =
           (float)((grids->R_max)[grid_index(ii, jj, kk, MetalGridDim, INDEX_REAL)]);
-  write_grid_float("Max Radius", grid, file_id, fspace_id, memspace_id, dcpl_id);
+  write_grid_float("Max Radius", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
   for (int ii = 0; ii < local_nix_metals; ii++)
     for (int jj = 0; jj < MetalGridDim; jj++)
@@ -376,12 +375,12 @@ void save_metal_input_grids(int snapshot)
           (float)((grids->mass_IGM)[grid_index(ii, jj, kk, MetalGridDim, INDEX_REAL)] * UnitMass_in_g / SOLAR_MASS);
   write_grid_float("mass_IGM", grid, file_id, fspace_id, memspace_id, dcpl_id);
 
-  for (int ii = 0; ii < local_nix_metals; ii++)
+  /*for (int ii = 0; ii < local_nix_metals; ii++)
     for (int jj = 0; jj < MetalGridDim; jj++)
       for (int kk = 0; kk < MetalGridDim; kk++)
         grid[grid_index(ii, jj, kk, MetalGridDim, INDEX_REAL)] =
           roundf((grids->N_bubbles)[grid_index(ii, jj, kk, MetalGridDim, INDEX_REAL)]);
-  write_grid_float("N_bubbles", grid, file_id, fspace_id, memspace_id, dcpl_id);
+  write_grid_float("N_bubbles", grid, file_id, fspace_id, memspace_id, dcpl_id);*/
 
   for (int ii = 0; ii < local_nix_metals; ii++)
     for (int jj = 0; jj < MetalGridDim; jj++)
@@ -422,11 +421,11 @@ void init_metal_grids()
   for (int ii = 0; ii < slab_n_real_metals; ii++) {
     grids->mass_metals[ii] = (float)0.;
     grids->mass_gas[ii] = (float)0.;
-    grids->Zigm_box[ii] = (float)0.;
+    //grids->Zigm_box[ii] = (float)0.;
     grids->Probability_metals[ii] = (float)0.;
-    grids->N_bubbles[ii] = (int)0;
+    /*grids->N_bubbles[ii] = (int)0;
     grids->R_ave[ii] = (float)0.;
-    grids->R_max[ii] = (float)0.;
+    grids->R_max[ii] = (float)0.;*/
     grids->mass_IGM[ii] = (float)0.;
   }
 }
@@ -441,11 +440,11 @@ void malloc_metal_grids()
 
   grids->mass_metals = NULL;
   grids->mass_gas = NULL;
-  grids->Zigm_box = NULL;
+  //grids->Zigm_box = NULL;
   grids->Probability_metals = NULL;
-  grids->N_bubbles = NULL;
+  /*grids->N_bubbles = NULL;
   grids->R_ave = NULL;
-  grids->R_max = NULL;
+  grids->R_max = NULL;*/
   grids->mass_IGM = NULL;
 
   assign_slabs_metals();
@@ -491,11 +490,11 @@ void free_metal_grids()
 
   fftwf_free(grids->mass_gas);
   fftwf_free(grids->mass_metals);
-  fftwf_free(grids->Zigm_box);
+  //fftwf_free(grids->Zigm_box);
   fftwf_free(grids->Probability_metals);
-  fftwf_free(grids->N_bubbles);
+  /*fftwf_free(grids->N_bubbles);
   fftwf_free(grids->R_ave);
-  fftwf_free(grids->R_max);
+  fftwf_free(grids->R_max);*/
   fftwf_free(grids->mass_IGM);
 
   fftwf_free(grids->buffer_metals);
@@ -561,8 +560,8 @@ void assign_probability_to_galaxies(int ngals_in_metal_slabs, int snapshot, int 
   float* Probability_metals = run_globals.metal_grids.Probability_metals;
   float* mass_metals = run_globals.metal_grids.mass_metals;
   float* mass_IGM = run_globals.metal_grids.mass_IGM;
-  float* Rave_metals = run_globals.metal_grids.R_ave;
-  float* Rmax_metals = run_globals.metal_grids.R_max;
+  /*float* Rave_metals = run_globals.metal_grids.R_ave;
+  float* Rmax_metals = run_globals.metal_grids.R_max;*/
   int total_assigned = 0;
 
   if (flag_property == 0)
@@ -574,11 +573,11 @@ void assign_probability_to_galaxies(int ngals_in_metal_slabs, int snapshot, int 
   if (flag_property == 2)
     mlog("Assigning gas IGM for metals...", MLOG_OPEN);
 
-  if (flag_property == 3)
+  /*if (flag_property == 3)
     mlog("Assigning Rave for metals...", MLOG_OPEN);
 
   if (flag_property == 4)
-    mlog("Assigning Rmax for metals...", MLOG_OPEN);
+    mlog("Assigning Rmax for metals...", MLOG_OPEN);*/
 
   int slab_map_offsets[run_globals.mpi_size];
   for (int ii = 0, i_gal = 0; ii < run_globals.mpi_size; ii++) {
@@ -733,7 +732,7 @@ void assign_probability_to_galaxies(int ngals_in_metal_slabs, int snapshot, int 
       }
     }
 
-    if (flag_property == 3) {
+    /*if (flag_property == 3) {
 
       if (i_skip > 0) {
         MPI_Sendrecv(&recv_flag,
@@ -819,7 +818,7 @@ void assign_probability_to_galaxies(int ngals_in_metal_slabs, int snapshot, int 
         int n_cells = (int)(slab_nix_metals[recv_from_rank] * MetalGridDim * MetalGridDim);
         memcpy(buffer_metals, Rmax_metals, sizeof(float) * n_cells);
       }
-    }
+    }*/
 
     if (recv_flag) {
       int i_gal = slab_map_offsets[recv_from_rank];
@@ -845,11 +844,11 @@ void assign_probability_to_galaxies(int ngals_in_metal_slabs, int snapshot, int 
           gal->Metallicity_IGM = calc_metallicity(gal->Gas_IGM, gal->Metals_IGM);
         }
 
-        if (flag_property == 3)
+        /*if (flag_property == 3)
           gal->AveBubble = (double)buffer_metals[grid_index(ix, iy, iz, MetalGridDim, INDEX_REAL)];
 
         if (flag_property == 4)
-          gal->MaxBubble = (double)buffer_metals[grid_index(ix, iy, iz, MetalGridDim, INDEX_REAL)];
+          gal->MaxBubble = (double)buffer_metals[grid_index(ix, iy, iz, MetalGridDim, INDEX_REAL)];*/
 
         // increment counters
         i_gal++;
@@ -863,5 +862,3 @@ void assign_probability_to_galaxies(int ngals_in_metal_slabs, int snapshot, int 
 
   mlog("...done.", MLOG_CLOSE);
 }
-
-#endif

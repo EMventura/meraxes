@@ -323,7 +323,7 @@ void dracarys()
     if (run_globals.params.Flag_IncludeMetalEvo) { // Need this for metal grid, here you assign to galaxies their
                                                    // metallicity and probabilities from bubbles
       int ngals_in_metal_slabs = map_galaxies_to_slabs_metals(NGal);
-      for (int ii = 0; ii < 5; ii++) {
+      for (int ii = 0; ii < 3; ii++) {
         assign_probability_to_galaxies(ngals_in_metal_slabs, snapshot, ii);
       }
     }
