@@ -8,6 +8,7 @@
 #include "init.h"
 #include "magnitudes.h"
 #include "meraxes.h"
+#include "metal_evo.h"
 #include "misc_tools.h"
 #include "parse_paramfile.h"
 #include "read_halos.h"
@@ -17,7 +18,6 @@
 #include "save.h"
 #include "stellar_feedback.h"
 #include "virial_properties.h"
-#include "metal_evo.h"
 #if USE_MINI_HALOS || USE_2DISK_MODEL
 #include "PopIII.h"
 #endif
@@ -266,7 +266,7 @@ void init_meraxes()
 
   // read in the stellar feedback tables
   read_stellar_feedback_tables();
-  
+
 #if USE_SCALING_REL
   // read in the scaling relation tables
   read_scaling_rel_tables();
@@ -274,7 +274,7 @@ void init_meraxes()
 #ifdef DEBUG
   mlog("Init NormIII snap 5 = [", MLOG_MESG);
   for (int ii = 0; ii < 9; ++ii) {
-    mlog(" %f", MLOG_CONT, get_NormValue(ii, 5, 3)); 
+    mlog(" %f", MLOG_CONT, get_NormValue(ii, 5, 3));
   }
   mlog(" ]", MLOG_CONT);
 #endif
@@ -304,7 +304,7 @@ void init_meraxes()
   set_ReionEfficiency();
   set_quasar_fobs();
 
-  if (run_globals.params.Flag_IncludeSpinTemp){
+  if (run_globals.params.Flag_IncludeSpinTemp) {
     run_globals.NstoreSnapshots_SFR = set_sfr_history();
     mlog("Storing %d snapshots of SFR histories for Ts.", MLOG_MESG, run_globals.NstoreSnapshots_SFR);
   }

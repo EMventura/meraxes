@@ -43,31 +43,32 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     central = gal;
   else
     central = gal->Halo->FOFGroup->FirstOccupiedHalo->Galaxy;
-    
+
 #if USE_2DISK_MODEL
   double m_recycled = m_recycled_II + m_recycled_III;
 #endif
-    
+
 #if USE_ANG_MOM
-// Adapted from Maddie's version but there is no bulge here.
+  // Adapted from Maddie's version but there is no bulge here.
   if (gal->StellarMass > 1e-10) {
     double specific_delta_angmom[3];
     double total_delta_angmom[3];
-    total_to_specific_angmom(gal->AMstars, gal->StellarMass,
-                             specific_delta_angmom);
-    specific_to_total_angmom(specific_delta_angmom,
-                             m_recycled,
-                             total_delta_angmom);
+    total_to_specific_angmom(gal->AMstars, gal->StellarMass, specific_delta_angmom);
+    specific_to_total_angmom(specific_delta_angmom, m_recycled, total_delta_angmom);
     // Update gas disk
-    add_disks(gal, 1, m_recycled,
-              vector_magnitude(total_delta_angmom) /
-                  (2 * m_recycled * gal->VStellarDisk),
-              gal->VStellarDisk, total_delta_angmom);
+    add_disks(gal,
+              1,
+              m_recycled,
+              vector_magnitude(total_delta_angmom) / (2 * m_recycled * gal->VStellarDisk),
+              gal->VStellarDisk,
+              total_delta_angmom);
     // Update stellar disk
-    add_disks(gal, 0, -m_recycled,
-              vector_magnitude(total_delta_angmom) /
-                  (2 * m_recycled * gal->VStellarDisk),
-              gal->VStellarDisk, total_delta_angmom);
+    add_disks(gal,
+              0,
+              -m_recycled,
+              vector_magnitude(total_delta_angmom) / (2 * m_recycled * gal->VStellarDisk),
+              gal->VStellarDisk,
+              total_delta_angmom);
     increment_angular_momentum(gal->AMstars, total_delta_angmom, -1);
     increment_angular_momentum(gal->AMcold, total_delta_angmom, 1);
   }
@@ -97,11 +98,10 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
 #if USE_2DISK_MODEL
     gal->MetalsColdGasD1 += new_metals;
 #endif
-  }
-  else
+  } else
     central->MetalsHotGas += new_metals;
 
-  // make sure we aren't trying to use more cold gas than is available...
+    // make sure we aren't trying to use more cold gas than is available...
 #if USE_2DISK_MODEL
   // In the 2Disk scenario the maximum reheatable is the internal one!
   if (m_reheat > gal->ColdGasD1)
@@ -112,7 +112,7 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
 #endif
 
   metallicity = calc_metallicity(gal->ColdGas, gal->MetalsColdGas);
-  
+
 #if USE_ANG_MOM
   double specific_cold_angmom[3];
   total_to_specific_angmom(gal->AMcold, gal->ColdGas, specific_cold_angmom);
@@ -129,8 +129,8 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
   central->MetalsHotGas += m_reheat * metallicity;
   central->HotGas += m_reheat;
 
-  // This check was not present in Maddie's version 
-  // But I think we should do this.  
+  // This check was not present in Maddie's version
+  // But I think we should do this.
 #if USE_ANG_MOM
   if (gal->ColdGas < 1e-10) {
     gal->ColdGas = 0.0;
@@ -186,7 +186,7 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
   if (gal->ColdGasD2 < 0)
     gal->ColdGasD2 = 0.0;
   if (gal->ColdGasD1 > gal->ColdGas)
-    gal->ColdGasD1 = gal->ColdGas;  
+    gal->ColdGasD1 = gal->ColdGas;
   if (gal->MetalsColdGasD1 < 0)
     gal->MetalsColdGasD1 = 0.0;
   if (gal->MetalsColdGasD2 < 0)
@@ -436,7 +436,7 @@ void delayed_supernova_feedback(galaxy_t* gal, int snapshot)
   else
     fof_Vvir = -1;
 
-  m_eject = calc_ejected_mass(&m_reheat, sn_energy, gal->Vvir, fof_Vvir); 
+  m_eject = calc_ejected_mass(&m_reheat, sn_energy, gal->Vvir, fof_Vvir);
 
   // Note that m_eject returned for ghosts by calc_ejected_mass() is
   // meaningless in the current physical prescriptions.  This fact is dealt
@@ -451,8 +451,7 @@ void delayed_supernova_feedback(galaxy_t* gal, int snapshot)
 
   // update the baryonic reservoirs
 #if USE_2DISK_MODEL
-  update_reservoirs_from_sn_feedback(
-    gal, m_reheat, m_eject, m_recycled_II, m_recycled_III, m_remnant, new_metals);
+  update_reservoirs_from_sn_feedback(gal, m_reheat, m_eject, m_recycled_II, m_recycled_III, m_remnant, new_metals);
 #else
   update_reservoirs_from_sn_feedback(
     gal, m_reheat, m_eject, m_recycled, m_recycled_III, m_recycled_II, m_remnant, new_metals);
@@ -483,7 +482,7 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
 {
   bool Flag_IRA = (bool)(run_globals.params.physics.Flag_IRA);
   double sn_energy = 0.0;
-#if USE_2DISK_MODEL 
+#if USE_2DISK_MODEL
   double sn_energy2 = 0.0;
 #endif
 #if USE_MINI_HALOS || USE_2DISK_MODEL
@@ -495,7 +494,7 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
 
   // init (just in case!)
   *m_reheat = *m_recycled = *new_metals = *m_eject = *m_remnant = 0.0;
-#if USE_2DISK_MODEL 
+#if USE_2DISK_MODEL
   *m_recycled2 = 0.0;
 #endif
 
@@ -523,20 +522,20 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
       *m_recycled = *m_stars * get_recycling_fraction(0, metallicity);
       *new_metals = *m_stars * get_metal_yield(0, metallicity);
 #if USE_2DISK_MODEL
-    // Account also for the external disk!
-    if (gal->Galaxy_Population == 2) {
-      *m_recycled += *m_stars2 * get_recycling_fraction(0, metallicityD2);
-      *new_metals += *m_stars2 * get_metal_yield(0, metallicityD2);
-    } else if (gal->Galaxy_Population == 3) {
-      *m_recycled2 = *m_stars2 * (CCSN_PopIII_Yield(0, snapshot, 0)) * MassSNII;
-      *new_metals += *m_stars2 * CCSN_PopIII_Yield(0, snapshot, 1) * MassSNII;
-      *m_remnant = *m_stars2 * (MassBHs + CCSN_PopIII_Yield(0, snapshot, 2) * MassSNII);
-      if (MassPISN > 0) { // Account for PISN
-        *m_recycled2 += *m_stars2 * PISN_PopIII_Yield(0) * MassPISN;
-        if (*m_stars * PISN_PopIII_Yield(1) * MassPISN - (20.0 / 1e10 * run_globals.params.Hubble_h) > 0.0)
-          *new_metals += *m_stars2 * PISN_PopIII_Yield(1) * MassPISN - (20.0 / 1e10 * run_globals.params.Hubble_h);
+      // Account also for the external disk!
+      if (gal->Galaxy_Population == 2) {
+        *m_recycled += *m_stars2 * get_recycling_fraction(0, metallicityD2);
+        *new_metals += *m_stars2 * get_metal_yield(0, metallicityD2);
+      } else if (gal->Galaxy_Population == 3) {
+        *m_recycled2 = *m_stars2 * (CCSN_PopIII_Yield(0, snapshot, 0)) * MassSNII;
+        *new_metals += *m_stars2 * CCSN_PopIII_Yield(0, snapshot, 1) * MassSNII;
+        *m_remnant = *m_stars2 * (MassBHs + CCSN_PopIII_Yield(0, snapshot, 2) * MassSNII);
+        if (MassPISN > 0) { // Account for PISN
+          *m_recycled2 += *m_stars2 * PISN_PopIII_Yield(0) * MassPISN;
+          if (*m_stars * PISN_PopIII_Yield(1) * MassPISN - (20.0 / 1e10 * run_globals.params.Hubble_h) > 0.0)
+            *new_metals += *m_stars2 * PISN_PopIII_Yield(1) * MassPISN - (20.0 / 1e10 * run_globals.params.Hubble_h);
+        }
       }
-    }
 #endif
 
 #if USE_MINI_HALOS
@@ -577,19 +576,20 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
     if (gal->Galaxy_Population == 2) {
       sn_energy += *m_stars2 * get_SN_energy(0, metallicityD2);
       *m_reheat = calc_sn_reheat_eff(gal, snapshot, 2) * sn_energy / get_total_SN_energy();
-      sn_energy *= calc_sn_ejection_eff(gal, snapshot, 2);  
+      sn_energy *= calc_sn_ejection_eff(gal, snapshot, 2);
     } else if (gal->Galaxy_Population == 3) {
       sn_energy2 = (*m_stars2) * (get_SN_energy_PopIII(0, snapshot, 0) + get_SN_energy_PopIII(0, snapshot, 1)); // erg
       sn_energy2 /= energy_unit;
-      *m_reheat += calc_sn_reheat_eff(gal, snapshot, 3) * (*m_stars2) *
-                (get_SN_energy_PopIII(0, snapshot, 1) / ENOVA_PISN + get_SN_energy_PopIII(0, snapshot, 0) / ENOVA_CC);
+      *m_reheat +=
+        calc_sn_reheat_eff(gal, snapshot, 3) * (*m_stars2) *
+        (get_SN_energy_PopIII(0, snapshot, 1) / ENOVA_PISN + get_SN_energy_PopIII(0, snapshot, 0) / ENOVA_CC);
       sn_energy2 *= calc_sn_ejection_eff(gal, snapshot, 3);
       sn_energy += sn_energy2;
     }
 #else
-    sn_energy = *m_stars * get_SN_energy(0, metallicity);
-    *m_reheat = calc_sn_reheat_eff(gal, snapshot, 2) * sn_energy / get_total_SN_energy();
-    sn_energy *= calc_sn_ejection_eff(gal, snapshot, 2);
+  sn_energy = *m_stars * get_SN_energy(0, metallicity);
+  *m_reheat = calc_sn_reheat_eff(gal, snapshot, 2) * sn_energy / get_total_SN_energy();
+  sn_energy *= calc_sn_ejection_eff(gal, snapshot, 2);
 #endif
 #if USE_MINI_HALOS
   } else if (gal->Galaxy_Population == 3) {
@@ -604,14 +604,14 @@ void contemporaneous_supernova_feedback(galaxy_t* gal,
   // We can only reheat as much gas as we have available.  Let's inforce this
   // now, to ensure that the maximal amount of available energy is used to
   // eject gas from the system.
-  
+
   // Here it's fine to keep this condition also in the 2DISK scenario because
   // as soon as we form stars the Coldgas becomes just one reservoir
   if (*m_reheat > gal->ColdGas)
     *m_reheat = gal->ColdGas;
 
-  // attenuate the star formation if necessary, so that we are being consistent
-  // if (*m_reheat + *m_stars - *m_recycled > gal->ColdGas)
+    // attenuate the star formation if necessary, so that we are being consistent
+    // if (*m_reheat + *m_stars - *m_recycled > gal->ColdGas)
 #if USE_2DISK_MODEL
   if (*m_reheat + *m_stars + *m_stars2 > gal->ColdGas) {
     double frac = gal->ColdGas / (*m_reheat + *m_stars + *m_stars2);

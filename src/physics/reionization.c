@@ -90,15 +90,14 @@ void calculate_Mvir_crit_MC(double redshift)
         if (run_globals.params.Flag_IncludeSelfShield == 0) {
           Mvir_crit_MC[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
             (float)(cell_Mvir_crit_MC *
-                    (1.0 + 6.96 * (pow(4 * M_PI * JLW_box[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)],
-                                       0.47)))); // Fitting function Visbal+14, converting in internal units (1e10Msol/h)
-        }
-        else {
+                    (1.0 +
+                     6.96 * (pow(4 * M_PI * JLW_box[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)],
+                                 0.47)))); // Fitting function Visbal+14, converting in internal units (1e10Msol/h)
+        } else {
           if (run_globals.params.Flag_IncludeStreamVel) {
-            Mvir_crit_MC[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
-              Mcool_K21(redshift, JLW_box[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)], 30); //Assume 1 rms for now.
-          }
-          else {
+            Mvir_crit_MC[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] = Mcool_K21(
+              redshift, JLW_box[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)], 30); // Assume 1 rms for now.
+          } else {
             Mvir_crit_MC[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)] =
               Mcool_K21(redshift, JLW_box[grid_index(ii, jj, kk, ReionGridDim, INDEX_REAL)], 0);
           }

@@ -77,9 +77,9 @@ static int read_swift(const enum grid_prop property, const int snapshot, float* 
   char fname[STRLEN];
   sprintf(dirname, "%s/grids/resampled/N%d", params->SimulationDir, run_globals.params.ReionGridDim);
   DIR* dir = opendir(dirname);
-  if (dir) 
+  if (dir)
     sprintf(fname, "%s/snap_%04d.hdf5", dirname, snapshot);
-  else 
+  else
     sprintf(fname, "%s/grids/snap_%04d.hdf5", params->SimulationDir, snapshot);
 
   hid_t file_id = H5Fopen(fname, H5F_ACC_RDONLY, plist_id);
@@ -93,8 +93,7 @@ static int read_swift(const enum grid_prop property, const int snapshot, float* 
     if (dir) {
       grid_dim = run_globals.params.ReionGridDim;
       closedir(dir);
-    }
-    else{
+    } else {
       char data[20] = { '\0' };
       status = H5LTget_attribute_string(file_id, "/Parameters", "DensityGrids:grid_dim", data);
       assert(status >= 0);
@@ -589,7 +588,6 @@ int read_grid__velociraptor(const enum grid_prop property, const int snapshot, f
   // Have we read this slab before?
   if ((params->FlagInteractive || params->FlagMCMC) && !load_cached_slab(slab, snapshot, property))
     return 0;
-
 
   if (params->TsVelocityComponent < 1 || params->TsVelocityComponent > 3) {
     mlog("Not a valid velocity direction: 1 - x, 2 - y, 3 - z", MLOG_MESG);

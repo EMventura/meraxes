@@ -104,7 +104,7 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
 #endif
 
 #if USE_2DISK_MODEL
-  gal->Rstar = 0.0; 
+  gal->Rstar = 0.0;
   gal->ColdGasD1 = 0.0;
   gal->MetalsColdGasD1 = 0.0;
   gal->ColdGasD2 = 0.0;
@@ -160,8 +160,8 @@ void copy_halo_props_to_galaxy(halo_t* halo, galaxy_t* gal)
   gal->Spin = calculate_spin_param(halo);
   gal->FOFMvirModifier = halo->FOFGroup->FOFMvirModifier;
 
-// Be careful! Here you might need to remove the DiskScaleLength for when are taking
-// the updated AngMom calculation
+  // Be careful! Here you might need to remove the DiskScaleLength for when are taking
+  // the updated AngMom calculation
 
   double sqrt_2 = 1.414213562;
   if (gal->Type == 0) {

@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <gsl/gsl_integration.h>
 
-
 #if USE_ANG_MOM
 #include "core/angular_momentum.h"
 #endif
@@ -14,7 +13,7 @@
 
 static void backfill_ghost_star_formation(galaxy_t* gal, double m_stars, double sfr, double metallicity, int snapshot)
 {
-// YOU NEED TO WORK OUT WHAT TO DO WITH GHOSTS FOR 2DISK MODEL
+  // YOU NEED TO WORK OUT WHAT TO DO WITH GHOSTS FOR 2DISK MODEL
   double* LTTime = run_globals.LTTime;
   double burst_time = LTTime[gal->LastIdentSnap] - gal->dt * 0.5;
 
@@ -48,28 +47,28 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
 {
 #if USE_2DISK_MODEL
   double new_stars;
-  //double metallicityD1; Maybe in the future
-  //double metallicityD2; Maybe in the future
+  // double metallicityD1; Maybe in the future
+  // double metallicityD2; Maybe in the future
   new_stars = new_starsD1 + new_starsD2;
 #endif
   if (new_stars > 0) {
     double metallicity;
     bool Flag_IRA = (bool)(run_globals.params.physics.Flag_IRA);
-    
+
 #if USE_2DISK_MODEL
-    // This is the star forming region. Note that the factor 3.0 here could mess things 
+    // This is the star forming region. Note that the factor 3.0 here could mess things
 #if USE_ANG_MOM
     // See comment in cooling.c about why we take 7*DiskScaleLength
-    if (gal->DiskScaleLength * 7.0 > gal->Rstar) //Rstar can only become larger!
-      gal->Rstar = gal->DiskScaleLength * 7.0; 
+    if (gal->DiskScaleLength * 7.0 > gal->Rstar) // Rstar can only become larger!
+      gal->Rstar = gal->DiskScaleLength * 7.0;
 #else
-    if (gal->DiskScaleLength * 3.0 > gal->Rstar) //Rstar can only become larger!
-      gal->Rstar = gal->DiskScaleLength * 3.0; 
+    if (gal->DiskScaleLength * 3.0 > gal->Rstar) // Rstar can only become larger!
+      gal->Rstar = gal->DiskScaleLength * 3.0;
 #endif
-    
-    //metallicityD1 = calc_metallicity(gal->ColdGasD1, gal->MetalsColdGasD1); // Maybe in the future
-    //metallicityD2 = calc_metallicity(gal->ColdGasD2, gal->MetalsColdGasD2);
-    // Combine the 2 gas reservoirs
+
+    // metallicityD1 = calc_metallicity(gal->ColdGasD1, gal->MetalsColdGasD1); // Maybe in the future
+    // metallicityD2 = calc_metallicity(gal->ColdGasD2, gal->MetalsColdGasD2);
+    //  Combine the 2 gas reservoirs
     gal->ColdGasD1 += gal->ColdGasD2;
     gal->ColdGasD2 = 0.0;
     gal->MetalsColdGasD1 += gal->MetalsColdGasD2;
@@ -78,30 +77,33 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
 
     // instantaneous recycling approximation of stellar mass
     metallicity = calc_metallicity(gal->ColdGas, gal->MetalsColdGas);
-    
-#if USE_ANG_MOM
-  // You are not differentiating for SF burst mergers (differently from Maddie's version.
-  // Again, this is because you don't have bulges and you can't simply assume that AM of stars
-  // disappears.
-    //if (type == INSITU) {
-      double *angmom;
-      // Differently from Maddie's version you only have a disk so all stars are formed in the disk
-      // In this case, we must calculate the transferred angular momentum from
-      // the gas disk to the stellar disk BEFORE we remove cold gas.
-      // This would be equivalent to add_to_bulge = 0 in Maddie's model
-      angmom = malloc(sizeof(double) * 3);
-      total_to_specific_angmom(gal->AMcold, gal->ColdGas, angmom);
-      for (int ii = 0; ii < 3; ii++) {
-        angmom[ii] *= new_stars;
-      }
 
-      // Here I have a doubt though... Shouldn't be StellarDiskScaleLength = 3*DiskScaleLength?
-      add_disks(gal, 0, new_stars, gal->DiskScaleLength, gal->VGasDisk,
-                angmom);          
-      add_disks(gal, 1, -new_stars, gal->DiskScaleLength, gal->VGasDisk,
-                angmom); // subtract non-projected gas disk from total gas disk
-      increment_angular_momentum(gal->AMcold, angmom, -1);
-      increment_angular_momentum(gal->AMstars, angmom, +1);
+#if USE_ANG_MOM
+    // You are not differentiating for SF burst mergers (differently from Maddie's version.
+    // Again, this is because you don't have bulges and you can't simply assume that AM of stars
+    // disappears.
+    // if (type == INSITU) {
+    double* angmom;
+    // Differently from Maddie's version you only have a disk so all stars are formed in the disk
+    // In this case, we must calculate the transferred angular momentum from
+    // the gas disk to the stellar disk BEFORE we remove cold gas.
+    // This would be equivalent to add_to_bulge = 0 in Maddie's model
+    angmom = malloc(sizeof(double) * 3);
+    total_to_specific_angmom(gal->AMcold, gal->ColdGas, angmom);
+    for (int ii = 0; ii < 3; ii++) {
+      angmom[ii] *= new_stars;
+    }
+
+    // Here I have a doubt though... Shouldn't be StellarDiskScaleLength = 3*DiskScaleLength?
+    add_disks(gal, 0, new_stars, gal->DiskScaleLength, gal->VGasDisk, angmom);
+    add_disks(gal,
+              1,
+              -new_stars,
+              gal->DiskScaleLength,
+              gal->VGasDisk,
+              angmom); // subtract non-projected gas disk from total gas disk
+    increment_angular_momentum(gal->AMcold, angmom, -1);
+    increment_angular_momentum(gal->AMstars, angmom, +1);
     /*}
     else {
     // Merger burst SF scenario (add_to_bulge = 1)
@@ -145,8 +147,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
       gal->GrossStellarMassIII += new_starsD2;
       gal->StellarMass_II += new_starsD1;
       gal->GrossStellarMass += new_starsD1;
-    }
-    else { 
+    } else {
       gal->StellarMass_II += new_stars;
       gal->GrossStellarMass += new_stars;
     }
@@ -177,8 +178,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
       if (gal->Galaxy_Population == 3) {
         gal->NewStars_III[0] += new_starsD2;
         gal->NewStars_II[0] += new_starsD1;
-      }
-      else {
+      } else {
         gal->NewStars_II[0] += new_stars;
       }
 #endif
@@ -252,7 +252,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     int SfPrescription = run_globals.params.physics.SfPrescription;
 
     // What velocity are we going to use as a proxy for the disk rotation velocity?
-    
+
 #if USE_ANG_MOM
     // If you are tracking correctly the size of the gas disk, use that!
     v_disk = gal->VGasDisk;
@@ -306,20 +306,22 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
         // GALFORM
         m_stars = gal->ColdGas / (r_disk / v_disk / 0.029 * pow(200. / v_disk, 1.5)) * gal->dt;
         break;
-        
-#if USE_2DISK_MODEL        
+
+#if USE_2DISK_MODEL
       case 4:
         // 2 Disk model with all non SF gas uniformely distributed between Int and Ext gas
         m_crit = SfCriticalSDNorm * v_disk * r_disk;
         if (gal->ColdGas > m_crit) {
-          m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
+          m_stars =
+            zplus1_n * SfEfficiency_II * (gal->ColdGasD1 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
           if (gal->ColdGasD2 > 0) {
             if (gal->Galaxy_Population == 3)
-              m_stars2 = zplus1_n_III * SfEfficiency_III * (gal->ColdGasD2 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
+              m_stars2 = zplus1_n_III * SfEfficiency_III * (gal->ColdGasD2 * (1 - m_crit / gal->ColdGas)) / r_disk *
+                         v_disk * gal->dt;
             else
-              m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
-          }
-          else
+              m_stars2 =
+                zplus1_n * SfEfficiency_II * (gal->ColdGasD2 * (1 - m_crit / gal->ColdGas)) / r_disk * v_disk * gal->dt;
+          } else
             m_stars2 = 0.0;
         }
 
@@ -327,7 +329,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
           // no star formation
           return;
         break;
-        
+
       case 5:
         // 2 Disk model with all non SF gas in Ext gas
         m_crit = SfCriticalSDNorm * v_disk * r_disk;
@@ -338,13 +340,12 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
               m_stars2 = zplus1_n_III * SfEfficiency_III * (gal->ColdGasD2 - m_crit) / r_disk * v_disk * gal->dt;
             else
               m_stars2 = zplus1_n * SfEfficiency_II * (gal->ColdGasD2 - m_crit) / r_disk * v_disk * gal->dt;
-          }
-          else {
-            m_stars = zplus1_n * SfEfficiency_II * (gal->ColdGasD1 - m_crit + gal->ColdGasD2) / r_disk * v_disk * gal->dt;  
+          } else {
+            m_stars =
+              zplus1_n * SfEfficiency_II * (gal->ColdGasD1 - m_crit + gal->ColdGasD2) / r_disk * v_disk * gal->dt;
             m_stars2 = 0.0;
           }
-        }
-        else
+        } else
           // no star formation
           return;
         break;
@@ -359,13 +360,13 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     if (m_stars > gal->ColdGasD1)
       m_stars = gal->ColdGasD1;
     if (m_stars2 > gal->ColdGasD2)
-      m_stars2 = gal->ColdGasD2; 
+      m_stars2 = gal->ColdGasD2;
 #else
     if (m_stars > gal->ColdGas)
       m_stars = gal->ColdGas;
 #endif
-    // calculate the total supernova feedback which would occur if this star
-    // formation happened continuously and evenly throughout the snapshot
+      // calculate the total supernova feedback which would occur if this star
+      // formation happened continuously and evenly throughout the snapshot
 #if USE_2DISK_MODEL
     contemporaneous_supernova_feedback(
       gal, &m_stars, &m_stars2, snapshot, &m_reheat, &m_eject, &m_recycled, &m_recycled2, &m_remnant, &new_metals);

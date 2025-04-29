@@ -39,7 +39,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
   bool Flag_Metals = (bool)(run_globals.params.Flag_IncludeMetalEvo);
 #if USE_2DISK_MODEL
   double ExtDiskMetallicity; // Metallicity of External Disk
-  double HotGasMetallicity; // Metallicity of HotGas 
+  double HotGasMetallicity;  // Metallicity of HotGas
 #endif
 
   mlog("Doing physics...", MLOG_OPEN | MLOG_TIMERSTART);
@@ -59,7 +59,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
         gal = halo->Galaxy;
 
         while (gal != NULL) {
-        
+
           if (Flag_Metals ==
               true) { // Assign to newly formed galaxies metallicity of their cell according to a certain probability
             if ((gal->Type == 0) &&
@@ -77,14 +77,13 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
                 } else
                   gal->Galaxy_Population = 3; // Enriched but not enough
 #endif
-              }
-              else {
+              } else {
 #if USE_MINI_HALOS
                 gal->Galaxy_Population = 3;
                 *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
 #endif
                 gal->Flag_ExtMetEnr = 0;
-                }
+              }
             }
           }
 
@@ -103,10 +102,10 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
           if (gal->Type < 3) {
 #if USE_2DISK_MODEL
 #if USE_ANG_MOM
-// See cooling.c for explanation of factor of 7. Potentially we could skip this
-// [TODO: if we decide to confirm this we need to put as a free parameter]
+            // See cooling.c for explanation of factor of 7. Potentially we could skip this
+            // [TODO: if we decide to confirm this we need to put as a free parameter]
             if ((7 * gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
-#else 
+#else
             if ((3 * gal->DiskScaleLength <= gal->Rstar) || (gal->Rstar == 0.)) {
 #endif
               gal->ColdGasD1 += gal->ColdGasD2;
@@ -122,46 +121,43 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             // PUT THE FLAG FOR BH FEEDBACK = 0 when using 2Disk Model
             if (gal->BlackHoleAccretingColdMass > 0)
               previous_merger_driven_BH_growth(gal);
-              
-#if USE_2DISK_MODEL 
-// We need this to determine if we can form Pop. III stars
-// in the external part of the disk
-          if (gal->ColdGasD2 > 0){
-            HotGasMetallicity = calc_metallicity(
-                gal->HotGas, gal->MetalsHotGas);
-            ExtDiskMetallicity = calc_metallicity(
-                gal->ColdGasD2, gal->MetalsColdGasD2);
-            if (fmaxf((ExtDiskMetallicity / 0.02), (HotGasMetallicity / 0.02)) >= run_globals.params.physics.ZCrit) //0.02 solar metallicity
+
+#if USE_2DISK_MODEL
+            // We need this to determine if we can form Pop. III stars
+            // in the external part of the disk
+            if (gal->ColdGasD2 > 0) {
+              HotGasMetallicity = calc_metallicity(gal->HotGas, gal->MetalsHotGas);
+              ExtDiskMetallicity = calc_metallicity(gal->ColdGasD2, gal->MetalsColdGasD2);
+              if (fmaxf((ExtDiskMetallicity / 0.02), (HotGasMetallicity / 0.02)) >=
+                  run_globals.params.physics.ZCrit) // 0.02 solar metallicity
+                gal->Galaxy_Population = 2;
+              else
+                gal->Galaxy_Population = 3;
+            } else
               gal->Galaxy_Population = 2;
-            else
-              gal->Galaxy_Population = 3;
-          }
-          else
-            gal->Galaxy_Population = 2;
 #endif
-/*#if USE_MINI_HALOS
-            DiskMetallicity = calc_metallicity(
-              gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal enrichment!
-            if ((DiskMetallicity / 0.01) > run_globals.params.physics.ZCrit)
-              gal->Galaxy_Population = 2;
-            else
-              gal->Galaxy_Population = 3;
-#endif*/
+            /*#if USE_MINI_HALOS
+                        DiskMetallicity = calc_metallicity(
+                          gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal
+            enrichment! if ((DiskMetallicity / 0.01) > run_globals.params.physics.ZCrit) gal->Galaxy_Population = 2;
+                        else
+                          gal->Galaxy_Population = 3;
+            #endif*/
             insitu_star_formation(gal, snapshot);
 
             if ((Flag_Metals == true) && (gal->Type < 3)) { // For gal->Type > 0 you are just letting the bubble grow
               calc_metal_bubble(gal, snapshot);
             }
-#if USE_MINI_HALOS || USE_2DISK_MODEL 
-//Just count how many gals are forming stars (here you aren't accounting mergers!)
+#if USE_MINI_HALOS || USE_2DISK_MODEL
+            // Just count how many gals are forming stars (here you aren't accounting mergers!)
             if (gal->NewStars_II[0] >= 1e-10)
               *gal_counter_Pop2 = *gal_counter_Pop2 + 1;
-            
+
             if (gal->NewStars_III[0] >= 1e-10)
               *gal_counter_Pop3 = *gal_counter_Pop3 + 1;
-              
+
             if (gal->NewStars[0] < 1e-10)
-              *gal_counter_enriched = *gal_counter_enriched + 1;  
+              *gal_counter_enriched = *gal_counter_enriched + 1;
 #endif
 
             // If this is a type 2 then decrement the merger clock

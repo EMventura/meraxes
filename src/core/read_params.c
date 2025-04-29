@@ -20,7 +20,7 @@ static void check_problem_params(run_params_t* run_params)
       "Spin temperature features are not currently available in the GPU version of find_HII_bubbles!  Exiting...");
     ABORT(EXIT_FAILURE);
 #endif
-    if (run_globals.params.FlagMCMC != 0){
+    if (run_globals.params.FlagMCMC != 0) {
       mlog_error("Currently we have to store input sfr grids for all snapshots, so cannot MCMC :(");
       ABORT(EXIT_FAILURE);
     }
@@ -232,7 +232,7 @@ void read_parameter_file(char* fname, int mode)
       params_addr[n_param] = run_params->StellarFeedbackDir;
       required_tag[n_param] = 1;
       params_type[n_param++] = PARAM_TYPE_STRING;
-      
+
       strcpy(params_tag[n_param], "ScalingRelDir");
       params_addr[n_param] = run_params->ScalingRelDir;
 #if USE_SCALING_REL
@@ -443,7 +443,8 @@ void read_parameter_file(char* fname, int mode)
 #endif
 #if USE_2DISK_MODEL
       if (run_params->physics.SfPrescription < 4) {
-        mlog("Warning the current version of USE_2DISK_MODEL only works with SfPrescription=4 (resetting...)", MLOG_MESG);
+        mlog("Warning the current version of USE_2DISK_MODEL only works with SfPrescription=4 (resetting...)",
+             MLOG_MESG);
         run_params->physics.SfPrescription = 5;
       }
 #endif
@@ -820,7 +821,7 @@ void read_parameter_file(char* fname, int mode)
       params_addr[n_param] = &(run_params->physics).ReionNionPhotPerBary;
       required_tag[n_param] = 1;
       params_type[n_param++] = PARAM_TYPE_DOUBLE;
-      
+
       strncpy(params_tag[n_param], "ReionNionPhotPerBaryIII", tag_length);
       params_addr[n_param] = &(run_params->physics).ReionNionPhotPerBaryIII;
 #if USE_SCALING_REL
@@ -858,7 +859,7 @@ void read_parameter_file(char* fname, int mode)
       required_tag[n_param] = 0;
 #endif
       params_type[n_param++] = PARAM_TYPE_INT;
-      
+
       strncpy(params_tag[n_param], "Flag_IncludeSelfShield", tag_length);
       params_addr[n_param] = &(run_params->Flag_IncludeSelfShield);
 #if USE_MINI_HALOS || USE_SCALING_REL
@@ -881,10 +882,10 @@ void read_parameter_file(char* fname, int mode)
       params_addr[n_param] = &(run_params->Flag_IncludeMetalEvo);
       required_tag[n_param] = 1;
       params_type[n_param++] = PARAM_TYPE_INT;
-   
-      // Each model corresponds to a combination of AstroParameter for Pop. III 
-      // So far only testing the fiducial (1).   
-      strncpy(params_tag[n_param], "ScalingRelModel", tag_length); 
+
+      // Each model corresponds to a combination of AstroParameter for Pop. III
+      // So far only testing the fiducial (1).
+      strncpy(params_tag[n_param], "ScalingRelModel", tag_length);
       params_addr[n_param] = &(run_params->ScalingRelModel);
 #if USE_SCALING_REL
       required_tag[n_param] = 1;

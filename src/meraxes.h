@@ -226,7 +226,7 @@ typedef struct run_params_t
   double BirthCloudLifetime;
   double DeltaT; // New Parameter added to consider different time of observation! Very important for Pop. III
   char CoolingFuncsDir[STRLEN];
-  char StellarFeedbackDir[STRLEN]; 
+  char StellarFeedbackDir[STRLEN];
   char ScalingRelDir[STRLEN];
   char TablesForXHeatingDir[STRLEN];
   char IMF[STRLEN];
@@ -510,10 +510,10 @@ typedef struct reion_grids_t
   double volume_ave_TK;
   double volume_ave_xe;
   double volume_ave_Tb;
-#if USE_MINI_HALOS || USE_SCALING_REL  
+#if USE_MINI_HALOS || USE_SCALING_REL
   double volume_ave_J_LW;
 #endif
-  
+
 #if USE_MINI_HALOS
   double volume_ave_J_alphaII;
   double volume_ave_J_LWII;
@@ -586,10 +586,10 @@ typedef struct galaxy_t
   double VGasDisk;
   double VStellarDisk;
   double StellarDiskScaleLength;
-  
+
   // angular momentum
-  double AMstars[3]; //Total angular momentum vector  [Mpc/h *km/s]
-  double AMcold[3]; //Total angular momentum vector  [Mpc/h *km/s]
+  double AMstars[3]; // Total angular momentum vector  [Mpc/h *km/s]
+  double AMcold[3];  // Total angular momentum vector  [Mpc/h *km/s]
   double AMhalo[3];
 #endif
   double Sfr;
@@ -605,7 +605,7 @@ typedef struct galaxy_t
 
   int Galaxy_Population; // You need it also if you are not disentangling PopIII/PopII (when Mini_halos is off, this is
                          // = 2)
-                         
+
 #if USE_2DISK_MODEL
   double Rstar; // Radius up to which you formed stars
   double ColdGasD1;
@@ -681,10 +681,10 @@ typedef struct halo_t
   struct halo_t* NextHaloInFOFGroup;
   galaxy_t* Galaxy;
 
-  float Pos[3];    //!< Most bound particle position [Mpc/h]
-  float Vel[3];    //!< Centre of mass velocity [Mpc/h]
+  float Pos[3]; //!< Most bound particle position [Mpc/h]
+  float Vel[3]; //!< Centre of mass velocity [Mpc/h]
 #if USE_ANG_MOM
-  float AngMom[3]; //In this case you need the 3D one!
+  float AngMom[3]; // In this case you need the 3D one!
 #else
   float AngMom; //!< Specific angular momentum length [Mpc/h *km/s]
 #endif
@@ -819,7 +819,7 @@ typedef struct run_globals_t
   struct mag_params_t mag_params;
 #endif
 
-// adding stuff for scaling relation
+  // adding stuff for scaling relation
 
 #if USE_SCALING_REL
   double mu_MCIII;
