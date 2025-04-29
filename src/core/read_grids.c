@@ -3,12 +3,12 @@
 #include <fftw3-mpi.h>
 
 #include "meraxes.h"
+#include "metal_evo.h"
 #include "misc_tools.h"
 #include "read_grids.h"
 #include "reionization.h"
-#include <string.h>
-#include "metal_evo.h"
 #include <math.h>
+#include <string.h>
 
 void read_grid(const enum grid_prop property, const int snapshot, float* slab)
 {
