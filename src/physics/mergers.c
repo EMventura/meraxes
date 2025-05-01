@@ -187,6 +187,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   double parent_baryons;
   double gal_baryons;
   double min_stellar_mass;
+  bool Flag_Metals = (bool)(run_globals.params.Flag_IncludeMetalEvo);
 #if USE_2DISK_MODEL
   double ExtDiskMetallicity; // Metallicity of External Disk
 #endif
@@ -249,7 +250,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   // Here assume that all the gas is accreting on the external part of the disk!
   // (If there is one!) Be careful: there might be an inconsistency with NewAngMom
   // Compute also the metallicity of the external part of the disk!
-  // Since you added the factor of 7 I am not really sure what would be the correct thing to do
+  // Since you added the factor of 3 I am not really sure what would be the correct thing to do
   if ((primary->DiskScaleLength > primary->Rstar) && (primary->Rstar > 0.)) {
     primary->ColdGasD2 += secondary->ColdGas;
     primary->MetalsColdGasD2 += secondary->MetalsColdGas;
@@ -270,7 +271,7 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   primary->mwmsa_denom += secondary->mwmsa_denom;
   primary->MergerBurstMass += secondary->MergerBurstMass;
 
-#if USE_MINI_HALOS
+/*#if USE_MINI_HALOS
   // If I have a Merger between Pop III and Pop II the result is a Pop. II. Actually I should compute metallicity
   // TODO: this could be improved in the future!
 
@@ -280,8 +281,18 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
     parent->PrefactorBubble = gal->PrefactorBubble;
     parent->TimeBubble = gal->TimeBubble;
   }
-#endif
+#endif*/
 
+  // If I have a Merger between Pop III and Pop II the result is a Pop. II. Actually I should compute metallicity
+  // TODO: this could be improved in the future!
+  if (Flag_Metals == true) {
+    if (secondary->RmetalBubble > primary->RmetalBubble) {
+
+      primary->RmetalBubble = secondary->RmetalBubble; // This is to account the evolution of metal bubbles after a merger event
+      primary->PrefactorBubble = secondary->PrefactorBubble;
+      primary->TimeBubble = secondary->TimeBubble;
+    }
+  }
 #if USE_2DISK_MODEL
   if (primary->ColdGasD2 > 0) {
     ExtDiskMetallicity = calc_metallicity(primary->ColdGasD2, primary->MetalsColdGasD2);
