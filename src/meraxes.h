@@ -635,8 +635,9 @@ typedef struct galaxy_t
   double Metals_IGM;
   double Gas_IGM;
   double Metallicity_IGM; //
-  //double MaxBubble;       // Need this for Boost probability
-  //double AveBubble;   // Same (you will likely use only one of the two). You could actually save only the boost factor
+  // double MaxBubble;       // Need this for Boost probability
+  // double AveBubble;   // Same (you will likely use only one of the two). You could actually save only the boost
+  // factor
   int Flag_ExtMetEnr; // 0 if not enriched from a bubble, 1 yes.
 
   double Prefactor[N_HISTORY_SNAPS]; // here you store the prefactors of the metal bubbles
