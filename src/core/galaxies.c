@@ -82,19 +82,21 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
   gal->FescIIIWeightedGSM = 0.0;
   gal->Remnant_Mass = 0.;
 #endif
+  if (run_globals.params.Flag_IncludeMetalEvo ==
+      true) {
+    gal->Metal_Probability = 0.0;
+    gal->Metals_IGM = 0.0;
+    gal->Gas_IGM = 0.0;
+    gal->Metallicity_IGM = -50.0;
+    gal->RmetalBubble = 0.0;
+    gal->PrefactorBubble = 0.0;
+    gal->TimeBubble = 0.0;
+  //gal->AveBubble = 0.;
+  //gal->MaxBubble = 0.;
+    gal->Flag_ExtMetEnr = 0;
+    gal->GalMetal_Probability = gsl_rng_uniform(run_globals.random_generator);
+  }
 #if USE_MINI_HALOS
-  gal->Metal_Probability = 0.0;
-  gal->Metals_IGM = 0.0;
-  gal->Gas_IGM = 0.0;
-  gal->Metallicity_IGM = -50.0;
-  gal->RmetalBubble = 0.0;
-  gal->PrefactorBubble = 0.0;
-  gal->TimeBubble = 0.0;
-  gal->AveBubble = 0.;
-  gal->MaxBubble = 0.;
-  gal->Flag_ExtMetEnr = 0;
-  gal->GalMetal_Probability = gsl_rng_uniform(run_globals.random_generator);
-
   if (run_globals.params.Flag_IncludeMetalEvo ==
       false) // If you don't have the external metal enrichment all galaxies will start as pristine (Pop.III forming)
     gal->Galaxy_Population = 3;

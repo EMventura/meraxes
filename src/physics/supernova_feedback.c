@@ -160,8 +160,13 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     central->HotGas = 0.0;
   if (central->MetalsHotGas < 0)
     central->MetalsHotGas = 0.0;
-  if (gal->ColdGas < 0)
+  if (gal->ColdGas < 0) {
     gal->ColdGas = 0.0;
+#if USE_2DISK_MODEL
+    gal->ColdGasD1 = 0.0;
+    gal->ColdGasD2 = 0.0;
+#endif
+  }
   if (gal->MetalsColdGas < 0)
     gal->MetalsColdGas = 0.0;
   if (gal->StellarMass < 0)
