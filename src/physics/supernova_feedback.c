@@ -33,27 +33,28 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     central = gal;
   else
     central = gal->Halo->FOFGroup->FirstOccupiedHalo->Galaxy;
-    
+
 #if USE_ANG_MOM
-// Adapted from Maddie's version but there is no bulge here.
+  // Adapted from Maddie's version but there is no bulge here.
   if (gal->StellarMass > 1e-10) {
     double specific_delta_angmom[3];
     double total_delta_angmom[3];
-    total_to_specific_angmom(gal->AMstars, gal->StellarMass,
-                             specific_delta_angmom);
-    specific_to_total_angmom(specific_delta_angmom,
-                             m_recycled,
-                             total_delta_angmom);
+    total_to_specific_angmom(gal->AMstars, gal->StellarMass, specific_delta_angmom);
+    specific_to_total_angmom(specific_delta_angmom, m_recycled, total_delta_angmom);
     // Update gas disk
-    add_disks(gal, 1, m_recycled,
-              vector_magnitude(total_delta_angmom) /
-                  (2 * m_recycled * gal->VStellarDisk),
-              gal->VStellarDisk, total_delta_angmom);
+    add_disks(gal,
+              1,
+              m_recycled,
+              vector_magnitude(total_delta_angmom) / (2 * m_recycled * gal->VStellarDisk),
+              gal->VStellarDisk,
+              total_delta_angmom);
     // Update stellar disk
-    add_disks(gal, 0, -m_recycled,
-              vector_magnitude(total_delta_angmom) /
-                  (2 * m_recycled * gal->VStellarDisk),
-              gal->VStellarDisk, total_delta_angmom);
+    add_disks(gal,
+              0,
+              -m_recycled,
+              vector_magnitude(total_delta_angmom) / (2 * m_recycled * gal->VStellarDisk),
+              gal->VStellarDisk,
+              total_delta_angmom);
     increment_angular_momentum(gal->AMstars, total_delta_angmom, -1);
     increment_angular_momentum(gal->AMcold, total_delta_angmom, 1);
   }
@@ -85,7 +86,7 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
     m_reheat = gal->ColdGas;
 
   metallicity = calc_metallicity(gal->ColdGas, gal->MetalsColdGas);
-  
+
 #if USE_ANG_MOM
   double specific_cold_angmom[3];
   total_to_specific_angmom(gal->AMcold, gal->ColdGas, specific_cold_angmom);
@@ -98,8 +99,8 @@ void update_reservoirs_from_sn_feedback(galaxy_t* gal,
   central->MetalsHotGas += m_reheat * metallicity;
   central->HotGas += m_reheat;
 
-  // This check was not present in Maddie's version 
-  // But I think we should do this.  
+  // This check was not present in Maddie's version
+  // But I think we should do this.
 #if USE_ANG_MOM
   if (gal->ColdGas < 1e-10) {
     gal->ColdGas = 0.0;
@@ -386,7 +387,7 @@ void delayed_supernova_feedback(galaxy_t* gal, int snapshot)
   else
     fof_Vvir = -1;
 
-  m_eject = calc_ejected_mass(&m_reheat, sn_energy, gal->Vvir, fof_Vvir); 
+  m_eject = calc_ejected_mass(&m_reheat, sn_energy, gal->Vvir, fof_Vvir);
 
   // Note that m_eject returned for ghosts by calc_ejected_mass() is
   // meaningless in the current physical prescriptions.  This fact is dealt

@@ -128,7 +128,7 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
 
   // save the cooling mass
   gal->Mcool = cooling_mass;
-  
+
 #if USE_ANG_MOM
   // update the gas disk size and velocity. assumes that V=Vvir, j=jhalo and R=j/2V
   double AMcool[3];
@@ -136,9 +136,7 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   double newAngMom[3] = { gal->Halo->AngMom[0], gal->Halo->AngMom[1], gal->Halo->AngMom[2] };
   if (cooling_mass >= 1e-10) {
     specific_to_total_angmom(newAngMom, cooling_mass, AMcool);
-    add_disks(gal, 1, cooling_mass,
-              vector_magnitude(newAngMom) / (2 * gal->Vvir),
-              gal->Vvir, AMcool);
+    add_disks(gal, 1, cooling_mass, vector_magnitude(newAngMom) / (2 * gal->Vvir), gal->Vvir, AMcool);
   }
 #endif
 
@@ -149,7 +147,6 @@ void cool_gas_onto_galaxy(galaxy_t* gal, double cooling_mass)
   gal->MetalsColdGas += cooling_metals;
 #if USE_ANG_MOM
   if (cooling_mass >= 1e-10)
-    increment_angular_momentum(gal->AMcold, newAngMom,
-                               cooling_mass);                             
+    increment_angular_momentum(gal->AMcold, newAngMom, cooling_mass);
 #endif
 }
