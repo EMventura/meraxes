@@ -565,6 +565,8 @@ typedef struct galaxy_t
   double MetalsHotGas;
   double ColdGas;
   double MetalsColdGas;
+  double ColdGasBSF; // Before Star formation (for Vale
+  double MetalsColdGasBSF;
   double H2Frac;
   double H2Mass;
   double HIMass;

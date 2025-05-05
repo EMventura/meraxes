@@ -114,7 +114,8 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             else
               gal->Galaxy_Population = 3;
 #endif
-
+            gal->ColdGasBSF = gal->ColdGas;
+            gal->MetalsColdGasBSF = gal->MetalsColdGasBSF;
             insitu_star_formation(gal, snapshot);
 
 #if USE_MINI_HALOS
