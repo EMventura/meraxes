@@ -271,24 +271,24 @@ void merge_with_target(galaxy_t* gal, int* dead_gals, int snapshot)
   primary->mwmsa_denom += secondary->mwmsa_denom;
   primary->MergerBurstMass += secondary->MergerBurstMass;
 
-/*#if USE_MINI_HALOS
-  // If I have a Merger between Pop III and Pop II the result is a Pop. II. Actually I should compute metallicity
-  // TODO: this could be improved in the future!
+  /*#if USE_MINI_HALOS
+    // If I have a Merger between Pop III and Pop II the result is a Pop. II. Actually I should compute metallicity
+    // TODO: this could be improved in the future!
 
-  if (gal->RmetalBubble > parent->RmetalBubble) {
+    if (gal->RmetalBubble > parent->RmetalBubble) {
 
-    parent->RmetalBubble = gal->RmetalBubble; // This is to account the evolution of metal bubbles after a merger event
-    parent->PrefactorBubble = gal->PrefactorBubble;
-    parent->TimeBubble = gal->TimeBubble;
-  }
-#endif*/
+      parent->RmetalBubble = gal->RmetalBubble; // This is to account the evolution of metal bubbles after a merger
+  event parent->PrefactorBubble = gal->PrefactorBubble; parent->TimeBubble = gal->TimeBubble;
+    }
+  #endif*/
 
   // If I have a Merger between Pop III and Pop II the result is a Pop. II. Actually I should compute metallicity
   // TODO: this could be improved in the future!
   if (Flag_Metals == true) {
     if (secondary->RmetalBubble > primary->RmetalBubble) {
 
-      primary->RmetalBubble = secondary->RmetalBubble; // This is to account the evolution of metal bubbles after a merger event
+      primary->RmetalBubble =
+        secondary->RmetalBubble; // This is to account the evolution of metal bubbles after a merger event
       primary->PrefactorBubble = secondary->PrefactorBubble;
       primary->TimeBubble = secondary->TimeBubble;
     }
