@@ -90,7 +90,7 @@ void construct_metal_grids(int snapshot, int local_ngals)
     prop_prob,
     // prop_count,
     // prop_Rave,
-    // prop_Rmax,
+    prop_Rmax,
     prop_mass_ej_metals,
     prop_mass_ej_gas
   };
