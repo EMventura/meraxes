@@ -90,12 +90,19 @@ double gas_infall(fof_group_t* FOFgroup, int snapshot)
 void add_infall_to_hot(galaxy_t* central, double infall_mass)
 {
   bool Flag_Metals = (bool)(run_globals.params.Flag_IncludeMetalEvo);
+  float Metallicity_IGM2; // Use this as test
   // if we have mass to add then give it to the central
   if (infall_mass > 0) {
     central->HotGas += infall_mass;
     if (Flag_Metals == true) {
-      if (central->Flag_ExtMetEnr == 1) // If the halo is externally enriched, it will accrete polluted gas (metals).
-        central->MetalsHotGas += infall_mass * central->Metallicity_IGM;
+      if (central->Flag_ExtMetEnr == 1) { // If the halo is externally enriched, it will accrete polluted gas (metals).
+        if (central->GrossStellarMass > 1e-10) {
+          Metallicity_IGM2 = calc_metallicity(central->Gas_IGM, (central->MetalsEjectedGas + central->Metals_IGM));
+          central->MetalsHotGas += infall_mass * Metallicity_IGM2;
+          }
+        else
+          central->MetalsHotGas += infall_mass * central->Metallicity_IGM;
+      }
     }
   } else {
     double strip_mass = -infall_mass;
