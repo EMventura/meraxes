@@ -43,6 +43,8 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
   gal->MetalsHotGas = 0.0;
   gal->ColdGas = 0.0;
   gal->MetalsColdGas = 0.0;
+  gal->ColdGasBSF = 0.0;
+  gal->MetalsColdGasBSF = 0.0;
   gal->H2Frac = 0.0;
   gal->H2Mass = 0.0;
   gal->HIMass = 0.0;
