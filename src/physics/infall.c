@@ -99,8 +99,7 @@ void add_infall_to_hot(galaxy_t* central, double infall_mass)
         if (central->GrossStellarMass > 1e-10) {
           Metallicity_IGM2 = calc_metallicity(central->Gas_IGM, (central->MetalsEjectedGas + central->Metals_IGM));
           central->MetalsHotGas += infall_mass * Metallicity_IGM2;
-          }
-        else
+        } else
           central->MetalsHotGas += infall_mass * central->Metallicity_IGM;
       }
     }
