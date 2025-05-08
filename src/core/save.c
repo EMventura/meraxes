@@ -126,11 +126,11 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   }
 #endif
   //}
-#if USE_ANG_MOM
+/*#if USE_ANG_MOM
   galout->StellarDiskScaleLength = (float)(gal.StellarDiskScaleLength);
-  // galout->VGasDisk = (float)(gal.VGasDisk);
-  // galout->VStellarDisk = (float)(gal.VStellarDisk);
-#endif
+  galout->VGasDisk = (float)(gal.VGasDisk);
+  galout->VStellarDisk = (float)(gal.VStellarDisk);
+#endif*/
 
 #ifdef CALC_MAGS
   get_output_magnitudes(galout->Mags, galout->DustyMags, &gal, run_globals.ListOutputSnaps[i_snap]);
@@ -152,7 +152,7 @@ void calc_hdf5_props()
     galaxy_output_t galout;
     int i; // dummy
 
-    h5props->n_props = 7;
+    h5props->n_props = 10;
     // h5props->n_props = 49;
 #if USE_MINI_HALOS
     h5props->n_props += 3; // Double check later
@@ -161,9 +161,9 @@ void calc_hdf5_props()
 #if USE_2DISK_MODEL
     h5props->n_props += 6;
 #endif
-#if USE_ANG_MOM
+/*#if USE_ANG_MOM
     h5props->n_props += 1;
-#endif
+#endif*/
 #ifdef CALC_MAGS
     h5props->n_props += 2;
     h5props->array_nmag_f_tid = H5Tarray_create(H5T_NATIVE_FLOAT, 1, (hsize_t[]){ MAGS_N_BANDS });
@@ -211,12 +211,12 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_LLONG;
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Type);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Type);
     h5props->dst_field_sizes[i] = sizeof(galout.Type);
     h5props->field_names[i] = "Type";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_INT;*/
+    h5props->field_types[i++] = H5T_NATIVE_INT;
 
     /*#if USE_MINI_HALOS
         h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Galaxy_Population);
@@ -234,14 +234,14 @@ void calc_hdf5_props()
         h5props->field_types[i++] = H5T_NATIVE_INT;
     #endif*/
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, CentralGal);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, CentralGal);
     h5props->dst_field_sizes[i] = sizeof(galout.CentralGal);
     h5props->field_names[i] = "CentralGal";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_INT;
 
-    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, GhostFlag);
+    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, GhostFlag);
     h5props->dst_field_sizes[i] = sizeof(galout.GhostFlag);
     h5props->field_names[i] = "GhostFlag";
     h5props->field_units[i] = "None";
@@ -311,8 +311,8 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
 
-#if USE_ANG_MOM
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, VGasDisk);
+/*#if USE_ANG_MOM
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, VGasDisk);
     h5props->dst_field_sizes[i] = sizeof(galout.VGasDisk);
     h5props->field_names[i] = "VGasDisk";
     h5props->field_units[i] = "km/s";
@@ -345,7 +345,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "AMhalo";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = h5props->array3f_tid;*/
+    h5props->field_types[i++] = h5props->array3f_tid;
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, StellarDiskScaleLength);
     h5props->dst_field_sizes[i] = sizeof(galout.StellarDiskScaleLength);
@@ -353,7 +353,7 @@ void calc_hdf5_props()
     h5props->field_units[i] = "Mpc"; // real
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
-#endif
+#endif*/
 
     /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, FOFMvir);
     h5props->dst_field_sizes[i] = sizeof(galout.FOFMvir);
@@ -538,7 +538,7 @@ void calc_hdf5_props()
 #endif
 #endif
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, EjectedGas);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, EjectedGas);
     h5props->dst_field_sizes[i] = sizeof(galout.EjectedGas);
     h5props->field_names[i] = "EjectedGas";
     h5props->field_units[i] = "1e10 solMass";
