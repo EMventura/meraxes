@@ -51,6 +51,11 @@ double gas_infall(fof_group_t* FOFgroup, int snapshot)
         gal->MetalsHotGas = 0.0;
         gal->EjectedGas = 0.0;
         gal->MetalsEjectedGas = 0.0;
+// The reason for the following is to take care of potential halo swap issues.
+// This is still a work in progress
+#if USE_2DISK_MODEL
+        gal->Rstar = 0.0;
+#endif
       }
 
       gal = gal->NextGalInHalo;
