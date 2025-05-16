@@ -62,7 +62,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 
 #if USE_2DISK_MODEL
           // This is a further check. Still work in progress
-          if (gal->Type == 0)
+          if (gal->Type > 0)
             gal->Rstar = 0.0;
 #endif
           if (Flag_Metals ==
