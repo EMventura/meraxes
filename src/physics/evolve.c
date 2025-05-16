@@ -220,4 +220,10 @@ void passively_evolve_ghost(galaxy_t* gal, int snapshot)
 
   if (!Flag_IRA)
     delayed_supernova_feedback(gal, snapshot);
+#if USE_2DISK_MODEL
+  // It seems that with some gals do the halo swap when they are ghosts.
+  // How is that possible?
+  if (gal->Type > 0)
+    gal->Rstar = 0.0;
+#endif
 }
