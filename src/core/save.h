@@ -78,8 +78,6 @@ typedef struct galaxy_output_t
   int Flag_ExtMetEnr;
   float Metal_Probability;
   float GalMetal_Probability;
-  float StellarMass_II;
-  float StellarMass_III;
   float Remnant_Mass;
   float MvirCrit_MC;
 #endif
@@ -109,6 +107,8 @@ typedef struct galaxy_output_t
   float NewStars[N_HISTORY_SNAPS];*/
 #if USE_MINI_HALOS || USE_2DISK_MODEL
   float GrossStellarMassIII;
+  float StellarMass_II;
+  float StellarMass_III;
   //float NewStars_II[N_HISTORY_SNAPS];
   //float NewStars_III[N_HISTORY_SNAPS];
   float NewStars_II;
