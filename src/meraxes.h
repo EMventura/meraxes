@@ -612,6 +612,7 @@ typedef struct galaxy_t
   double ColdGasD2;
   double MetalsColdGasD1;
   double MetalsColdGasD2;
+  double SfrIII;
 #endif
 
 #if USE_MINI_HALOS || USE_2DISK_MODEL

@@ -60,11 +60,6 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 
         while (gal != NULL) {
 
-#if USE_2DISK_MODEL
-          // This is a further check. Still work in progress
-          if (gal->Type > 0)
-            gal->Rstar = 0.0;
-#endif
           if (Flag_Metals ==
               true) { // Assign to newly formed galaxies metallicity of their cell according to a certain probability
             if ((gal->Type == 0) &&
@@ -221,8 +216,7 @@ void passively_evolve_ghost(galaxy_t* gal, int snapshot)
   if (!Flag_IRA)
     delayed_supernova_feedback(gal, snapshot);
 #if USE_2DISK_MODEL
-  // It seems that with some gals do the halo swap when they are ghosts.
-  // How is that possible?
+  // Just an additional sanity check, it doesn't change much though
   if (gal->Type > 0)
     gal->Rstar = 0.0;
 #endif

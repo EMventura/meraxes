@@ -122,6 +122,13 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
     double sfr = new_stars / gal->dt;
     gal->Sfr += sfr;
     assert(gal->Sfr >= 0);
+#if USE_2DISK_MODEL
+    if (gal->Galaxy_Population == 3) {
+      double sfrIII = new_starsD2 / gal->dt;
+      gal->SfrIII += sfrIII;
+      assert(gal->SfrIII >= 0);
+    }
+#endif
 
     gal->ColdGas -= new_stars;
     gal->MetalsColdGas -= new_stars * metallicity;
