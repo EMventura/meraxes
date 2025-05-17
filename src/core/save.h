@@ -109,8 +109,8 @@ typedef struct galaxy_output_t
   float NewStars[N_HISTORY_SNAPS];*/
 #if USE_MINI_HALOS || USE_2DISK_MODEL
   float GrossStellarMassIII;
-  //float NewStars_II[N_HISTORY_SNAPS];
-  //float NewStars_III[N_HISTORY_SNAPS];
+  // float NewStars_II[N_HISTORY_SNAPS];
+  // float NewStars_III[N_HISTORY_SNAPS];
   float NewStars_II;
   float NewStars_III;
 #endif
