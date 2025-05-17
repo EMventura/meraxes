@@ -109,8 +109,8 @@ typedef struct galaxy_output_t
   float GrossStellarMassIII;
   float StellarMass_II;
   float StellarMass_III;
-  //float NewStars_II[N_HISTORY_SNAPS];
-  //float NewStars_III[N_HISTORY_SNAPS];
+  // float NewStars_II[N_HISTORY_SNAPS];
+  // float NewStars_III[N_HISTORY_SNAPS];
   float NewStars_II;
   float NewStars_III;
 #endif
