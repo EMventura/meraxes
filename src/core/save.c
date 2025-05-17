@@ -434,7 +434,7 @@ void calc_hdf5_props()
     h5props->field_names[i] = "SfrIII";
     h5props->field_units[i] = "solMass/yr";
     h5props->field_h_conv[i] = "None";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 #endif
 
                                   /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, H2Frac);
@@ -465,7 +465,7 @@ void calc_hdf5_props()
                                   h5props->field_h_conv[i] = "v/h";
                                   h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
 
-                                  h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, DiskScaleLength);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, DiskScaleLength);
     h5props->dst_field_sizes[i] = sizeof(galout.DiskScaleLength);
     h5props->field_names[i] = "DiskScaleLength";
     h5props->field_units[i] = "Mpc"; // physical
