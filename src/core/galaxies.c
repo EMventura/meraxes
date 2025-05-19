@@ -207,6 +207,9 @@ void reset_galaxy_properties(galaxy_t* gal, int snapshot)
   gal->FOFMvirModifier = 1.0;
   gal->BlackHoleAccretedHotMass = 0.0;
   gal->BlackHoleAccretedColdMass = 0.0;
+#if USE_2DISK_MODEL
+  gal->SfrIII = 0.0;
+#endif
 
   // Update the stellar mass weighted mean age values.  This only needs to be
   // done for snapshots shich are passing out of what we are able to track

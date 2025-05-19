@@ -70,6 +70,9 @@ double gas_infall(fof_group_t* FOFgroup, int snapshot)
     central->MetalsEjectedGas += central->MetalsHotGas;
     central->HotGas = 0.0;
     central->MetalsHotGas = 0.0;
+#if USE_2DISK_MODEL
+    central->Rstar = 0.0;
+#endif
     return 0.0;
   }
 
