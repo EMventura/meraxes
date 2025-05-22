@@ -46,34 +46,34 @@ double gas_cooling(galaxy_t* gal)
     // Implement Molecular cooling using fitting of cooling curves of Galli and Palla 1998, Include LW feedback
     // according to Visbal 2014
 
-/*#if USE_MINI_HALOS
-    else {
-      halo_type = 2;
-      Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
-      log10Tvir = log10(Tvir);
-      if (Tvir >= 1e3 && gal->Mvir >= gal->MvirCrit_MC) {
-        double loglambdalim, LTEcool;
-        double nH = 1e2; // Use value of low density regime
+    /*#if USE_MINI_HALOS
+        else {
+          halo_type = 2;
+          Tvir = Vvir_to_Tvir(fof_group->Vvir, halo_type);
+          log10Tvir = log10(Tvir);
+          if (Tvir >= 1e3 && gal->Mvir >= gal->MvirCrit_MC) {
+            double loglambdalim, LTEcool;
+            double nH = 1e2; // Use value of low density regime
 
-        // Identical procedure, only thing that changes is lambda!
-        t_cool = fof_group->Rvir / fof_group->Vvir; // internal units
+            // Identical procedure, only thing that changes is lambda!
+            t_cool = fof_group->Rvir / fof_group->Vvir; // internal units
 
-        // interpolate the temperature and metallicity dependant cooling rate (lambda)
-        LTEcool = LTE_Mcool(Tvir, nH);
-        loglambdalim = -103.0 + 97.59 * log10Tvir - 48.05 * pow(log10Tvir, 2) + 10.8 * pow(log10Tvir, 3) -
-                       0.9032 * pow(log10Tvir, 4);
-        lambda = LTEcool / (1 + (LTEcool / pow(10, loglambdalim)));
-      } else {
-        halo_type = 0;
-        cooling_mass = 0.0;
-      }
-    }
-#else*/
+            // interpolate the temperature and metallicity dependant cooling rate (lambda)
+            LTEcool = LTE_Mcool(Tvir, nH);
+            loglambdalim = -103.0 + 97.59 * log10Tvir - 48.05 * pow(log10Tvir, 2) + 10.8 * pow(log10Tvir, 3) -
+                           0.9032 * pow(log10Tvir, 4);
+            lambda = LTEcool / (1 + (LTEcool / pow(10, loglambdalim)));
+          } else {
+            halo_type = 0;
+            cooling_mass = 0.0;
+          }
+        }
+    #else*/
     else {
       halo_type = 0;
       cooling_mass = 0.0;
     }
-//#endif
+    //#endif
 
     if (halo_type != 0) {
 
@@ -83,10 +83,10 @@ double gas_cooling(galaxy_t* gal)
       if (halo_type == 1)
         rho_r_cool = x / t_cool * 0.885; // 0.885 = 3/2 * mu, mu=0.59 for a fully ionized gas
 
-/*#if USE_MINI_HALOS
-      else if (halo_type == 2)
-        rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
-#endif*/
+      /*#if USE_MINI_HALOS
+            else if (halo_type == 2)
+              rho_r_cool = x / t_cool * 1.83; // 1.83 = 3/2 * mu, mu = 1.22 for a fully neutral gas
+      #endif*/
 
       assert(rho_r_cool > 0);
       isothermal_norm = gal->HotGas / (4. * M_PI * fof_group->Rvir);
