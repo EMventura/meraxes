@@ -37,6 +37,9 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
   int NSteps = run_globals.params.NSteps;
   bool Flag_IRA = (bool)(run_globals.params.physics.Flag_IRA);
   bool Flag_Metals = (bool)(run_globals.params.Flag_IncludeMetalEvo);
+#if USE_MINI_HALOS
+  double DiskMetallicity;
+#endif
 #if USE_2DISK_MODEL
   double ExtDiskMetallicity; // Metallicity of External Disk
   double HotGasMetallicity;  // Metallicity of HotGas
