@@ -140,9 +140,9 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
               gal->Galaxy_Population = 2;
 #endif
 #if USE_MINI_HALOS
-            DiskMetallicity = calc_metallicity(
-              gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal
-            if ((DiskMetallicity / 0.02) > run_globals.params.physics.ZCrit) 
+            DiskMetallicity =
+              calc_metallicity(gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal
+            if ((DiskMetallicity / 0.02) > run_globals.params.physics.ZCrit)
               gal->Galaxy_Population = 2;
             else
               gal->Galaxy_Population = 3;
