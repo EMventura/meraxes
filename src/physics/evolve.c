@@ -136,13 +136,14 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
             } else
               gal->Galaxy_Population = 2;
 #endif
-            /*#if USE_MINI_HALOS
-                        DiskMetallicity = calc_metallicity(
-                          gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal
-            enrichment! if ((DiskMetallicity / 0.01) > run_globals.params.physics.ZCrit) gal->Galaxy_Population = 2;
-                        else
-                          gal->Galaxy_Population = 3;
-            #endif*/
+#if USE_MINI_HALOS
+            DiskMetallicity = calc_metallicity(
+              gal->ColdGas, gal->MetalsColdGas); // A more accurate way to account for the internal
+            if ((DiskMetallicity / 0.02) > run_globals.params.physics.ZCrit) 
+              gal->Galaxy_Population = 2;
+            else
+              gal->Galaxy_Population = 3;
+#endif
             insitu_star_formation(gal, snapshot);
 
             if ((Flag_Metals == true) && (gal->Type < 3)) { // For gal->Type > 0 you are just letting the bubble grow
