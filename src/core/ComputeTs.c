@@ -549,9 +549,8 @@ void _ComputeTs(int snapshot)
 #if USE_MINI_HALOS || USE_SCALING_REL
     if ((collapse_fraction + collapse_fractionIII) > 0.0) {
 #else
-    if (collapse_fraction > 0.0)
+    if (collapse_fraction > 0.0) {
 #endif
-      {
         NO_LIGHT = 0;
       }
       else
