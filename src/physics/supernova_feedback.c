@@ -686,15 +686,21 @@ void calc_metal_bubble(galaxy_t* gal, int snapshot) // result in internal units 
 
   if (gal->Type == 0) {
     for (int i_burst = 0; i_burst < n_bursts; i_burst++) {
+#if USE_MINI_HALOS || USE_2DISK_MODEL
       double m_stars_II = gal->NewStars_II[i_burst];
       double m_stars_III = gal->NewStars_III[i_burst];
       double m_stars = m_stars_II + m_stars_III;
+#else
+      double m_stars_II = gal->NewStars[i_burst];
+#endif
 
       // Compute the SN energy that drives the metal bubble.
       if (m_stars_II > 1e-10) {
-        double metallicity = calc_metallicity(m_stars, gal->NewMetals[i_burst]);
+        double metallicity = calc_metallicity(m_stars_II, gal->NewMetals[i_burst]);
         sn_energy += m_stars_II * get_SN_energy(0, metallicity) * energy_unit * calc_sn_ejection_eff(gal, snapshot, 2);
-      } else if (m_stars_III > 1e-10) {
+      } 
+#if USE_MINI_HALOS || USE_2DISK_MODEL
+      else if (m_stars_III > 1e-10) {
         if (i_burst == 0) // You have both CC and PISN
           sn_energy += (get_SN_energy_PopIII(i_burst, snapshot, 0) + get_SN_energy_PopIII(i_burst, snapshot, 1)) *
                        m_stars_III * calc_sn_ejection_eff(gal, snapshot, 3);
@@ -702,6 +708,7 @@ void calc_metal_bubble(galaxy_t* gal, int snapshot) // result in internal units 
           sn_energy +=
             get_SN_energy_PopIII(i_burst, snapshot, 0) * m_stars_III * calc_sn_ejection_eff(gal, snapshot, 3);
       }
+#endif
       if (i_burst != 0) {
         gal->Prefactor[n_bursts - i_burst] = gal->Prefactor[n_bursts - i_burst - 1];
         gal->Times[n_bursts - i_burst] = gal->Times[n_bursts - i_burst - 1];
