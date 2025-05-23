@@ -63,6 +63,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
 
         while (gal != NULL) {
 
+#if USE_MINI_HALOS || USE_2DISK_MODEL
           if (Flag_Metals ==
               true) { // Assign to newly formed galaxies metallicity of their cell according to a certain probability
             if ((gal->Type == 0) &&
@@ -72,6 +73,7 @@ int evolve_galaxies(fof_group_t* fof_group, int snapshot, int NGal, int NFof)
                   (gal->GrossStellarMass + gal->GrossStellarMassIII) > 1e-10) {
                 gal->Flag_ExtMetEnr = 1; // Just update the flag. Here what I am saying is that a galaxy that already
                                          // experienced SN events will surely be inside a metal bubble!
+#endif
 #if USE_MINI_HALOS
                 *gal_counter_enriched = *gal_counter_enriched + 1;
                 if ((gal->Metallicity_IGM / 0.02) > run_globals.params.physics.ZCrit) {
