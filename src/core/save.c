@@ -99,6 +99,8 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   galout->ColdGasD2 = (float)(gal.ColdGasD2);
   galout->MetalsColdGasD2 = (float)(gal.MetalsColdGasD2);
   galout->SfrIII = (float)(gal.SfrIII * units->UnitMass_in_g / units->UnitTime_in_s * SEC_PER_YEAR / SOLAR_MASS);
+  galout->N_PopII = (gal.N_PopII);
+  galout->N_PopIII = (gal.N_PopIII);
 #endif
 
 #if USE_MINI_HALOS
@@ -162,7 +164,7 @@ void calc_hdf5_props()
 #endif
 
 #if USE_2DISK_MODEL
-    h5props->n_props += 9;
+    h5props->n_props += 12;
 #endif
 /*#if USE_ANG_MOM
     h5props->n_props += 1;
@@ -358,12 +360,12 @@ void calc_hdf5_props()
         h5props->field_types[i++] = H5T_NATIVE_FLOAT;
     #endif*/
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, FOFMvir);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, FOFMvir);
     h5props->dst_field_sizes[i] = sizeof(galout.FOFMvir);
     h5props->field_names[i] = "FOFMvir";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
-    h5props->field_types[i++] = H5T_NATIVE_FLOAT;*/
+    h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, HotGas);
     h5props->dst_field_sizes[i] = sizeof(galout.HotGas);
@@ -435,6 +437,20 @@ void calc_hdf5_props()
     h5props->field_units[i] = "solMass/yr";
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
+    
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, N_PopII);
+    h5props->dst_field_sizes[i] = sizeof(galout.N_PopII);
+    h5props->field_names[i] = "N_PopII";
+    h5props->field_units[i] = "None";
+    h5props->field_h_conv[i] = "None";
+    h5props->field_types[i++] = H5T_NATIVE_INT;
+    
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, N_PopIII);
+    h5props->dst_field_sizes[i] = sizeof(galout.N_PopIII);
+    h5props->field_names[i] = "N_PopIII";
+    h5props->field_units[i] = "None";
+    h5props->field_h_conv[i] = "None";
+    h5props->field_types[i++] = H5T_NATIVE_INT;
 #endif
 
     /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, H2Frac);

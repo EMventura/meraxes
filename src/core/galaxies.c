@@ -111,6 +111,8 @@ galaxy_t* new_galaxy(int snapshot, unsigned long halo_ID)
   gal->ColdGasD2 = 0.0;
   gal->MetalsColdGasD2 = 0.0;
   gal->SfrIII = 0.0;
+  gal->N_PopIII = 0;
+  gal->N_PopII = 0;
 #endif
 
   for (int ii = 0; ii < 3; ii++) {

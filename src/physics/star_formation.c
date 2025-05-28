@@ -175,6 +175,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
         add_luminosities(&run_globals.mag_params, gal, snapshot, metallicity, sfr, new_stars);
 #endif
       gal->NewStars[0] += new_stars;
+      gal->N_PopII += 1;
 #if USE_MINI_HALOS
       if (gal->Galaxy_Population == 2)
         gal->NewStars_II[0] += new_stars;
@@ -185,6 +186,7 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
       if (gal->Galaxy_Population == 3) {
         gal->NewStars_III[0] += new_starsD2;
         gal->NewStars_II[0] += new_starsD1;
+        gal->N_PopIII += 1;
       } else {
         gal->NewStars_II[0] += new_stars;
       }

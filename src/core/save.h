@@ -89,6 +89,8 @@ typedef struct galaxy_output_t
   float ColdGasD2;
   float MetalsColdGasD2;
   float SfrIII;
+  int N_PopII;
+  int N_PopIII;
 #endif
 
   // misc
