@@ -437,14 +437,14 @@ void calc_hdf5_props()
     h5props->field_units[i] = "solMass/yr";
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
-    
+
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, N_PopII);
     h5props->dst_field_sizes[i] = sizeof(galout.N_PopII);
     h5props->field_names[i] = "N_PopII";
     h5props->field_units[i] = "None";
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_INT;
-    
+
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, N_PopIII);
     h5props->dst_field_sizes[i] = sizeof(galout.N_PopIII);
     h5props->field_names[i] = "N_PopIII";
