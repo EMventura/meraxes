@@ -698,7 +698,7 @@ void calc_metal_bubble(galaxy_t* gal, int snapshot) // result in internal units 
       if (m_stars_II > 1e-10) {
         double metallicity = calc_metallicity(m_stars_II, gal->NewMetals[i_burst]);
         sn_energy += m_stars_II * get_SN_energy(0, metallicity) * energy_unit * calc_sn_ejection_eff(gal, snapshot, 2);
-      } 
+      }
 #if USE_MINI_HALOS || USE_2DISK_MODEL
       else if (m_stars_III > 1e-10) {
         if (i_burst == 0) // You have both CC and PISN
