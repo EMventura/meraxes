@@ -228,16 +228,14 @@ void read_trees__velociraptor(int snapshot,
 	READ_TREE_ENTRY_PROP(VXc,          float, H5T_NATIVE_FLOAT, 11);                                                                  
 	READ_TREE_ENTRY_PROP(VYc,          float, H5T_NATIVE_FLOAT, 12);                                                                  
 	READ_TREE_ENTRY_PROP(VZc,          float, H5T_NATIVE_FLOAT, 13);
+	READ_TREE_ENTRY_PROP(ID,           unsigned long, H5T_NATIVE_ULONG, 14);                                                          
+	READ_TREE_ENTRY_PROP(npart,        unsigned long, H5T_NATIVE_ULONG, 15);
 #if USE_ANG_MOM
-        READ_TREE_ENTRY_PROP(Lx,           float, H5T_NATIVE_FLOAT, 14);
-        READ_TREE_ENTRY_PROP(Ly,           float, H5T_NATIVE_FLOAT, 15);
-        READ_TREE_ENTRY_PROP(Lz,           float, H5T_NATIVE_FLOAT, 16);                                                                  
-        READ_TREE_ENTRY_PROP(ID,           unsigned long, H5T_NATIVE_ULONG, 17);                                                          
-        READ_TREE_ENTRY_PROP(npart,        unsigned long, H5T_NATIVE_ULONG, 18);
+        READ_TREE_ENTRY_PROP(Lx,           float, H5T_NATIVE_FLOAT, 16);
+        READ_TREE_ENTRY_PROP(Ly,           float, H5T_NATIVE_FLOAT, 17);
+        READ_TREE_ENTRY_PROP(Lz,           float, H5T_NATIVE_FLOAT, 18);                                                                  
 #else                                                                  
-	READ_TREE_ENTRY_PROP(AngMom,       float, H5T_NATIVE_FLOAT, 14);                                                                  
-	READ_TREE_ENTRY_PROP(ID,           unsigned long, H5T_NATIVE_ULONG, 15);                                                          
-	READ_TREE_ENTRY_PROP(npart,        unsigned long, H5T_NATIVE_ULONG, 16); 
+	READ_TREE_ENTRY_PROP(AngMom,       float, H5T_NATIVE_FLOAT, 16);                                                                   
 #endif                                                         
 
     H5Sclose(memspace_id);
