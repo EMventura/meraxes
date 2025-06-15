@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <gsl/gsl_integration.h>
 
-
 #if USE_ANG_MOM
 #include "core/angular_momentum.h"
 #endif
@@ -48,30 +47,33 @@ void update_reservoirs_from_sf(galaxy_t* gal, double new_stars, int snapshot, SF
 
     // instantaneous recycling approximation of stellar mass
     metallicity = calc_metallicity(gal->ColdGas, gal->MetalsColdGas);
-    
-#if USE_ANG_MOM
-  // You are not differentiating for SF burst mergers (differently from Maddie's version.
-  // Again, this is because you don't have bulges and you can't simply assume that AM of stars
-  // disappears.
-    //if (type == INSITU) {
-      double *angmom;
-      // Differently from Maddie's version you only have a disk so all stars are formed in the disk
-      // In this case, we must calculate the transferred angular momentum from
-      // the gas disk to the stellar disk BEFORE we remove cold gas.
-      // This would be equivalent to add_to_bulge = 0 in Maddie's model
-      angmom = malloc(sizeof(double) * 3);
-      total_to_specific_angmom(gal->AMcold, gal->ColdGas, angmom);
-      for (int ii = 0; ii < 3; ii++) {
-        angmom[ii] *= new_stars;
-      }
 
-      // Here I have a doubt though... Shouldn't be StellarDiskScaleLength = 3*DiskScaleLength?
-      add_disks(gal, 0, new_stars, gal->DiskScaleLength, gal->VGasDisk,
-                angmom);          
-      add_disks(gal, 1, -new_stars, gal->DiskScaleLength, gal->VGasDisk,
-                angmom); // subtract non-projected gas disk from total gas disk
-      increment_angular_momentum(gal->AMcold, angmom, -1);
-      increment_angular_momentum(gal->AMstars, angmom, +1);
+#if USE_ANG_MOM
+    // You are not differentiating for SF burst mergers (differently from Maddie's version.
+    // Again, this is because you don't have bulges and you can't simply assume that AM of stars
+    // disappears.
+    // if (type == INSITU) {
+    double* angmom;
+    // Differently from Maddie's version you only have a disk so all stars are formed in the disk
+    // In this case, we must calculate the transferred angular momentum from
+    // the gas disk to the stellar disk BEFORE we remove cold gas.
+    // This would be equivalent to add_to_bulge = 0 in Maddie's model
+    angmom = malloc(sizeof(double) * 3);
+    total_to_specific_angmom(gal->AMcold, gal->ColdGas, angmom);
+    for (int ii = 0; ii < 3; ii++) {
+      angmom[ii] *= new_stars;
+    }
+
+    // Here I have a doubt though... Shouldn't be StellarDiskScaleLength = 3*DiskScaleLength?
+    add_disks(gal, 0, new_stars, gal->DiskScaleLength, gal->VGasDisk, angmom);
+    add_disks(gal,
+              1,
+              -new_stars,
+              gal->DiskScaleLength,
+              gal->VGasDisk,
+              angmom); // subtract non-projected gas disk from total gas disk
+    increment_angular_momentum(gal->AMcold, angmom, -1);
+    increment_angular_momentum(gal->AMstars, angmom, +1);
     /*}
     else {
     // Merger burst SF scenario (add_to_bulge = 1)
@@ -193,7 +195,7 @@ void insitu_star_formation(galaxy_t* gal, int snapshot)
     int SfPrescription = run_globals.params.physics.SfPrescription;
 
     // What velocity are we going to use as a proxy for the disk rotation velocity?
-    
+
 #if USE_ANG_MOM
     // Since you are tracking correctly the size of the gas disk, use that!
     v_disk = gal->VGasDisk;

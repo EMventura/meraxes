@@ -41,7 +41,7 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
     galout->CentralGal = -1;
     galout->FOFMvir = (float)-1.0;
   }
-  //galout->GhostFlag = (int)gal.ghost_flag;
+  // galout->GhostFlag = (int)gal.ghost_flag;
 
   for (int ii = 0; ii < 3; ii++) {
     galout->Pos[ii] = gal.Pos[ii];
@@ -150,7 +150,7 @@ void calc_hdf5_props()
     h5props->n_props = 49;
     //h5props->n_props = 20;
 #if USE_MINI_HALOS
-    h5props->n_props += 14; 
+    h5props->n_props += 14;
 #endif
 #if USE_ANG_MOM
     h5props->n_props += 6;
@@ -301,7 +301,7 @@ void calc_hdf5_props()
     h5props->field_units[i] = "km/s"; // physical
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
-    
+
 #if USE_ANG_MOM
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, VGasDisk);
     h5props->dst_field_sizes[i] = sizeof(galout.VGasDisk);
@@ -316,7 +316,7 @@ void calc_hdf5_props()
     h5props->field_units[i] = "km/s";
     h5props->field_h_conv[i] = "None";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
-    
+
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, AMstars);
     h5props->dst_field_sizes[i] = sizeof(galout.AMstars);
     h5props->field_names[i] = "AMstars";
@@ -330,14 +330,14 @@ void calc_hdf5_props()
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = h5props->array3f_tid;
-    
+
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, AMhalo);
     h5props->dst_field_sizes[i] = sizeof(galout.AMhalo);
     h5props->field_names[i] = "AMhalo";
     h5props->field_units[i] = "1e10 solMass";
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = h5props->array3f_tid;
-    
+
     h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, StellarDiskScaleLength);
     h5props->dst_field_sizes[i] = sizeof(galout.StellarDiskScaleLength);
     h5props->field_names[i] = "StellarDiskScaleLength";

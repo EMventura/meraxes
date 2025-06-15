@@ -490,7 +490,9 @@ void read_trees__gbptrees(int snapshot,
         cur_halo->AngMom[1] = cur_cat_halo->ang_mom[1];
         cur_halo->AngMom[2] = cur_cat_halo->ang_mom[2];
 #else
-        cur_halo->AngMom = sqrt(cur_cat_halo->ang_mom[0] * cur_cat_halo->ang_mom[0] + cur_cat_halo->ang_mom[1] * cur_cat_halo->ang_mom[1] + cur_cat_halo->ang_mom[2]* cur_cat_halo->ang_mom[2]);
+        cur_halo->AngMom = sqrt(cur_cat_halo->ang_mom[0] * cur_cat_halo->ang_mom[0] +
+                                cur_cat_halo->ang_mom[1] * cur_cat_halo->ang_mom[1] +
+                                cur_cat_halo->ang_mom[2] * cur_cat_halo->ang_mom[2]);
 #endif
         cur_halo->Galaxy = NULL;
         cur_halo->Mvir = cur_cat_halo->M_vir;
