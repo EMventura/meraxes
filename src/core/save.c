@@ -49,8 +49,8 @@ void prepare_galaxy_for_output(galaxy_t gal, galaxy_output_t* galout, int i_snap
   // galout->Len = gal.Len;
   // galout->MaxLen = gal.MaxLen;
   galout->Mvir = (float)(gal.Mvir);
-  /*galout->Rvir = (float)(gal.Rvir);
-  galout->Vvir = (float)(gal.Vvir);
+  galout->Rvir = (float)(gal.Rvir);
+  /*galout->Vvir = (float)(gal.Vvir);
 #if USE_ANG_MOM
     galout->AMstars[ii] = (float)(gal.AMstars[ii]);
     galout->AMcold[ii] = (float)(gal.AMcold[ii]);
@@ -157,7 +157,7 @@ void calc_hdf5_props()
     galaxy_output_t galout;
     int i; // dummy
 
-    h5props->n_props = 15;
+    h5props->n_props = 16;
     // h5props->n_props = 49;
 #if USE_MINI_HALOS
     h5props->n_props += 5;
@@ -295,7 +295,7 @@ void calc_hdf5_props()
     h5props->field_h_conv[i] = "v/h";
     h5props->field_types[i++] = H5T_NATIVE_FLOAT;
 
-    /*h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Rvir);
+    h5props->dst_offsets[i] = HOFFSET(galaxy_output_t, Rvir);
     h5props->dst_field_sizes[i] = sizeof(galout.Rvir);
     h5props->field_names[i] = "Rvir";
     h5props->field_units[i] = "Mpc"; // physical
